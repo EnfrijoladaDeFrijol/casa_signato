@@ -1,0 +1,48 @@
+---
+// ============================================================
+// Plantilla: Boda Clásica — Cascarón Orquestador
+// Compone las secciones modulares en una invitación completa.
+// Cada sección es un componente independiente con sus props.
+// ============================================================
+import type { PlantillaProps } from '../../../types/invitacion';
+
+// --- Secciones propias de esta plantilla ---
+import Hero from './Hero.astro';
+import Mensaje from './Mensaje.astro';
+import CeremoniaRecepcion from './CeremoniaRecepcion.astro';
+import Galeria from './Galeria.astro';
+import Footer from './Footer.astro';
+
+// --- Componentes UI comunes reutilizables ---
+import Contador from '../../ui-comunes/Contador.astro';
+
+type Props = PlantillaProps;
+
+const { datos, colores } = Astro.props;
+
+// Formatear la fecha en español
+const fechaEvento = new Date(datos.fecha + 'T00:00:00');
+const opcionesFecha: Intl.DateTimeFormatOptions = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+};
+const fechaFormateada = fechaEvento.toLocaleDateString('es-MX', opcionesFecha);
+---
+
+<Hero datos={datos} colores={colores} fechaFormateada={fechaFormateada} />
+
+<Mensaje datos={datos} colores={colores} />
+
+<CeremoniaRecepcion datos={datos} colores={colores} />
+
+<Contador
+  fecha={datos.fecha}
+  hora={datos.hora}
+  colores={colores}
+/>
+
+<Galeria datos={datos} colores={colores} />
+
+<Footer datos={datos} colores={colores} fechaFormateada={fechaFormateada} />

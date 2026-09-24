@@ -1,0 +1,49 @@
+---
+import type { ClienteInvitacion } from '../types/invitacion';
+
+interface Props {
+  cliente: ClienteInvitacion;
+  categoria: string;
+}
+
+const { cliente, categoria } = Astro.props;
+
+const fechaFormateada = new Date(cliente.contenido.fecha + 'T00:00:00').toLocaleDateString('es-MX', { 
+  month: 'short', 
+  day: 'numeric', 
+  year: 'numeric' 
+});
+---
+
+<a
+  href={`/${cliente.categoria}/${cliente.slug}`}
+  class="invitation-card group block bg-white border border-slate-200 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
+  data-title={cliente.contenido.titulo.toLowerCase()}
+  data-category={categoria}
+>
+  <div class="mb-4 flex justify-between items-center">
+    <span class="inline-block text-[11px] font-bold tracking-widest text-slate-500 uppercase bg-slate-100 px-2.5 py-1 rounded-md">
+      {cliente.plantilla}
+    </span>
+    <!-- Indicador sutil de color del cliente -->
+    <span class="w-3.5 h-3.5 rounded-full shadow-inner" style={`background-color: ${cliente.colores.primario};`}></span>
+  </div>
+  
+  <!-- Tipografía mejorada para máxima legibilidad -->
+  <h3 class="font-sans text-2xl font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">
+    {cliente.contenido.titulo}
+  </h3>
+  <p class="mt-1.5 text-base text-slate-600 font-medium line-clamp-1">
+    {cliente.contenido.subtitulo}
+  </p>
+  
+  <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500">
+      <span class="flex items-center gap-1.5 font-medium">
+        <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        {fechaFormateada}
+      </span>
+      <span class="font-bold text-blue-600 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+        Abrir &rarr;
+      </span>
+  </div>
+</a>

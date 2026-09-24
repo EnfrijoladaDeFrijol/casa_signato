@@ -1,0 +1,93 @@
+---
+// ============================================================
+// Plantilla: Cumpleaños Fiesta
+// Molde visual para invitaciones de cumpleaños
+// Migrado a subcarpeta modular — listo para futura descomposición
+// ============================================================
+import type { PlantillaProps } from '../../../types/invitacion';
+
+type Props = PlantillaProps;
+
+const { datos, colores } = Astro.props;
+
+const fechaEvento = new Date(datos.fecha + 'T00:00:00');
+const opcionesFecha: Intl.DateTimeFormatOptions = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+};
+const fechaFormateada = fechaEvento.toLocaleDateString('es-MX', opcionesFecha);
+---
+
+<!-- Hero Cumpleaños -->
+<section
+  class="relative flex min-h-screen flex-col items-center justify-center px-6 text-center"
+  style={`background: linear-gradient(135deg, ${colores.primario}15 0%, ${colores.secundario}20 50%, ${colores.acento}15 100%);`}
+>
+  <div class="animate-fade-in mb-4" aria-hidden="true">
+    <span class="text-6xl">🎉</span>
+  </div>
+
+  <p class="animate-slide-up text-sm font-bold uppercase tracking-[0.3em]" style={`color: ${colores.acento};`}>
+    {datos.subtitulo}
+  </p>
+
+  <h1 class="animate-slide-up animate-delay-200 mt-4 font-serif text-5xl font-bold md:text-7xl" style={`color: ${colores.primario};`}>
+    {datos.titulo}
+  </h1>
+
+  <div class="animate-slide-up animate-delay-400 mt-6 flex items-center gap-4" aria-hidden="true">
+    <span class="block h-px w-16" style={`background-color: ${colores.secundario};`}></span>
+    <span class="text-2xl">🎂</span>
+    <span class="block h-px w-16" style={`background-color: ${colores.secundario};`}></span>
+  </div>
+
+  <p class="animate-slide-up animate-delay-600 mt-4 font-serif text-xl capitalize" style={`color: ${colores.texto};`}>
+    {fechaFormateada}
+  </p>
+
+  <p class="animate-slide-up animate-delay-800 mt-2 text-lg font-light" style={`color: ${colores.secundario};`}>
+    {datos.hora} hrs
+  </p>
+</section>
+
+<!-- Mensaje -->
+<section class="px-6 py-20 text-center" style={`background-color: ${colores.fondo};`}>
+  <div class="mx-auto max-w-2xl">
+    <blockquote class="font-serif text-lg leading-relaxed italic md:text-xl" style={`color: ${colores.texto};`}>
+      "{datos.mensaje}"
+    </blockquote>
+  </div>
+</section>
+
+<!-- Ubicación -->
+<section class="px-6 py-20" style={`background: ${colores.primario}08;`}>
+  <div class="mx-auto max-w-4xl">
+    <h2 class="mb-12 text-center font-serif text-3xl font-semibold" style={`color: ${colores.primario};`}>
+      ¿Dónde es la Fiesta?
+    </h2>
+    <div class="grid gap-8 md:grid-cols-{datos.ubicaciones.length > 1 ? '2' : '1'} justify-center">
+      {datos.ubicaciones.map((ubi) => (
+        <div class="mx-auto max-w-md rounded-2xl border p-8 text-center" style={`border-color: ${colores.secundario}40; background-color: ${colores.fondo};`}>
+          <h3 class="font-serif text-xl font-semibold" style={`color: ${colores.primario};`}>{ubi.nombre}</h3>
+          <p class="mt-2 font-medium" style={`color: ${colores.acento};`}>{ubi.hora} hrs</p>
+          <p class="mt-2 text-sm" style={`color: ${colores.texto}99;`}>{ubi.direccion}</p>
+          <a href={ubi.googleMapsUrl} target="_blank" rel="noopener noreferrer"
+            class="mt-4 inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-medium text-white"
+            style={`background-color: ${colores.primario};`}
+          >
+            📍 Ver ubicación
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="px-6 py-12 text-center" style={`background-color: ${colores.fondo};`}>
+  <p class="text-4xl">🥳</p>
+  <p class="mt-4 font-serif text-2xl font-semibold" style={`color: ${colores.primario};`}>{datos.titulo}</p>
+  <p class="mt-2 text-sm" style={`color: ${colores.texto}80;`}>{fechaFormateada} · {datos.hora} hrs</p>
+</footer>

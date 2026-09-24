@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Sistema de Invitaciones Digitales — Estilos Globales
+   Tailwind CSS v4 (solo @import, sin directivas @tailwind)
+   ============================================================ */
+
+/* --- Tema personalizado --- */
+@theme {
+  --color-lienzo: #F7F6F2;
+  --color-principal: #8BA888;
+  --color-secundario: #C6B4A6;
+  --color-contraste: #363E35;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+}
+
+/* --- Estilos base del sistema --- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-fondo, #FDF8F3);
+    color: var(--color-texto, #3D2B1F);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    line-height: 1.2;
+  }
+}
+
+/* --- Utilidades del sistema de invitaciones --- */
+@layer utilities {
+  .text-primario {
+    color: var(--color-primario);
+  }
+
+  .text-secundario {
+    color: var(--color-secundario);
+  }
+
+  .text-acento {
+    color: var(--color-acento);
+  }
+
+  .bg-primario {
+    background-color: var(--color-primario);
+  }
+
+  .bg-secundario {
+    background-color: var(--color-secundario);
+  }
+
+  .bg-acento {
+    background-color: var(--color-acento);
+  }
+
+  .border-primario {
+    border-color: var(--color-primario);
+  }
+
+  .border-secundario {
+    border-color: var(--color-secundario);
+  }
+
+  .border-acento {
+    border-color: var(--color-acento);
+  }
+
+  /* Animaciones reutilizables para las invitaciones */
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  /* Liquid Glass / UI Espacial — animaciones premium */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  .animate-float {
+    animation: floatY 6s ease-in-out infinite;
+  }
+
+  .animate-glass-shimmer {
+    animation: glassShimmer 8s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 2.5s ease-in-out infinite;
+  }
+
+  .animate-timeline-reveal {
+    animation: timelineReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-600 { animation-delay: 600ms; }
+  .animate-delay-800 { animation-delay: 800ms; }
+  .animate-delay-1000 { animation-delay: 1000ms; }
+  .animate-delay-1200 { animation-delay: 1200ms; }
+
+  /* Liquid Glass utility classes */
+  .glass-card {
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.06),
+      0 2px 8px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .glass-card-elevated {
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.08),
+      0 8px 24px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .spatial-shadow {
+    box-shadow:
+      0 24px 80px rgba(0, 0, 0, 0.06),
+      0 12px 40px rgba(0, 0, 0, 0.04),
+      0 4px 16px rgba(0, 0, 0, 0.03);
+  }
+}
+
+/* --- Keyframes --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes glassShimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.8;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 1;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 168, 136, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 168, 136, 0.4);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes timelineReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

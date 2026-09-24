@@ -1,17 +1,32 @@
 ---
-
+import '../styles/global.css';
+import Navbar from '../components/landing/Navbar.astro';
+import Hero from '../components/landing/Hero.astro';
+import Features from '../components/landing/Features.astro';
+import Footer from '../components/landing/Footer.astro';
 ---
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Casa Signato | Invitaciones Digitales Premium</title>
+    <meta name="description" content="Invitaciones digitales exclusivas, ecológicas y con entrega inmediata para tus eventos más importantes." />
+  </head>
+  <body class="bg-lienzo text-contraste antialiased selection:bg-principal/30 selection:text-contraste overflow-x-hidden min-h-screen flex flex-col relative">
+    
+    <!-- Base subtle texture/gradient for Lienzo -->
+    <div class="fixed inset-0 z-[-2] bg-lienzo"></div>
+    <div class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/60 via-transparent to-transparent opacity-70"></div>
+    
+    <Navbar />
+    
+    <main class="flex-grow">
+      <Hero />
+      <Features />
+    </main>
+    
+    <Footer />
+  </body>
 </html>

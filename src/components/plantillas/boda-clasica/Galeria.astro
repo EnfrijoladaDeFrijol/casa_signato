@@ -1,0 +1,37 @@
+---
+// ============================================================
+// Boda Clásica — Galería
+// Grid de fotos con lazy loading (renderizado condicional)
+// ============================================================
+import type { ContenidoCliente, Colores } from '../../../types/invitacion';
+
+interface Props {
+  datos: ContenidoCliente;
+  colores: Colores;
+}
+
+const { datos, colores } = Astro.props;
+---
+
+{datos.galeria && datos.galeria.length > 0 && (
+  <section class="px-6 py-20" style={`background-color: ${colores.fondo};`}>
+    <h2
+      class="mb-12 text-center font-serif text-3xl font-semibold md:text-4xl"
+      style={`color: ${colores.primario};`}
+    >
+      Nuestra Historia
+    </h2>
+    <div class="mx-auto grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-3">
+      {datos.galeria.map((img: string, idx: number) => (
+        <div class="overflow-hidden rounded-xl shadow-md transition-transform duration-300 hover:scale-105">
+          <img
+            src={img}
+            alt={`Foto ${idx + 1} de ${datos.titulo}`}
+            class="h-64 w-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+)}

@@ -1,0 +1,104 @@
+---
+// ============================================================
+// Ruta Dedicada: XV Años — /xv-anos/[slug]
+// Genera una página estática por cada cliente de XV Años.
+// Importa los subcomponentes modulares individualmente para
+// máximo control sobre el orden y composición.
+// ============================================================
+import type { GetStaticPaths } from 'astro';
+import type { ClienteInvitacion } from '../../types/invitacion';
+
+import Layout from '../../layouts/Layout.astro';
+import { clientes } from '../../data/clientes';
+
+// --- Subcomponentes modulares de la plantilla XV Elegante ---
+import Hero from '../../components/plantillas/xv-elegante/Hero.astro';
+import Contador from '../../components/ui-comunes/Contador.astro';
+import Ubicaciones from '../../components/plantillas/xv-elegante/Ubicaciones.astro';
+import Itinerario from '../../components/plantillas/xv-elegante/Itinerario.astro';
+import DetallesRSVP from '../../components/plantillas/xv-elegante/DetallesRSVP.astro';
+
+// ============================================================
+// getStaticPaths: filtra solo clientes de categoría 'xv-anos'
+// URL resultante: /xv-anos/{slug}
+// ============================================================
+export const getStaticPaths = (() => {
+  return clientes
+    .filter((c) => c.categoria === 'xv-anos')
+    .map((cliente) => ({
+      params: { slug: cliente.slug },
+      props: { datosCliente: cliente },
+    }));
+}) satisfies GetStaticPaths;
+
+// --- Props tipadas ---
+interface Props {
+  datosCliente: ClienteInvitacion;
+}
+
+const { datosCliente } = Astro.props;
+const { contenido: datos, colores } = datosCliente;
+
+// --- Fecha formateada para el footer ---
+const fechaEvento = new Date(datos.fecha + 'T00:00:00');
+const opcionesFecha: Intl.DateTimeFormatOptions = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+};
+const fechaFormateada = fechaEvento.toLocaleDateString('es-MX', opcionesFecha);
+
+// --- Meta description dinámica ---
+const descripcion = `Invitación de XV Años de ${datos.titulo} — ${datos.subtitulo}. ${fechaFormateada}.`;
+---
+
+<Layout
+  title={`${datos.titulo} | ${datos.subtitulo}`}
+  description={descripcion}
+  colorPrimario={colores.primario}
+  colorSecundario={colores.secundario}
+  colorAcento={colores.acento}
+  colorFondo={colores.fondo}
+  colorTexto={colores.texto}
+>
+  <!-- 1. Hero — Portada de cristal flotante con nombre y fecha -->
+  <Hero datos={datos} colores={colores} />
+
+  <!-- 2. Contador — Cuenta regresiva al gran día -->
+  <Contador
+    fecha={datos.fecha}
+    hora={datos.hora}
+    colores={colores}
+    titulo="Faltan…"
+  />
+
+  <!-- 3. Ubicaciones — Tarjetas flotantes para Ceremonia y Recepción -->
+  <Ubicaciones ubicaciones={datos.ubicaciones} colores={colores} />
+
+  <!-- 4. Itinerario — Línea de tiempo vertical animada -->
+  <Itinerario ubicaciones={datos.ubicaciones} colores={colores} />
+
+  <!-- 5. Detalles & RSVP — Dress Code, Mesa de Regalos, Confirmar -->
+  <DetallesRSVP
+    colores={colores}
+    nombreQuinceañera={datos.titulo}
+  />
+
+  <!-- Footer elegante -->
+  <footer
+    class="relative overflow-hidden px-6 py-14 text-center"
+    style={`background: linear-gradient(to top, ${colores.primario}0a, ${colores.fondo});`}
+  >
+    <div class="mx-auto mb-6 h-px w-24" style={`background: linear-gradient(to right, transparent, ${colores.secundario}60, transparent);`}></div>
+    <p class="font-serif text-2xl font-semibold" style={`color: ${colores.primario};`}>
+      {datos.titulo}
+    </p>
+    <p class="mt-1 text-sm capitalize" style={`color: ${colores.texto}80;`}>
+      {fechaFormateada} · {datos.hora} hrs
+    </p>
+    <p class="mt-4 text-xs tracking-wider" style={`color: ${colores.texto}50;`}>
+      Hecho con ♥ por Casa Signato
+    </p>
+  </footer>
+</Layout>

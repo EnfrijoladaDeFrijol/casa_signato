@@ -1,0 +1,181 @@
+---
+// ============================================================
+// Página de Inicio — Directorio de Invitaciones de Prueba
+// ============================================================
+import Layout from '../../layouts/Layout.astro';
+import SearchFilters from '../../components/admin-panel/SearchFilters.astro';
+import InvitationCard from '../../components/admin-panel/InvitationCard.astro';
+import { clientes } from '../../data/clientes';
+import { iconoCategoria, labelCategoria, agruparClientesPorCategoria } from '../../components/admin-panel/categorias';
+
+// Agrupar clientes por categoría para un diseño más seccionado
+const clientesPorCategoria = agruparClientesPorCategoria(clientes);
+
+// Obtener categorías únicas para los filtros
+const categoriasUnicas = Object.keys(clientesPorCategoria);
+---
+
+<Layout
+  title="Panel de Control | Invitaciones"
+  description="Dashboard interno de invitaciones"
+  colorPrimario="#0F172A"
+  colorSecundario="#475569"
+  colorAcento="#3B82F6"
+  colorFondo="#F8FAFC"
+  colorTexto="#0F172A"
+>
+  <div class="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-slate-200">
+    <main class="mx-auto max-w-5xl px-6 py-16 md:py-20">
+      
+      <!-- Header Minimalista -->
+      <header class="mb-10">
+        <p class="mb-3 text-xs font-bold tracking-widest text-slate-400 uppercase">
+          Entorno de pruebas
+        </p>
+        <h1 class="font-serif text-4xl md:text-5xl font-semibold tracking-tight text-slate-900">
+          Tus Invitaciones
+        </h1>
+        <p class="mt-4 max-w-xl text-lg text-slate-500 leading-relaxed">
+          Encuentra y previsualiza rápidamente los proyectos de tus clientes.
+        </p>
+      </header>
+
+      <!-- Barra de Búsqueda y Filtros (Sticky para fácil acceso) -->
+      <SearchFilters categoriasUnicas={categoriasUnicas} labelCategoria={labelCategoria} />
+
+      <!-- Grid Seccionado por Categorías -->
+      <div class="space-y-24" id="invitationsContainer">
+        {Object.entries(clientesPorCategoria).map(([categoria, listaClientes]) => (
+          <section class="category-section" data-category={categoria}>
+            <!-- Encabezado de Sección -->
+            <div class="mb-6 flex items-center justify-between">
+              <h2 class="text-xl font-bold tracking-tight text-slate-800 flex items-center gap-2">
+                <span>{iconoCategoria[categoria] ?? '📁'}</span>
+                {labelCategoria[categoria] ?? categoria}
+              </h2>
+              <span class="text-xs font-bold text-slate-500 bg-slate-200/50 px-2.5 py-1 rounded-md">
+                {listaClientes.length} {listaClientes.length === 1 ? 'proyecto' : 'proyectos'}
+              </span>
+            </div>
+            
+            <!-- Tarjetas Altamente Legibles -->
+            <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {listaClientes.map((cliente) => (
+                <InvitationCard cliente={cliente} categoria={categoria} />
+              ))}
+            </div>
+            
+            <!-- Mensaje de sin resultados por sección (Oculto por defecto) -->
+            <div class="no-results-msg hidden mt-4 text-center py-8 rounded-xl border border-dashed border-slate-300 bg-slate-50">
+              <p class="text-slate-500 font-medium">No se encontraron invitaciones que coincidan con la búsqueda en esta categoría.</p>
+            </div>
+          </section>
+        ))}
+      </div>
+      
+      <!-- Mensaje global de sin resultados (Oculto por defecto) -->
+      <div id="globalNoResults" class="hidden text-center py-20">
+        <div class="text-4xl mb-4">🔍</div>
+        <h3 class="text-xl font-bold text-slate-800">No hay resultados</h3>
+        <p class="text-slate-500 mt-2">Intenta buscar con otro nombre o cambia los filtros.</p>
+      </div>
+
+      <!-- Footer Minimalista -->
+      <footer class="mt-24 border-t border-slate-200 pt-8 pb-12 flex items-center justify-between text-sm font-medium text-slate-400">
+        <p>Core Invitaciones</p>
+        <p>Actualizado en tiempo real</p>
+      </footer>
+    </main>
+  </div>
+</Layout>
+
+
+
+<script>
+  // Lógica de filtrado en el cliente
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const sections = document.querySelectorAll('.category-section');
+    const globalNoResults = document.getElementById('globalNoResults');
+    
+    let currentCategory = 'all';
+    let searchTerm = '';
+
+    function filterInvitations() {
+      searchTerm = searchInput.value.toLowerCase().trim();
+      let totalVisibleCards = 0;
+
+      sections.forEach((section) => {
+        const secElement = section as HTMLElement;
+        const sectionCategory = secElement.dataset.category || '';
+        const cards = secElement.querySelectorAll('.invitation-card');
+        const noResultsMsg = secElement.querySelector('.no-results-msg') as HTMLElement;
+        
+        let sectionHasVisibleCards = false;
+
+        // Comprobar si la sección entera debe ocultarse por el filtro de botón
+        if (currentCategory !== 'all' && currentCategory !== sectionCategory) {
+          secElement.style.display = 'none';
+          return; // Saltamos a la siguiente sección
+        }
+
+        // Si la sección pasa el filtro de categoría, verificamos cada tarjeta con la búsqueda
+        cards.forEach((card) => {
+          const cardElement = card as HTMLElement;
+          const cardTitle = cardElement.dataset.title || '';
+          
+          if (searchTerm === '' || cardTitle.includes(searchTerm)) {
+            cardElement.style.display = 'block';
+            sectionHasVisibleCards = true;
+            totalVisibleCards++;
+          } else {
+            cardElement.style.display = 'none';
+          }
+        });
+
+        // Mostrar u ocultar sección o mensaje de sin resultados
+        secElement.style.display = 'block'; // Aseguramos que la sección es visible
+        if (sectionHasVisibleCards) {
+          noResultsMsg.classList.add('hidden');
+        } else {
+          // Si pasó el filtro de categoría pero la búsqueda no arrojó nada
+          noResultsMsg.classList.remove('hidden');
+        }
+      });
+
+      // Si no hay absolutamente ninguna tarjeta visible
+      if (globalNoResults) {
+        if (totalVisibleCards === 0) {
+          globalNoResults.classList.remove('hidden');
+        } else {
+          globalNoResults.classList.add('hidden');
+        }
+      }
+    }
+
+    // Eventos
+    if (searchInput) {
+      searchInput.addEventListener('input', filterInvitations);
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const category = target.dataset.category || 'all';
+        
+        // Actualizar UI de botones
+        filterBtns.forEach(b => {
+          b.classList.remove('bg-slate-900', 'text-white', 'border-transparent');
+          b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+        });
+        
+        target.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+        target.classList.add('bg-slate-900', 'text-white', 'border-transparent');
+
+        currentCategory = category;
+        filterInvitations();
+      });
+    });
+  });
+</script>
