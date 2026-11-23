@@ -1,0 +1,89 @@
+---
+import type { CalendarioData } from '../../types/invitacion';
+import {
+  construirContenidoICS,
+  construirUrlGoogleCalendar,
+} from '../../utils/fechas';
+
+interface Props {
+  calendario: CalendarioData;
+  fechaISO: string;
+  horaInicio: string;
+  slug: string;
+}
+
+const { calendario, fechaISO, horaInicio, slug } = Astro.props;
+
+const googleUrl = construirUrlGoogleCalendar({
+  titulo: calendario.titulo,
+  descripcion: calendario.descripcion,
+  ubicacion: calendario.ubicacion,
+  fechaISO,
+  horaInicio,
+  duracionHoras: calendario.duracionHoras,
+});
+
+const contenidoIcs = construirContenidoICS({
+  uid: slug,
+  titulo: calendario.titulo,
+  descripcion: calendario.descripcion,
+  ubicacion: calendario.ubicacion,
+  fechaISO,
+  horaInicio,
+  duracionHoras: calendario.duracionHoras,
+});
+---
+
+<section class="px-4 py-10 sm:px-6" aria-labelledby="titulo-calendario">
+  <div class="mx-auto max-w-2xl rounded-3xl bg-[var(--accent-soft)] px-6 py-8 text-center">
+    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+      Guarda la fecha
+    </p>
+    <h2 id="titulo-calendario" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)]">
+      Agendar en Calendario
+    </h2>
+    <p class="mt-2 text-sm text-[var(--ink-muted)]">
+      Añade el recordatorio directamente en tu teléfono para no perder ningún detalle.
+    </p>
+
+    <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+      <a
+        href={googleUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--surface)] transition-opacity hover:opacity-90"
+      >
+        Google Calendar
+      </a>
+
+      <button
+        type="button"
+        data-descargar-ics={contenidoIcs}
+        data-nombre-ics={`${slug}.ics`}
+        class="inline-flex items-center justify-center rounded-full border border-[var(--border-soft)] bg-[var(--surface)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink)] transition-colors hover:bg-[var(--bg)]"
+      >
+        Apple / Outlook (.ics)
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-descargar-ics]').forEach((boton) => {
+    boton.addEventListener('click', () => {
+      const contenido = boton.dataset.descargarIcs;
+      const archivo = boton.dataset.nombreIcs || 'evento.ics';
+      if (!contenido) return;
+
+      const blob = new Blob([contenido], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const enlace = document.createElement('a');
+      enlace.href = url;
+      enlace.download = archivo;
+      document.body.appendChild(enlace);
+      enlace.click();
+      enlace.remove();
+      URL.revokeObjectURL(url);
+    });
+  });
+</script>

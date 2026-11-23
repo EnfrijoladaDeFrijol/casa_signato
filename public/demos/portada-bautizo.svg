@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" fill="none">
+  <rect width="800" height="1000" fill="#F9F7F3"/>
+  <rect x="48" y="48" width="704" height="904" rx="352" fill="#EAE5DC"/>
+  <rect x="72" y="72" width="656" height="856" rx="328" stroke="#7E9A84" stroke-width="2" stroke-opacity="0.55"/>
+  <path d="M400 280C400 280 350 360 350 430C350 475 375 510 400 530C425 510 450 475 450 430C450 360 400 280 400 280Z" stroke="#7E9A84" stroke-width="2.5"/>
+  <path d="M400 320V680" stroke="#7E9A84" stroke-width="2" stroke-linecap="round"/>
+  <path d="M400 470C340 440 295 455 275 490C315 515 360 505 400 470Z" stroke="#7E9A84" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M400 535C460 505 505 520 525 555C485 580 440 570 400 535Z" stroke="#7E9A84" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="400" cy="230" r="8" fill="#7E9A84" fill-opacity="0.6"/>
+  <text x="400" y="770" text-anchor="middle" font-family="Georgia, serif" font-size="22" letter-spacing="6" fill="#2F3A33" fill-opacity="0.72">FOTOGRAFÍA DEMO</text>
+  <text x="400" y="805" text-anchor="middle" font-family="sans-serif" font-size="14" letter-spacing="3" fill="#2F3A33" fill-opacity="0.5">BAUTIZO · CASA SIGNATO</text>
+</svg>

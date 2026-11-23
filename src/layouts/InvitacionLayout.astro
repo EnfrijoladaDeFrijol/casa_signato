@@ -1,0 +1,75 @@
+---
+import '../styles/global.css';
+import type { ClienteInvitacion } from '../types/invitacion';
+import { formatearFechaLarga } from '../utils/fechas';
+
+interface Props {
+  cliente: ClienteInvitacion;
+}
+
+const { cliente } = Astro.props;
+const { temaColores } = cliente;
+
+const fechaTexto = formatearFechaLarga(cliente.fechaISO);
+const ogDescripcion =
+  cliente.frase?.trim() ||
+  `Te invitamos a celebrar ${cliente.titulo} el ${fechaTexto} en ${cliente.ciudad}.`;
+const ogImagen = cliente.ogImage || cliente.fotoPortada;
+
+const accentSoft =
+  temaColores.accentSoft ??
+  `color-mix(in srgb, ${temaColores.accent} 14%, ${temaColores.bg})`;
+const inkMuted =
+  temaColores.inkMuted ??
+  `color-mix(in srgb, ${temaColores.ink} 68%, ${temaColores.bg})`;
+const borderSoft = `color-mix(in srgb, ${temaColores.ink} 14%, ${temaColores.bg})`;
+
+const estiloVariables = [
+  `--bg: ${temaColores.bg}`,
+  `--surface: ${temaColores.surface}`,
+  `--accent: ${temaColores.accent}`,
+  `--accent-soft: ${accentSoft}`,
+  `--ink: ${temaColores.ink}`,
+  `--ink-muted: ${inkMuted}`,
+  `--border-soft: ${borderSoft}`,
+  `--font-display: ${temaColores.fontDisplay ?? "'Cormorant Garamond', Georgia, serif"}`,
+  `--font-body: ${temaColores.fontBody ?? "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"}`,
+].join('; ');
+---
+
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{cliente.titulo} | Casa Signato</title>
+    <meta name="description" content={ogDescripcion} />
+    <meta name="theme-color" content={temaColores.bg} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={cliente.titulo} />
+    <meta property="og:description" content={ogDescripcion} />
+    <meta property="og:image" content={ogImagen} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={cliente.titulo} />
+    <meta name="twitter:description" content={ogDescripcion} />
+    <meta name="twitter:image" content={ogImagen} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="m-0 p-0">
+    <div
+      class="min-h-screen w-full overflow-x-hidden bg-[var(--bg)] text-[var(--ink)] font-body"
+      style={estiloVariables}
+    >
+      <slot />
+    </div>
+  </body>
+</html>

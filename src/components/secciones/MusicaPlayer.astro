@@ -1,0 +1,95 @@
+---
+import type { MusicaData } from '../../types/invitacion';
+
+interface Props {
+  musica: MusicaData;
+}
+
+const { musica } = Astro.props;
+const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
+---
+
+<aside
+  class="fixed right-4 bottom-4 z-40"
+  aria-label="Reproductor de música de fondo"
+  data-musica-widget
+  data-modo-demo={esModoDemo ? 'true' : 'false'}
+>
+  {!esModoDemo && <audio data-musica-audio preload="none" loop src={musica.audioUrl}></audio>}
+
+  <button
+    type="button"
+    data-musica-boton
+    aria-pressed="false"
+    class="flex items-center gap-2.5 rounded-full border border-[var(--border-soft)] bg-[var(--surface)]/95 px-4 py-2.5 text-xs font-medium text-[var(--ink)] shadow-md backdrop-blur-md transition-transform active:scale-95"
+  >
+    <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--surface)]">
+      <svg data-icono-play class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M8 5.5v13l10-6.5-10-6.5z" />
+      </svg>
+      <svg data-icono-pause class="hidden h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <rect x="6" y="5" width="4" height="14" rx="1" />
+        <rect x="14" y="5" width="4" height="14" rx="1" />
+      </svg>
+    </span>
+
+    <span class="max-w-[155px] truncate text-left">
+      <span class="block font-semibold leading-tight truncate">{musica.titulo}</span>
+      <span data-musica-estado class="block text-[10px] text-[var(--ink-muted)] truncate">
+        {musica.artista || 'Música del evento'}
+      </span>
+    </span>
+  </button>
+</aside>
+
+<script>
+  const widgets = document.querySelectorAll<HTMLElement>('[data-musica-widget]');
+
+  widgets.forEach((widget) => {
+    const boton = widget.querySelector<HTMLButtonElement>('[data-musica-boton]');
+    const audio = widget.querySelector<HTMLAudioElement>('[data-musica-audio]');
+    const iconoPlay = widget.querySelector<SVGElement>('[data-icono-play]');
+    const iconoPause = widget.querySelector<SVGElement>('[data-icono-pause]');
+    const estado = widget.querySelector<HTMLElement>('[data-musica-estado]');
+    const esDemo = widget.dataset.modoDemo === 'true';
+
+    if (!boton) return;
+
+    let reproduciendo = false;
+
+    const actualizarUI = (activo: boolean, textoEstado?: string) => {
+      reproduciendo = activo;
+      boton.setAttribute('aria-pressed', activo ? 'true' : 'false');
+      iconoPlay?.classList.toggle('hidden', activo);
+      iconoPause?.classList.toggle('hidden', !activo);
+      if (estado && textoEstado) {
+        estado.textContent = textoEstado;
+      }
+    };
+
+    audio?.addEventListener('error', () => {
+      actualizarUI(false, 'Audio no disponible');
+    });
+
+    boton.addEventListener('click', async () => {
+      if (esDemo || !audio) {
+        const siguiente = !reproduciendo;
+        actualizarUI(siguiente, siguiente ? 'Demo sin archivo MP3' : 'Pausado (modo demo)');
+        return;
+      }
+
+      if (reproduciendo) {
+        audio.pause();
+        actualizarUI(false, 'Música en pausa');
+        return;
+      }
+
+      try {
+        await audio.play();
+        actualizarUI(true, 'Reproduciendo');
+      } catch {
+        actualizarUI(false, 'Toca para reintentar');
+      }
+    });
+  });
+</script>

@@ -1,0 +1,110 @@
+---
+import type { MesaRegalosData } from '../../types/invitacion';
+
+interface Props {
+  mesaRegalos: MesaRegalosData;
+}
+
+const { mesaRegalos } = Astro.props;
+const tiendas = mesaRegalos.tiendas ?? [];
+const lluvia = mesaRegalos.lluviaSobres;
+---
+
+<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-regalos">
+  <div class="mx-auto max-w-3xl">
+    <div class="text-center">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+        Detalles y obsequios
+      </p>
+      <h2 id="titulo-regalos" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
+        Mesa de Regalos
+      </h2>
+      {mesaRegalos.mensaje && (
+        <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--ink-muted)]">
+          {mesaRegalos.mensaje}
+        </p>
+      )}
+    </div>
+
+    {
+      tiendas.length > 0 && (
+        <div class:list={['mt-8 grid gap-4', tiendas.length > 1 ? 'sm:grid-cols-2' : 'max-w-md mx-auto']}>
+          {tiendas.map((tienda) => (
+            <article class="flex flex-col justify-between rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-6 text-center">
+              <div>
+                <h3 class="font-display text-2xl font-semibold text-[var(--ink)]">
+                  {tienda.nombre}
+                </h3>
+                {tienda.numeroEvento && (
+                  <p class="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
+                    {tienda.numeroEvento}
+                  </p>
+                )}
+                {tienda.descripcion && (
+                  <p class="mt-2 text-xs leading-relaxed text-[var(--ink-muted)]">
+                    {tienda.descripcion}
+                  </p>
+                )}
+              </div>
+              <a
+                href={tienda.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-5 inline-flex items-center justify-center rounded-full border border-[var(--accent)] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--surface)]"
+              >
+                Ver mesa de regalos
+              </a>
+            </article>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      lluvia && (
+        <div class="mt-6 rounded-3xl bg-[var(--accent-soft)] p-6 text-center sm:p-8">
+          <h3 class="font-display text-2xl font-semibold text-[var(--ink)]">
+            Lluvia de Sobres
+          </h3>
+          <p class="mt-2 text-sm text-[var(--ink-muted)]">
+            {lluvia.banco} · Titular: <strong class="font-semibold text-[var(--ink)]">{lluvia.titular}</strong>
+          </p>
+          <div class="mx-auto mt-4 flex max-w-md flex-col items-center gap-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] px-4 py-3 sm:flex-row sm:justify-between">
+            <span class="font-mono text-sm tracking-wider text-[var(--ink)]">
+              {lluvia.clabe}
+            </span>
+            <button
+              type="button"
+              data-copiar-texto={lluvia.clabe}
+              class="rounded-full bg-[var(--accent)] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--surface)] transition-opacity hover:opacity-90"
+            >
+              Copiar CLABE
+            </button>
+          </div>
+          {lluvia.nota && (
+            <p class="mt-3 text-xs italic text-[var(--ink-muted)]">{lluvia.nota}</p>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copiar-texto]').forEach((boton) => {
+    boton.addEventListener('click', async () => {
+      const texto = boton.dataset.copiarTexto;
+      if (!texto) return;
+      const original = boton.textContent || 'Copiar CLABE';
+      try {
+        await navigator.clipboard.writeText(texto);
+        boton.textContent = 'Copiada';
+        window.setTimeout(() => {
+          boton.textContent = original;
+        }, 2000);
+      } catch {
+        boton.textContent = texto;
+      }
+    });
+  });
+</script>

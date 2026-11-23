@@ -1,0 +1,68 @@
+---
+import type { CategoriaEvento } from '../../types/invitacion';
+import { CATEGORIAS_META, CATEGORIAS_ORDEN } from '../../utils/categorias';
+
+interface Props {
+  totalClientes: number;
+  conteosPorCategoria: Record<CategoriaEvento, number>;
+}
+
+const { totalClientes, conteosPorCategoria } = Astro.props;
+---
+
+<section class="w-full min-w-0 space-y-4 rounded-3xl border border-signato-secundario/45 bg-white/80 p-4 backdrop-blur-md sm:p-5">
+  <div class="w-full min-w-0">
+    <label for="admin-buscador" class="sr-only">
+      Buscar invitación por nombre, ciudad o slug
+    </label>
+    <div class="relative w-full min-w-0">
+      <svg
+        class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-signato-contraste/50"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" stroke-linecap="round" />
+      </svg>
+      <input
+        id="admin-buscador"
+        type="search"
+        placeholder="Buscar por protagonistas, slug, ciudad o plan..."
+        class="w-full min-w-0 rounded-2xl border border-signato-secundario/60 bg-signato-lienzo/70 py-2.5 pl-10 pr-4 text-sm text-signato-contraste placeholder:text-signato-contraste/45 focus:border-signato-principal focus:outline-none"
+      />
+    </div>
+  </div>
+
+  <div class="w-full min-w-0 overflow-x-auto pb-1">
+    <div
+      class="flex w-max min-w-full items-center gap-2"
+      role="tablist"
+      aria-label="Filtrar invitaciones por categoría"
+    >
+      <button
+        type="button"
+        data-filtro-categoria="todas"
+        aria-pressed="true"
+        class="shrink-0 rounded-full bg-signato-contraste px-4 py-1.5 text-xs font-semibold text-signato-lienzo transition-colors"
+      >
+        Todos ({totalClientes})
+      </button>
+
+      {
+        CATEGORIAS_ORDEN.map((categoria) => (
+          <button
+            type="button"
+            data-filtro-categoria={categoria}
+            aria-pressed="false"
+            class="shrink-0 rounded-full border border-signato-secundario/60 bg-signato-lienzo px-4 py-1.5 text-xs font-medium text-signato-contraste transition-colors hover:bg-signato-secundario/25"
+          >
+            {CATEGORIAS_META[categoria].etiqueta} ({conteosPorCategoria[categoria]})
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,26 @@
+---
+import InvitacionLayout from '../../layouts/InvitacionLayout.astro';
+import InvitacionMain from '../../components/InvitacionMain.astro';
+import { clientes } from '../../data/clientes';
+import type { ClienteInvitacion } from '../../types/invitacion';
+
+export function getStaticPaths() {
+  return clientes.map((cliente) => ({
+    params: {
+      categoria: cliente.categoria,
+      slug: cliente.slug,
+    },
+    props: { cliente },
+  }));
+}
+
+interface Props {
+  cliente: ClienteInvitacion;
+}
+
+const { cliente } = Astro.props;
+---
+
+<InvitacionLayout cliente={cliente}>
+  <InvitacionMain cliente={cliente} />
+</InvitacionLayout>

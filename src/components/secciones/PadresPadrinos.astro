@@ -1,0 +1,45 @@
+---
+import type { PadresPadrinosData } from '../../types/invitacion';
+
+interface Props {
+  datos: PadresPadrinosData;
+}
+
+const { datos } = Astro.props;
+---
+
+<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-padres">
+  <div class="mx-auto max-w-2xl rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] px-6 py-9 text-center sm:px-10">
+    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+      Con la bendición de
+    </p>
+    <h2 id="titulo-padres" class="font-display mt-2 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
+      Padres y Padrinos
+    </h2>
+
+    {
+      datos.nota && (
+        <p class="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-[var(--ink-muted)]">
+          {datos.nota}
+        </p>
+      )
+    }
+
+    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+      {
+        datos.grupos.map((grupo) => (
+          <div class="rounded-2xl bg-[var(--accent-soft)] px-5 py-5">
+            <h3 class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+              {grupo.titulo}
+            </h3>
+            <ul class="mt-2.5 space-y-1 text-base font-medium text-[var(--ink)]">
+              {grupo.nombres.map((nombre) => (
+                <li class="font-display text-xl">{nombre}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

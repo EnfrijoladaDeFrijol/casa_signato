@@ -1,0 +1,137 @@
+---
+import type { ClienteInvitacion } from '../types/invitacion';
+import { resolverModulos } from '../utils/planes';
+import HeroBase from './temas/base/Hero.astro';
+import HeroXvEditorial from './temas/xv-editorial/Hero.astro';
+import PadresPadrinos from './secciones/PadresPadrinos.astro';
+import Contador from './secciones/Contador.astro';
+import Ubicaciones from './secciones/Ubicaciones.astro';
+import MusicaPlayer from './secciones/MusicaPlayer.astro';
+import Galeria from './secciones/Galeria.astro';
+import Itinerario from './secciones/Itinerario.astro';
+import DressCode from './secciones/DressCode.astro';
+import MesaRegalos from './secciones/MesaRegalos.astro';
+import PaseBoletos from './secciones/PaseBoletos.astro';
+import RSVP from './secciones/RSVP.astro';
+import AgendarCalendario from './secciones/AgendarCalendario.astro';
+import Hoteles from './secciones/Hoteles.astro';
+import AlbumQR from './secciones/AlbumQR.astro';
+
+interface Props {
+  cliente: ClienteInvitacion;
+}
+
+const { cliente } = Astro.props;
+const modulos = resolverModulos(cliente);
+const mostrarRsvp = modulos.rsvpWhatsapp || modulos.rsvpGoogleForm;
+---
+
+<main class="pb-16">
+  {
+    cliente.tema === 'xv-editorial' ? (
+      <HeroXvEditorial cliente={cliente} />
+    ) : (
+      <HeroBase cliente={cliente} />
+    )
+  }
+
+  {
+    modulos.padresPadrinos && cliente.padresPadrinos && (
+      <PadresPadrinos datos={cliente.padresPadrinos} />
+    )
+  }
+
+  {
+    modulos.contador && (
+      <Contador fechaISO={cliente.fechaISO} horaInicio={cliente.horaInicio} />
+    )
+  }
+
+  {
+    modulos.ubicaciones && cliente.ubicaciones && (
+      <Ubicaciones ubicaciones={cliente.ubicaciones} />
+    )
+  }
+
+  {
+    modulos.itinerario && cliente.itinerario && (
+      <Itinerario itinerario={cliente.itinerario} />
+    )
+  }
+
+  {
+    modulos.galeria && cliente.galeria && (
+      <Galeria fotos={cliente.galeria} plan={cliente.plan} />
+    )
+  }
+
+  {
+    modulos.dressCode && cliente.dressCode && (
+      <DressCode dressCode={cliente.dressCode} />
+    )
+  }
+
+  {
+    modulos.mesaRegalos && cliente.mesaRegalos && (
+      <MesaRegalos mesaRegalos={cliente.mesaRegalos} />
+    )
+  }
+
+  {
+    modulos.paseBoletos && cliente.paseBoletos && (
+      <PaseBoletos
+        pase={cliente.paseBoletos}
+        protagonistas={cliente.protagonistas}
+      />
+    )
+  }
+
+  {
+    mostrarRsvp && (
+      <RSVP
+        mostrarWhatsapp={modulos.rsvpWhatsapp}
+        mostrarGoogleForm={modulos.rsvpGoogleForm}
+        rsvpWhatsapp={cliente.rsvpWhatsapp}
+        rsvpGoogleForm={cliente.rsvpGoogleForm}
+      />
+    )
+  }
+
+  {
+    modulos.calendario && cliente.calendario && (
+      <AgendarCalendario
+        calendario={cliente.calendario}
+        fechaISO={cliente.fechaISO}
+        horaInicio={cliente.horaInicio}
+        slug={cliente.slug}
+      />
+    )
+  }
+
+  {
+    modulos.hoteles && cliente.hoteles && (
+      <Hoteles hoteles={cliente.hoteles} />
+    )
+  }
+
+  {
+    modulos.albumQr && cliente.albumQr && (
+      <AlbumQR album={cliente.albumQr} />
+    )
+  }
+
+  {
+    modulos.musica && cliente.musica && (
+      <MusicaPlayer musica={cliente.musica} />
+    )
+  }
+
+  <footer class="mt-10 border-t border-[var(--border-soft)] px-4 pt-8 text-center">
+    <p class="text-xs tracking-wide text-[var(--ink-muted)]">
+      Invitación digital diseñada por{' '}
+      <a href="/" class="font-semibold text-[var(--ink)] underline decoration-[var(--accent)] underline-offset-4">
+        Casa Signato
+      </a>
+    </p>
+  </footer>
+</main>

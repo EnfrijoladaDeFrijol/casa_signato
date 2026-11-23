@@ -1,0 +1,73 @@
+---
+import type { ClienteInvitacion } from '../../../types/invitacion';
+import { formatearHora, formatearPartesFecha } from '../../../utils/fechas';
+
+interface Props {
+  cliente: ClienteInvitacion;
+}
+
+const { cliente } = Astro.props;
+const fecha = formatearPartesFecha(cliente.fechaISO);
+const horaTexto = formatearHora(cliente.horaInicio);
+---
+
+<header class="relative px-4 pt-8 pb-12 sm:px-6 sm:pt-12 sm:pb-16">
+  <div class="mx-auto max-w-3xl">
+    <div class="border-y border-[var(--border-soft)] py-3 flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">
+      <span>{cliente.subtitulo || 'Mis XV Años'}</span>
+      <span>{cliente.ciudad}</span>
+    </div>
+
+    <div class="mt-8 grid items-center gap-8 md:grid-cols-12">
+      <div class="text-center md:col-span-6 md:text-left">
+        <p class="text-xs font-medium uppercase tracking-[0.22em] text-[var(--accent)]">
+          Edición Especial · {fecha.anio}
+        </p>
+
+        <h1 class="font-display mt-3 text-5xl font-semibold leading-[1.02] text-[var(--ink)] sm:text-6xl">
+          {cliente.protagonistas}
+        </h1>
+
+        <div class="mt-6 inline-flex items-center gap-4 border border-[var(--border-soft)] bg-[var(--surface)] px-5 py-3 rounded-2xl">
+          <div class="text-left">
+            <span class="block text-[10px] uppercase tracking-[0.2em] text-[var(--ink-muted)]">
+              {fecha.diaSemana}
+            </span>
+            <span class="font-display text-3xl font-semibold leading-none text-[var(--accent)]">
+              {fecha.dia}
+            </span>
+          </div>
+          <span class="h-8 w-px bg-[var(--border-soft)]" aria-hidden="true"></span>
+          <div class="text-left">
+            <span class="block text-sm font-medium capitalize text-[var(--ink)]">
+              {fecha.mes} {fecha.anio}
+            </span>
+            <span class="block text-xs text-[var(--ink-muted)]">
+              {horaTexto}
+            </span>
+          </div>
+        </div>
+
+        {
+          cliente.frase && (
+            <blockquote class="font-display mt-6 text-xl italic leading-relaxed text-[var(--ink-muted)] sm:text-2xl">
+              “{cliente.frase}”
+            </blockquote>
+          )
+        }
+      </div>
+
+      <figure class="md:col-span-6 mx-auto w-full max-w-sm">
+        <div class="rounded-t-full border border-[var(--border-soft)] bg-[var(--surface)] p-2.5 shadow-sm">
+          <img
+            src={cliente.fotoPortada}
+            alt={cliente.fotoPortadaAlt || cliente.titulo}
+            class="aspect-[3/4] w-full rounded-t-full object-cover"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+      </figure>
+    </div>
+  </div>
+</header>

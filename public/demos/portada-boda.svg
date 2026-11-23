@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" fill="none">
+  <rect width="800" height="1000" fill="#F7F5F0"/>
+  <path d="M96 904V400C96 232.105 232.105 96 400 96C567.895 96 704 232.105 704 400V904H96Z" fill="#EAE2D8"/>
+  <path d="M124 876V402C124 249.57 247.57 126 400 126C552.43 126 676 249.57 676 402V876H124Z" stroke="#9C7A65" stroke-width="2" stroke-opacity="0.65"/>
+  <circle cx="360" cy="450" r="76" stroke="#9C7A65" stroke-width="2.2"/>
+  <circle cx="440" cy="450" r="76" stroke="#9C7A65" stroke-width="2.2"/>
+  <path d="M260 620H540" stroke="#33302B" stroke-width="1.2" stroke-opacity="0.35"/>
+  <text x="400" y="700" text-anchor="middle" font-family="Georgia, serif" font-size="22" letter-spacing="6" fill="#33302B" fill-opacity="0.72">FOTOGRAFÍA DEMO</text>
+  <text x="400" y="735" text-anchor="middle" font-family="sans-serif" font-size="14" letter-spacing="3" fill="#33302B" fill-opacity="0.5">BODA · CASA SIGNATO</text>
+</svg>

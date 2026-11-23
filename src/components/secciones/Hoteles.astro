@@ -1,0 +1,81 @@
+---
+import type { HotelItem } from '../../types/invitacion';
+
+interface Props {
+  hoteles: HotelItem[];
+}
+
+const { hoteles } = Astro.props;
+---
+
+<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-hoteles">
+  <div class="mx-auto max-w-3xl">
+    <div class="text-center">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+        Invitados foráneos
+      </p>
+      <h2 id="titulo-hoteles" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
+        Hospedaje Sugerido
+      </h2>
+    </div>
+
+    <div class:list={['mt-8 grid gap-4', hoteles.length > 1 ? 'md:grid-cols-2' : 'max-w-lg mx-auto']}>
+      {
+        hoteles.map((hotel) => (
+          <article class="flex flex-col justify-between rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] p-6">
+            <div>
+              <h3 class="font-display text-2xl font-semibold text-[var(--ink)]">
+                {hotel.nombre}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">
+                {hotel.direccion}
+              </p>
+
+              <dl class="mt-4 space-y-1.5 text-xs text-[var(--ink-muted)]">
+                {hotel.distancia && (
+                  <div class="flex justify-between gap-2">
+                    <dt class="font-medium text-[var(--ink)]">Distancia</dt>
+                    <dd>{hotel.distancia}</dd>
+                  </div>
+                )}
+                {hotel.tarifaReferencia && (
+                  <div class="flex justify-between gap-2">
+                    <dt class="font-medium text-[var(--ink)]">Tarifa ref.</dt>
+                    <dd>{hotel.tarifaReferencia}</dd>
+                  </div>
+                )}
+                {hotel.codigoDescuento && (
+                  <div class="flex justify-between gap-2">
+                    <dt class="font-medium text-[var(--ink)]">Código</dt>
+                    <dd class="font-semibold text-[var(--accent)]">{hotel.codigoDescuento}</dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
+            <div class="mt-5 flex flex-wrap gap-2.5">
+              <a
+                href={hotel.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex flex-1 items-center justify-center rounded-full border border-[var(--border-soft)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--ink)] transition-colors hover:bg-[var(--accent-soft)]"
+              >
+                Ver mapa
+              </a>
+              {hotel.webUrl && (
+                <a
+                  href={hotel.webUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--surface)] transition-opacity hover:opacity-90"
+                >
+                  Reservar
+                </a>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

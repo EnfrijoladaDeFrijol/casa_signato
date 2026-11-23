@@ -1,0 +1,94 @@
+---
+import type { AlbumQrData } from '../../types/invitacion';
+
+interface Props {
+  album: AlbumQrData;
+}
+
+const { album } = Astro.props;
+---
+
+<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-album">
+  <div class="mx-auto max-w-2xl rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] px-6 py-8 text-center sm:px-10">
+    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+      Comparte tus fotos
+    </p>
+    <h2 id="titulo-album" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
+      {album.titulo || 'Álbum Compartido'}
+    </h2>
+
+    {
+      album.descripcion && (
+        <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[var(--ink-muted)]">
+          {album.descripcion}
+        </p>
+      )
+    }
+
+    <div class="mx-auto mt-6 flex h-32 w-32 items-center justify-center rounded-2xl border border-[var(--border-soft)] bg-[var(--bg)] p-3">
+      {
+        album.qrImagenUrl ? (
+          <img
+            src={album.qrImagenUrl}
+            alt="Código QR del álbum compartido"
+            loading="lazy"
+            class="h-full w-full object-contain"
+          />
+        ) : (
+          <svg class="h-full w-full text-[var(--ink)]" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="8" y="8" width="18" height="18" rx="2" />
+            <rect x="38" y="8" width="18" height="18" rx="2" />
+            <rect x="8" y="38" width="18" height="18" rx="2" />
+            <path d="M14 14h6v6h-6zM44 14h6v6h-6zM14 44h6v6h-6z" fill="currentColor" stroke="none" />
+            <path d="M38 38h8v8h-8zM50 38h6v6h-6zM38 50h6v6h-6zM48 48h8v8h-8z" />
+          </svg>
+        )
+      }
+    </div>
+
+    {
+      album.hashtag && (
+        <p class="mt-4 text-sm font-semibold tracking-wide text-[var(--accent)]">
+          {album.hashtag}
+        </p>
+      )
+    }
+
+    <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
+      <a
+        href={album.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--surface)] transition-opacity hover:opacity-90"
+      >
+        Subir fotos al álbum
+      </a>
+      <button
+        type="button"
+        data-copiar-album={album.url}
+        class="inline-flex items-center justify-center rounded-full border border-[var(--border-soft)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink)] transition-colors hover:bg-[var(--accent-soft)]"
+      >
+        Copiar enlace
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copiar-album]').forEach((boton) => {
+    boton.addEventListener('click', async () => {
+      const url = boton.dataset.copiarAlbum;
+      if (!url) return;
+      const textoOriginal = boton.textContent || 'Copiar enlace';
+      try {
+        await navigator.clipboard.writeText(url);
+        boton.textContent = 'Enlace copiado';
+        window.setTimeout(() => {
+          boton.textContent = textoOriginal;
+        }, 2000);
+      } catch {
+        boton.textContent = textoOriginal;
+      }
+    });
+  });
+</script>

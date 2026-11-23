@@ -1,0 +1,80 @@
+---
+import type { PaseBoletosData } from '../../types/invitacion';
+
+interface Props {
+  pase: PaseBoletosData;
+  protagonistas: string;
+}
+
+const { pase, protagonistas } = Astro.props;
+const maxPases = pase.maxPases ?? 12;
+const textoLugaresInicial =
+  pase.pasesDefault === 1 ? 'lugar reservado' : 'lugares reservados';
+---
+
+<section class="px-4 py-10 sm:px-6" aria-labelledby="titulo-pase">
+  <div
+    class="mx-auto max-w-lg rounded-3xl border border-dashed border-[var(--accent)] bg-[var(--surface)] px-6 py-8 text-center"
+    data-pase-widget
+    data-pases-default={String(pase.pasesDefault)}
+    data-pases-max={String(maxPases)}
+  >
+    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+      {pase.etiqueta || 'Pase de Acceso'}
+    </p>
+    <h2 id="titulo-pase" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)]">
+      {protagonistas}
+    </h2>
+
+    <div class="mx-auto my-5 inline-flex items-baseline gap-3 rounded-2xl bg-[var(--accent-soft)] px-7 py-4">
+      <span
+        data-pases-numero
+        class="font-display text-5xl font-semibold leading-none text-[var(--accent)]"
+      >
+        {pase.pasesDefault}
+      </span>
+      <span
+        data-pases-etiqueta
+        class="text-sm font-medium text-[var(--ink)]"
+      >
+        {textoLugaresInicial}
+      </span>
+    </div>
+
+    {
+      pase.nota && (
+        <p class="mx-auto max-w-sm text-xs leading-relaxed text-[var(--ink-muted)]">
+          {pase.nota}
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  const widgets = document.querySelectorAll<HTMLElement>('[data-pase-widget]');
+
+  widgets.forEach((widget) => {
+    const elNumero = widget.querySelector<HTMLElement>('[data-pases-numero]');
+    const elEtiqueta = widget.querySelector<HTMLElement>('[data-pases-etiqueta]');
+    const valorDefault = Number(widget.dataset.pasesDefault || '1');
+    const valorMax = Number(widget.dataset.pasesMax || '12');
+
+    const params = new URLSearchParams(window.location.search);
+    const paramPases = params.get('pases');
+    let pasesFinal = valorDefault;
+
+    if (paramPases && /^\d+$/.test(paramPases)) {
+      const parsed = Number(paramPases);
+      if (parsed >= 1 && parsed <= valorMax) {
+        pasesFinal = parsed;
+      }
+    }
+
+    if (elNumero) elNumero.textContent = String(pasesFinal);
+    if (elEtiqueta) {
+      elEtiqueta.textContent =
+        pasesFinal === 1 ? 'lugar reservado' : 'lugares reservados';
+    }
+  });
+</script>

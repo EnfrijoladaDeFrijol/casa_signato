@@ -1,0 +1,79 @@
+---
+import type { UbicacionItem } from '../../types/invitacion';
+
+interface Props {
+  ubicaciones: UbicacionItem[];
+}
+
+const { ubicaciones } = Astro.props;
+---
+
+<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-ubicaciones">
+  <div class="mx-auto max-w-3xl">
+    <div class="text-center">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+        Dónde y cuándo
+      </p>
+      <h2 id="titulo-ubicaciones" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
+        Ubicaciones
+      </h2>
+    </div>
+
+    <div class:list={['mt-8 grid gap-5', ubicaciones.length > 1 ? 'md:grid-cols-2' : 'max-w-lg mx-auto']}>
+      {
+        ubicaciones.map((lugar) => (
+          <article class="flex flex-col justify-between rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] p-6">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
+                  {lugar.tipo}
+                </span>
+                <span class="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--ink)]">
+                  {lugar.hora}
+                </span>
+              </div>
+
+              <h3 class="font-display mt-3 text-2xl font-semibold text-[var(--ink)]">
+                {lugar.nombre}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">
+                {lugar.direccion}
+              </p>
+              {lugar.referencia && (
+                <p class="mt-2 text-xs italic text-[var(--ink-muted)]">
+                  {lugar.referencia}
+                </p>
+              )}
+            </div>
+
+            <div class="mt-6 flex flex-wrap gap-2.5">
+              <a
+                href={lugar.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--surface)] transition-opacity hover:opacity-90"
+              >
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10z" />
+                  <circle cx="12" cy="11" r="2.2" />
+                </svg>
+                Google Maps
+              </a>
+
+              {lugar.wazeUrl && (
+                <a
+                  href={lugar.wazeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center rounded-full border border-[var(--border-soft)] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--ink)] transition-colors hover:bg-[var(--accent-soft)]"
+                >
+                  Waze
+                </a>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

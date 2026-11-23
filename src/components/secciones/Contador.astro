@@ -1,0 +1,103 @@
+---
+import { obtenerFechaObjetivoISO } from '../../utils/fechas';
+
+interface Props {
+  fechaISO: string;
+  horaInicio: string;
+}
+
+const { fechaISO, horaInicio } = Astro.props;
+const fechaObjetivo = obtenerFechaObjetivoISO(fechaISO, horaInicio);
+---
+
+<section class="px-4 py-10 sm:px-6" aria-labelledby="titulo-contador">
+  <div
+    class="mx-auto max-w-2xl rounded-3xl bg-[var(--accent-soft)] px-5 py-8 text-center sm:px-8"
+    data-contador
+    data-fecha-objetivo={fechaObjetivo}
+  >
+    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+      Falta muy poco
+    </p>
+    <h2 id="titulo-contador" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)]">
+      Cuenta Regresiva
+    </h2>
+
+    <div class="mt-6 grid grid-cols-4 gap-2.5 sm:gap-4">
+      {
+        [
+          { campo: 'dias', etiqueta: 'Días' },
+          { campo: 'horas', etiqueta: 'Horas' },
+          { campo: 'minutos', etiqueta: 'Min' },
+          { campo: 'segundos', etiqueta: 'Seg' },
+        ].map((item) => (
+          <div class="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] px-2 py-4">
+            <span
+              data-tiempo={item.campo}
+              class="font-display block text-3xl font-semibold leading-none text-[var(--ink)] sm:text-4xl"
+            >
+              00
+            </span>
+            <span class="mt-1.5 block text-[11px] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
+              {item.etiqueta}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+
+    <p data-contador-estado class="mt-4 hidden text-sm font-medium text-[var(--accent)]">
+      El gran día ha llegado.
+    </p>
+  </div>
+</section>
+
+<script>
+  const contenedores = document.querySelectorAll<HTMLElement>('[data-contador]');
+
+  contenedores.forEach((contenedor) => {
+    const objetivoTexto = contenedor.dataset.fechaObjetivo;
+    if (!objetivoTexto) return;
+
+    const objetivoMs = Date.parse(objetivoTexto);
+    if (Number.isNaN(objetivoMs)) return;
+
+    const elDias = contenedor.querySelector<HTMLElement>('[data-tiempo="dias"]');
+    const elHoras = contenedor.querySelector<HTMLElement>('[data-tiempo="horas"]');
+    const elMinutos = contenedor.querySelector<HTMLElement>('[data-tiempo="minutos"]');
+    const elSegundos = contenedor.querySelector<HTMLElement>('[data-tiempo="segundos"]');
+    const elEstado = contenedor.querySelector<HTMLElement>('[data-contador-estado]');
+
+    const pad = (valor: number) => String(valor).padStart(2, '0');
+
+    const actualizar = () => {
+      const diferencia = objetivoMs - Date.now();
+      if (diferencia <= 0) {
+        if (elDias) elDias.textContent = '00';
+        if (elHoras) elHoras.textContent = '00';
+        if (elMinutos) elMinutos.textContent = '00';
+        if (elSegundos) elSegundos.textContent = '00';
+        elEstado?.classList.remove('hidden');
+        return false;
+      }
+
+      const totalSegundos = Math.floor(diferencia / 1000);
+      const dias = Math.floor(totalSegundos / 86400);
+      const horas = Math.floor((totalSegundos % 86400) / 3600);
+      const minutos = Math.floor((totalSegundos % 3600) / 60);
+      const segundos = totalSegundos % 60;
+
+      if (elDias) elDias.textContent = pad(dias);
+      if (elHoras) elHoras.textContent = pad(horas);
+      if (elMinutos) elMinutos.textContent = pad(minutos);
+      if (elSegundos) elSegundos.textContent = pad(segundos);
+      return true;
+    };
+
+    if (actualizar()) {
+      const intervalo = window.setInterval(() => {
+        if (!actualizar()) window.clearInterval(intervalo);
+      }, 1000);
+    }
+  });
+</script>

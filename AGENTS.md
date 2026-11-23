@@ -1,22 +1,9 @@
-## Development
+# Reglas del Repositorio — Casa Signato
 
-When starting the dev server, use background mode:
-
-```
-astro dev --background
-```
-
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
-
-## Documentation
-
-Full documentation: https://docs.astro.build
-
-Consult these guides before working on related tasks:
-
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+1. Antes de planear o escribir código, lee obligatoriamente `BRIEF.md`.
+2. Respeta la arquitectura modular: un solo orquestador (`InvitacionMain.astro`), secciones reutilizables en `src/components/secciones/` controladas por `src/utils/planes.ts`, y temas visuales en `src/components/temas/`.
+3. Paleta oficial de marca (`#F7F6F2`, `#8BA888`, `#C6B4A6`, `#363E35`). Prohibido usar `#000000` (negro puro) en textos o fondos.
+4. Prohibido usar emojis del sistema (`🎉`, `🎂`, `💍`, `👑`) como gráficos o divisores en invitaciones o landing.
+5. Las invitaciones usan CSS Variables dinámicas (`--bg`, `--surface`, `--accent`, `--ink`); nunca concatenes sufijos de opacidad a strings hex en `style`.
+6. Todo copy, comentarios y textos visibles deben estar en español (México). Nunca uses el nombre viejo "Core Invitaciones".
+7. Verifica siempre con `npm run build` que no haya errores de TypeScript o Astro antes de dar una tarea por terminada.

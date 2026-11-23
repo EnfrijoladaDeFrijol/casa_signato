@@ -1,0 +1,60 @@
+---
+import type { ClienteInvitacion } from '../../../types/invitacion';
+import { formatearFechaLarga, formatearHora } from '../../../utils/fechas';
+import { obtenerEtiquetaCategoria } from '../../../utils/categorias';
+
+interface Props {
+  cliente: ClienteInvitacion;
+}
+
+const { cliente } = Astro.props;
+const fechaTexto = formatearFechaLarga(cliente.fechaISO);
+const horaTexto = formatearHora(cliente.horaInicio);
+const etiqueta =
+  cliente.subtitulo || obtenerEtiquetaCategoria(cliente.categoria, true);
+---
+
+<header class="relative px-4 pt-10 pb-12 sm:px-6 sm:pt-14 sm:pb-16">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--accent)]">
+      {etiqueta}
+    </p>
+
+    <h1 class="font-display mt-3 text-4xl font-semibold tracking-tight text-[var(--ink)] sm:text-6xl">
+      {cliente.protagonistas}
+    </h1>
+
+    <div class="mx-auto my-5 flex items-center justify-center gap-3" aria-hidden="true">
+      <span class="h-px w-12 bg-[var(--border-soft)]"></span>
+      <svg class="h-3.5 w-3.5 text-[var(--accent)]" viewBox="0 0 16 16" fill="none">
+        <path d="M8 1L10.2 5.8L15 8L10.2 10.2L8 15L5.8 10.2L1 8L5.8 5.8L8 1Z" stroke="currentColor" stroke-width="1.2" />
+      </svg>
+      <span class="h-px w-12 bg-[var(--border-soft)]"></span>
+    </div>
+
+    <p class="text-sm font-medium capitalize text-[var(--ink-muted)] sm:text-base">
+      {fechaTexto} · {horaTexto}
+    </p>
+    <p class="mt-1 text-xs uppercase tracking-[0.18em] text-[var(--ink-muted)]">
+      {cliente.ciudad}
+    </p>
+
+    <figure class="mx-auto mt-8 max-w-md overflow-hidden rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] p-2 shadow-sm">
+      <img
+        src={cliente.fotoPortada}
+        alt={cliente.fotoPortadaAlt || cliente.titulo}
+        class="aspect-[4/5] w-full rounded-2xl object-cover"
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
+
+    {
+      cliente.frase && (
+        <blockquote class="font-display mx-auto mt-8 max-w-xl text-xl italic leading-relaxed text-[var(--ink)] sm:text-2xl">
+          “{cliente.frase}”
+        </blockquote>
+      )
+    }
+  </div>
+</header>
