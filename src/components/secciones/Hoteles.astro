@@ -1,73 +1,79 @@
 ---
 import type { HotelItem } from '../../types/invitacion';
+import SeccionTitulo from './SeccionTitulo.astro';
 
 interface Props {
   hoteles: HotelItem[];
 }
 
 const { hoteles } = Astro.props;
+const varios = hoteles.length > 1;
 ---
 
-<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-hoteles">
+<section aria-labelledby="titulo-hoteles">
   <div class="mx-auto max-w-3xl">
-    <div class="text-center">
-      <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-        Invitados foráneos
-      </p>
-      <h2 id="titulo-hoteles" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
-        Hospedaje Sugerido
-      </h2>
-    </div>
+    <SeccionTitulo id="titulo-hoteles" eyebrow="Invitados foráneos" titulo="Hospedaje Sugerido" />
 
-    <div class:list={['mt-8 grid gap-4', hoteles.length > 1 ? 'md:grid-cols-2' : 'max-w-lg mx-auto']}>
+    <div
+      class:list={[
+        'mx-auto mt-14 grid max-w-md divide-y divide-[var(--border-soft)] border-y border-[var(--border-soft)]',
+        varios && 'md:max-w-none md:grid-cols-2 md:divide-x md:divide-y-0',
+      ]}
+    >
       {
-        hoteles.map((hotel) => (
-          <article class="flex flex-col justify-between rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] p-6">
-            <div>
-              <h3 class="font-display text-2xl font-semibold text-[var(--ink)]">
-                {hotel.nombre}
-              </h3>
-              <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">
-                {hotel.direccion}
-              </p>
+        hoteles.map((hotel, i) => (
+          <article class="px-2 py-10 text-center md:px-8" data-reveal style={`--rv: ${i}`}>
+            <h3 class="font-display text-[1.7rem] font-medium italic leading-tight text-[var(--ink)]">
+              {hotel.nombre}
+            </h3>
+            <p class="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-[var(--ink-muted)]">
+              {hotel.direccion}
+            </p>
 
-              <dl class="mt-4 space-y-1.5 text-xs text-[var(--ink-muted)]">
-                {hotel.distancia && (
-                  <div class="flex justify-between gap-2">
-                    <dt class="font-medium text-[var(--ink)]">Distancia</dt>
-                    <dd>{hotel.distancia}</dd>
-                  </div>
-                )}
-                {hotel.tarifaReferencia && (
-                  <div class="flex justify-between gap-2">
-                    <dt class="font-medium text-[var(--ink)]">Tarifa ref.</dt>
-                    <dd>{hotel.tarifaReferencia}</dd>
-                  </div>
-                )}
-                {hotel.codigoDescuento && (
-                  <div class="flex justify-between gap-2">
-                    <dt class="font-medium text-[var(--ink)]">Código</dt>
-                    <dd class="font-semibold text-[var(--accent)]">{hotel.codigoDescuento}</dd>
-                  </div>
-                )}
-              </dl>
-            </div>
+            <dl class="mx-auto mt-6 grid max-w-xs grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-left text-sm">
+              {hotel.distancia && (
+                <>
+                  <dt class="inv-label self-center">Distancia</dt>
+                  <dd class="text-right text-[var(--ink)]">{hotel.distancia}</dd>
+                </>
+              )}
+              {hotel.tarifaReferencia && (
+                <>
+                  <dt class="inv-label self-center">Tarifa ref.</dt>
+                  <dd class="text-right text-[var(--ink)] [font-variant-numeric:tabular-nums]">
+                    {hotel.tarifaReferencia}
+                  </dd>
+                </>
+              )}
+              {hotel.codigoDescuento && (
+                <>
+                  <dt class="inv-label self-center">Código</dt>
+                  <dd class="text-right font-semibold tracking-[0.12em] text-[var(--accent)]">
+                    {hotel.codigoDescuento}
+                  </dd>
+                </>
+              )}
+            </dl>
 
-            <div class="mt-5 flex flex-wrap gap-2.5">
+            <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <a
                 href={hotel.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex flex-1 items-center justify-center rounded-full border border-[var(--border-soft)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--ink)] transition-colors hover:bg-[var(--accent-soft)]"
+                data-abrir-mapa
+                class="inv-btn inv-btn--line active:scale-[0.98]"
               >
-                Ver mapa
+                <span class="inv-swap">
+                  <span data-swap-a>Ver mapa</span>
+                  <span data-swap-b>Abriendo mapa…</span>
+                </span>
               </a>
               {hotel.webUrl && (
                 <a
                   href={hotel.webUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--surface)] transition-opacity hover:opacity-90"
+                  class="inv-btn inv-btn--solid active:scale-[0.98]"
                 >
                   Reservar
                 </a>

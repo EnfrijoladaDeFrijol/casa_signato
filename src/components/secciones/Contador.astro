@@ -1,5 +1,6 @@
 ---
 import { obtenerFechaObjetivoISO } from '../../utils/fechas';
+import SeccionTitulo from './SeccionTitulo.astro';
 
 interface Props {
   fechaISO: string;
@@ -8,47 +9,49 @@ interface Props {
 
 const { fechaISO, horaInicio } = Astro.props;
 const fechaObjetivo = obtenerFechaObjetivoISO(fechaISO, horaInicio);
+
+const unidades = [
+  { campo: 'dias', etiqueta: 'Días' },
+  { campo: 'horas', etiqueta: 'Horas' },
+  { campo: 'minutos', etiqueta: 'Min' },
+  { campo: 'segundos', etiqueta: 'Seg' },
+];
 ---
 
-<section class="px-4 py-10 sm:px-6" aria-labelledby="titulo-contador">
-  <div
-    class="mx-auto max-w-2xl rounded-3xl bg-[var(--accent-soft)] px-5 py-8 text-center sm:px-8"
-    data-contador
-    data-fecha-objetivo={fechaObjetivo}
-  >
-    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-      Falta muy poco
-    </p>
-    <h2 id="titulo-contador" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)]">
-      Cuenta Regresiva
-    </h2>
+<section aria-labelledby="titulo-contador">
+  <div class="mx-auto max-w-xl">
+    <SeccionTitulo id="titulo-contador" eyebrow="Falta muy poco" titulo="Cuenta Regresiva" />
 
-    <div class="mt-6 grid grid-cols-4 gap-2.5 sm:gap-4">
-      {
-        [
-          { campo: 'dias', etiqueta: 'Días' },
-          { campo: 'horas', etiqueta: 'Horas' },
-          { campo: 'minutos', etiqueta: 'Min' },
-          { campo: 'segundos', etiqueta: 'Seg' },
-        ].map((item) => (
-          <div class="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] px-2 py-4">
-            <span
-              data-tiempo={item.campo}
-              class="font-display block text-3xl font-semibold leading-none text-[var(--ink)] sm:text-4xl"
-            >
-              00
-            </span>
-            <span class="mt-1.5 block text-[11px] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
-              {item.etiqueta}
-            </span>
-          </div>
-        ))
-      }
+    <div
+      class="mt-14 border-y border-[var(--border-soft)] py-9"
+      data-contador
+      data-fecha-objetivo={fechaObjetivo}
+      data-reveal
+      style="--rv: 1"
+    >
+      <div class="grid grid-cols-4 divide-x divide-[var(--border-soft)]">
+        {
+          unidades.map((item) => (
+            <div class="px-1 text-center">
+              <span
+                data-tiempo={item.campo}
+                class="inv-num block text-[clamp(2.4rem,12.5vw,4rem)] leading-none"
+              >
+                00
+              </span>
+              <span class="inv-label mt-4 block">{item.etiqueta}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <p
+        data-contador-estado
+        class="inv-quote mt-6 hidden text-center text-[var(--accent)]"
+      >
+        El gran día ha llegado.
+      </p>
     </div>
-
-    <p data-contador-estado class="mt-4 hidden text-sm font-medium text-[var(--accent)]">
-      El gran día ha llegado.
-    </p>
   </div>
 </section>
 

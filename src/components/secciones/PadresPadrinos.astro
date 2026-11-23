@@ -1,40 +1,42 @@
 ---
 import type { PadresPadrinosData } from '../../types/invitacion';
+import SeccionTitulo from './SeccionTitulo.astro';
 
 interface Props {
   datos: PadresPadrinosData;
 }
 
 const { datos } = Astro.props;
+const dosGrupos = datos.grupos.length === 2;
 ---
 
-<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-padres">
-  <div class="mx-auto max-w-2xl rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] px-6 py-9 text-center sm:px-10">
-    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-      Con la bendición de
-    </p>
-    <h2 id="titulo-padres" class="font-display mt-2 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
-      Padres y Padrinos
-    </h2>
+<section aria-labelledby="titulo-padres">
+  <div class="mx-auto max-w-2xl">
+    <SeccionTitulo id="titulo-padres" eyebrow="Con la bendición de" titulo="Padres y Padrinos" />
 
     {
       datos.nota && (
-        <p class="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-[var(--ink-muted)]">
+        <p class="inv-quote mx-auto mt-6 max-w-md text-center text-[1.2rem]" data-reveal style="--rv: 1">
           {datos.nota}
         </p>
       )
     }
 
-    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+    <div
+      class:list={[
+        'mt-12 grid divide-y divide-[var(--border-soft)] border-y border-[var(--border-soft)]',
+        dosGrupos && 'sm:grid-cols-2 sm:divide-x sm:divide-y-0',
+      ]}
+    >
       {
-        datos.grupos.map((grupo) => (
-          <div class="rounded-2xl bg-[var(--accent-soft)] px-5 py-5">
-            <h3 class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
-              {grupo.titulo}
-            </h3>
-            <ul class="mt-2.5 space-y-1 text-base font-medium text-[var(--ink)]">
+        datos.grupos.map((grupo, i) => (
+          <div class="px-4 py-9 text-center" data-reveal style={`--rv: ${i + 2}`}>
+            <h3 class="inv-eyebrow">{grupo.titulo}</h3>
+            <ul class="mt-4 space-y-2">
               {grupo.nombres.map((nombre) => (
-                <li class="font-display text-xl">{nombre}</li>
+                <li class="font-display text-[1.6rem] font-medium italic leading-tight text-[var(--ink)]">
+                  {nombre}
+                </li>
               ))}
             </ul>
           </div>

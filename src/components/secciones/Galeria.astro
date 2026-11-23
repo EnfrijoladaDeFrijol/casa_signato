@@ -1,6 +1,7 @@
 ---
 import type { FotoGaleria, PlanTipo } from '../../types/invitacion';
 import { obtenerLimiteGaleria } from '../../utils/planes';
+import SeccionTitulo from './SeccionTitulo.astro';
 
 interface Props {
   fotos: FotoGaleria[];
@@ -10,38 +11,46 @@ interface Props {
 const { fotos, plan } = Astro.props;
 const limite = obtenerLimiteGaleria(plan);
 const fotosVisibles = fotos.slice(0, limite);
+const [destacada, ...resto] = fotosVisibles;
+
+// Proporciones alternadas para un mosaico asimétrico, sin marcos tipo tarjeta.
+const proporciones = ['aspect-[4/5]', 'aspect-square', 'aspect-[3/4]', 'aspect-[5/6]'];
 ---
 
-<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-galeria">
+<section aria-labelledby="titulo-galeria">
   <div class="mx-auto max-w-4xl">
-    <div class="text-center">
-      <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-        Recuerdos
-      </p>
-      <h2 id="titulo-galeria" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
-        Galería Fotográfica
-      </h2>
-    </div>
+    <SeccionTitulo id="titulo-galeria" eyebrow="Recuerdos" titulo="Galería Fotográfica" />
 
-    <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-      {
-        fotosVisibles.map((foto) => (
-          <figure class="overflow-hidden rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-1.5">
-            <img
-              src={foto.url}
-              alt={foto.alt}
-              loading="lazy"
-              decoding="async"
-              class="aspect-[4/3] w-full rounded-xl object-cover"
-            />
-            {foto.caption && (
-              <figcaption class="px-2 py-2 text-center text-xs text-[var(--ink-muted)]">
-                {foto.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))
-      }
-    </div>
+    {
+      destacada && (
+        <figure class="mx-auto mt-14 w-[78%] sm:w-[46%]" data-reveal>
+          <img
+            src={destacada.url}
+            alt={destacada.alt}
+            loading="lazy"
+            decoding="async"
+            class="aspect-[3/4] w-full rounded-t-full object-cover"
+          />
+        </figure>
+      )
+    }
+
+    {
+      resto.length > 0 && (
+        <div class="mt-12 columns-2 gap-3 sm:columns-3 sm:gap-5">
+          {resto.map((foto, i) => (
+            <figure class="mb-3 break-inside-avoid sm:mb-5" data-reveal style={`--rv: ${i % 2}`}>
+              <img
+                src={foto.url}
+                alt={foto.alt}
+                loading="lazy"
+                decoding="async"
+                class:list={['w-full rounded-sm object-cover', proporciones[i % proporciones.length]]}
+              />
+            </figure>
+          ))}
+        </div>
+      )
+    }
   </div>
 </section>

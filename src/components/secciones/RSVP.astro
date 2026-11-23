@@ -1,5 +1,7 @@
 ---
 import type { RsvpGoogleFormData, RsvpWhatsappData } from '../../types/invitacion';
+import SeccionTitulo from './SeccionTitulo.astro';
+import Ornamento from './Ornamento.astro';
 
 interface Props {
   mostrarWhatsapp: boolean;
@@ -20,45 +22,38 @@ const urlWhatsapp =
     : '';
 
 const fechaLimite = rsvpGoogleForm?.fechaLimite || rsvpWhatsapp?.fechaLimite;
+const instruccion =
+  rsvpGoogleForm?.instruccion && mostrarGoogleForm
+    ? rsvpGoogleForm.instruccion
+    : 'Tu confirmación nos ayuda a preparar cada detalle para recibirte como mereces.';
 ---
 
-<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-rsvp">
-  <div class="mx-auto max-w-2xl rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] px-6 py-9 text-center sm:px-10">
-    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-      Confirma tu lugar
-    </p>
-    <h2 id="titulo-rsvp" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
-      Confirmar Asistencia
-    </h2>
-
-    {
-      rsvpGoogleForm?.instruccion && mostrarGoogleForm ? (
-        <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[var(--ink-muted)]">
-          {rsvpGoogleForm.instruccion}
-        </p>
-      ) : (
-        <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[var(--ink-muted)]">
-          Tu confirmación nos ayuda a preparar cada detalle para recibirte como mereces.
-        </p>
-      )
-    }
+<section aria-labelledby="titulo-rsvp" data-tono="tinta">
+  <div class="mx-auto max-w-xl text-center">
+    <Ornamento class="mb-8" />
+    <SeccionTitulo
+      id="titulo-rsvp"
+      eyebrow="Confirma tu lugar"
+      titulo="Confirmar Asistencia"
+      lede={instruccion}
+    />
 
     {
       fechaLimite && (
-        <p class="mt-2 text-xs font-medium text-[var(--accent)]">
-          Fecha límite de confirmación: {fechaLimite}
+        <p class="inv-quote mt-6 text-[1.15rem] !text-[var(--bg)]" data-reveal style="--rv: 1">
+          Fecha límite: {fechaLimite}
         </p>
       )
     }
 
-    <div class="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+    <div class="mx-auto mt-10 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center" data-reveal style="--rv: 2">
       {
         mostrarGoogleForm && rsvpGoogleForm && (
           <a
             href={rsvpGoogleForm.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--surface)] transition-opacity hover:opacity-90 sm:w-auto"
+            class="inv-btn inv-btn--invert active:scale-[0.98]"
           >
             {rsvpGoogleForm.etiquetaBoton || 'Confirmar en formulario'}
           </a>
@@ -72,10 +67,8 @@ const fechaLimite = rsvpGoogleForm?.fechaLimite || rsvpWhatsapp?.fechaLimite;
             target="_blank"
             rel="noopener noreferrer"
             class:list={[
-              'inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] transition-colors sm:w-auto',
-              mostrarGoogleForm
-                ? 'border border-[var(--border-soft)] text-[var(--ink)] hover:bg-[var(--accent-soft)]'
-                : 'bg-[var(--accent)] text-[var(--surface)] hover:opacity-90',
+              'inv-btn active:scale-[0.98]',
+              mostrarGoogleForm ? 'inv-btn--invert-line' : 'inv-btn--invert',
             ]}
           >
             {rsvpWhatsapp.etiquetaBoton || 'Confirmar por WhatsApp'}

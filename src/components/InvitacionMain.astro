@@ -16,6 +16,8 @@ import RSVP from './secciones/RSVP.astro';
 import AgendarCalendario from './secciones/AgendarCalendario.astro';
 import Hoteles from './secciones/Hoteles.astro';
 import AlbumQR from './secciones/AlbumQR.astro';
+import Ornamento from './secciones/Ornamento.astro';
+import DemoThemeSwitcher from './secciones/DemoThemeSwitcher.astro';
 
 interface Props {
   cliente: ClienteInvitacion;
@@ -26,7 +28,7 @@ const modulos = resolverModulos(cliente);
 const mostrarRsvp = modulos.rsvpWhatsapp || modulos.rsvpGoogleForm;
 ---
 
-<main class="pb-16">
+<main class="inv-flow">
   {
     cliente.tema === 'xv-editorial' ? (
       <HeroXvEditorial cliente={cliente} />
@@ -120,18 +122,24 @@ const mostrarRsvp = modulos.rsvpWhatsapp || modulos.rsvpGoogleForm;
     )
   }
 
+  <footer class="inv-pie text-center">
+    <Ornamento />
+    <p class="mt-6 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">
+      Invitación digital diseñada por
+    </p>
+    <a
+      href="/"
+      class="mt-2 inline-flex min-h-11 items-center font-display text-xl font-semibold italic text-[var(--ink)] underline decoration-[var(--accent)] decoration-1 underline-offset-[6px]"
+    >
+      Casa Signato
+    </a>
+  </footer>
+
   {
     modulos.musica && cliente.musica && (
       <MusicaPlayer musica={cliente.musica} />
     )
   }
 
-  <footer class="mt-10 border-t border-[var(--border-soft)] px-4 pt-8 text-center">
-    <p class="text-xs tracking-wide text-[var(--ink-muted)]">
-      Invitación digital diseñada por{' '}
-      <a href="/" class="font-semibold text-[var(--ink)] underline decoration-[var(--accent)] underline-offset-4">
-        Casa Signato
-      </a>
-    </p>
-  </footer>
+  {cliente.esDemo === true && <DemoThemeSwitcher temaOriginal={cliente.temaColores} />}
 </main>

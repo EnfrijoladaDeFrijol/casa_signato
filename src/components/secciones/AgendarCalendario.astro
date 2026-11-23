@@ -4,6 +4,7 @@ import {
   construirContenidoICS,
   construirUrlGoogleCalendar,
 } from '../../utils/fechas';
+import SeccionTitulo from './SeccionTitulo.astro';
 
 interface Props {
   calendario: CalendarioData;
@@ -34,35 +35,46 @@ const contenidoIcs = construirContenidoICS({
 });
 ---
 
-<section class="px-4 py-10 sm:px-6" aria-labelledby="titulo-calendario">
-  <div class="mx-auto max-w-2xl rounded-3xl bg-[var(--accent-soft)] px-6 py-8 text-center">
-    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-      Guarda la fecha
-    </p>
-    <h2 id="titulo-calendario" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)]">
-      Agendar en Calendario
-    </h2>
-    <p class="mt-2 text-sm text-[var(--ink-muted)]">
-      Añade el recordatorio directamente en tu teléfono para no perder ningún detalle.
-    </p>
+<section aria-labelledby="titulo-calendario" data-compacta>
+  <div class="mx-auto max-w-xl text-center">
+    <div class="mx-auto mb-6 text-[var(--accent)]" aria-hidden="true" data-reveal>
+      <svg class="mx-auto h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="5" width="17" height="15.5" rx="1.5" />
+        <path d="M3.5 10h17M8 3v4M16 3v4" />
+      </svg>
+    </div>
 
-    <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+    <SeccionTitulo
+      id="titulo-calendario"
+      eyebrow="Guarda la fecha"
+      titulo="Agendar en Calendario"
+      lede="Añade el recordatorio directamente en tu teléfono para no perder ningún detalle."
+    />
+
+    <div class="mx-auto mt-9 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center" data-reveal style="--rv: 1">
       <a
         href={googleUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--surface)] transition-opacity hover:opacity-90"
+        data-abrir-mapa
+        class="inv-btn inv-btn--solid active:scale-[0.98]"
       >
-        Google Calendar
+        <span class="inv-swap">
+          <span data-swap-a>Google Calendar</span>
+          <span data-swap-b>Abriendo…</span>
+        </span>
       </a>
 
       <button
         type="button"
         data-descargar-ics={contenidoIcs}
         data-nombre-ics={`${slug}.ics`}
-        class="inline-flex items-center justify-center rounded-full border border-[var(--border-soft)] bg-[var(--surface)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink)] transition-colors hover:bg-[var(--bg)]"
+        class="inv-btn inv-btn--line active:scale-[0.98]"
       >
-        Apple / Outlook (.ics)
+        <span class="inv-swap">
+          <span data-swap-a>Apple / Outlook (.ics)</span>
+          <span data-swap-b>Descargando…</span>
+        </span>
       </button>
     </div>
   </div>
@@ -84,6 +96,11 @@ const contenidoIcs = construirContenidoICS({
       enlace.click();
       enlace.remove();
       URL.revokeObjectURL(url);
+
+      boton.dataset.estado = 'activo';
+      window.setTimeout(() => {
+        delete boton.dataset.estado;
+      }, 1800);
     });
   });
 </script>

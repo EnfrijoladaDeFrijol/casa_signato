@@ -1,0 +1,251 @@
+---
+import type { TemaColores } from '../../types/invitacion';
+import {
+  PALETAS,
+  identificarPaleta,
+  variablesTema,
+  VARIABLES_OPCIONALES,
+} from '../../utils/paletas';
+
+interface Props {
+  temaOriginal: TemaColores;
+}
+
+const { temaOriginal } = Astro.props;
+const idOriginal = identificarPaleta(temaOriginal);
+
+const opciones = PALETAS.map((paleta) => ({
+  id: paleta.id,
+  nombre: paleta.nombre,
+  variables: variablesTema(paleta.colores),
+  bg: paleta.colores.bg,
+  accent: paleta.colores.accent,
+}));
+
+const datos = JSON.stringify({
+  original: { id: idOriginal ?? 'original', variables: variablesTema(temaOriginal) },
+  opcionales: VARIABLES_OPCIONALES,
+});
+---
+
+<aside
+  class="fixed bottom-4 left-4 z-40"
+  aria-label="Probador de paletas de la demo"
+  data-demo-switcher
+  data-config={datos}
+>
+  <div
+    id="demo-paletas-panel"
+    data-panel
+    class="demo-panel absolute bottom-[3.6rem] left-0 w-[15.5rem] border border-[var(--border-soft)] bg-[var(--bg)] p-2"
+  >
+    <p class="inv-label px-3 pb-2 pt-3">Prueba una paleta</p>
+    <div role="radiogroup" aria-label="Paleta de color" class="flex flex-col">
+      {
+        opciones.map((paleta) => (
+          <button
+            type="button"
+            role="radio"
+            aria-checked={paleta.id === idOriginal ? 'true' : 'false'}
+            data-paleta={paleta.id}
+            data-variables={JSON.stringify(paleta.variables)}
+            class="demo-opcion flex min-h-11 items-center gap-3 px-3 text-left text-[0.8125rem] text-[var(--ink)] active:scale-[0.98]"
+          >
+            <span
+              class="demo-muestra"
+              style={`--m-bg: ${paleta.bg}; --m-ac: ${paleta.accent}`}
+              aria-hidden="true"
+            />
+            <span class="flex-1 leading-tight">{paleta.nombre}</span>
+            <svg class="demo-check h-4 w-4 text-[var(--accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12.5l4.5 4.5L19 7.5" />
+            </svg>
+          </button>
+        ))
+      }
+      {
+        !idOriginal && (
+          <button
+            type="button"
+            role="radio"
+            aria-checked="true"
+            data-paleta="original"
+            class="demo-opcion flex min-h-11 items-center gap-3 px-3 text-left text-[0.8125rem] text-[var(--ink)] active:scale-[0.98]"
+          >
+            <span class="demo-muestra" style={`--m-bg: ${temaOriginal.bg}; --m-ac: ${temaOriginal.accent}`} aria-hidden="true" />
+            <span class="flex-1 leading-tight">Paleta original</span>
+            <svg class="demo-check h-4 w-4 text-[var(--accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12.5l4.5 4.5L19 7.5" />
+            </svg>
+          </button>
+        )
+      }
+    </div>
+  </div>
+
+  <button
+    type="button"
+    data-toggle
+    aria-expanded="false"
+    aria-controls="demo-paletas-panel"
+    aria-label="Probar paletas de color"
+    class="demo-toggle flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border-soft)] text-[var(--ink)] backdrop-blur-md transition-[scale] duration-200 active:scale-[0.98]"
+  >
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3.5c-4.7 0-8.5 3.4-8.5 7.6 0 3.2 2.6 5.4 5.2 5.4h1.1c.8 0 1.4.6 1.4 1.4 0 .5-.2.9-.4 1.2-.3.5 0 1.1.6 1.1C16.900 20.200 20.500 16.400 20.500 11.600 20.500 6.900 16.700 3.500 12 3.500z" />
+      <circle cx="8.2" cy="11" r="1" />
+      <circle cx="12" cy="8" r="1" />
+      <circle cx="15.800" cy="11" r="1" />
+    </svg>
+  </button>
+</aside>
+
+<style>
+  .demo-toggle {
+    background-color: color-mix(in srgb, var(--bg) 90%, transparent);
+  }
+
+  .demo-panel {
+    border-radius: 1.1rem;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0, 8px, 0);
+    transform-origin: bottom left;
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease),
+      visibility 0s linear 0.3s;
+  }
+  [data-demo-switcher][data-abierto='true'] .demo-panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition-delay: 0s;
+  }
+
+  .demo-opcion {
+    border-radius: 0.75rem;
+    transition:
+      background-color 0.25s var(--ease),
+      scale 0.2s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .demo-opcion:focus-visible,
+  .demo-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) {
+    .demo-opcion:hover {
+      background-color: var(--accent-soft);
+    }
+  }
+  .demo-opcion[aria-checked='true'] {
+    background-color: var(--accent-soft);
+  }
+
+  .demo-muestra {
+    width: 1.6rem;
+    height: 1.6rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid var(--border-soft);
+    background: linear-gradient(135deg, var(--m-bg) 50%, var(--m-ac) 50%);
+  }
+
+  .demo-check {
+    opacity: 0;
+    transform: scale(0.7);
+    transition:
+      opacity 0.25s var(--ease),
+      transform 0.25s var(--ease);
+  }
+  .demo-opcion[aria-checked='true'] .demo-check {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-panel,
+    .demo-check {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const contenedor = document.querySelector<HTMLElement>('[data-demo-switcher]');
+
+  if (contenedor) {
+    const config = JSON.parse(contenedor.dataset.config || '{}') as {
+      original: { id: string; variables: Record<string, string> };
+      opcionales: string[];
+    };
+    const toggle = contenedor.querySelector<HTMLButtonElement>('[data-toggle]');
+    const opciones = contenedor.querySelectorAll<HTMLButtonElement>('[data-paleta]');
+    const metaTema = document.querySelector<HTMLMetaElement>('meta[data-theme-color]');
+    const raiz = document.body;
+
+    const abrir = (abierto: boolean) => {
+      contenedor.dataset.abierto = abierto ? 'true' : 'false';
+      toggle?.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    };
+
+    const aplicar = (id: string, variables: Record<string, string>) => {
+      for (const [nombre, valor] of Object.entries(variables)) {
+        raiz.style.setProperty(nombre, valor);
+      }
+      for (const nombre of config.opcionales) {
+        if (!(nombre in variables)) raiz.style.removeProperty(nombre);
+      }
+      if (metaTema && variables['--bg']) metaTema.content = variables['--bg'];
+      opciones.forEach((opcion) => {
+        opcion.setAttribute('aria-checked', opcion.dataset.paleta === id ? 'true' : 'false');
+      });
+
+      const url = new URL(window.location.href);
+      if (id === config.original.id) url.searchParams.delete('paleta');
+      else url.searchParams.set('paleta', id);
+      window.history.replaceState(null, '', url);
+    };
+
+    const variablesDe = (id: string): Record<string, string> | null => {
+      if (id === config.original.id) return config.original.variables;
+      const opcion = Array.from(opciones).find((o) => o.dataset.paleta === id);
+      return opcion?.dataset.variables ? JSON.parse(opcion.dataset.variables) : null;
+    };
+
+    toggle?.addEventListener('click', () => abrir(contenedor.dataset.abierto !== 'true'));
+
+    opciones.forEach((opcion) => {
+      opcion.addEventListener('click', () => {
+        const id = opcion.dataset.paleta;
+        if (!id) return;
+        const variables = variablesDe(id);
+        if (variables) aplicar(id, variables);
+      });
+    });
+
+    document.addEventListener('pointerdown', (evento) => {
+      if (contenedor.dataset.abierto === 'true' && !contenedor.contains(evento.target as Node)) {
+        abrir(false);
+      }
+    });
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape' && contenedor.dataset.abierto === 'true') {
+        abrir(false);
+        toggle?.focus();
+      }
+    });
+
+    // Permite compartir una demo ya tematizada: ?paleta=vino-champagne
+    const inicial = new URLSearchParams(window.location.search).get('paleta');
+    if (inicial && inicial !== config.original.id) {
+      const variables = variablesDe(inicial);
+      if (variables) aplicar(inicial, variables);
+    }
+  }
+</script>

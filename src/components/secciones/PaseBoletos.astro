@@ -1,5 +1,6 @@
 ---
 import type { PaseBoletosData } from '../../types/invitacion';
+import SeccionTitulo from './SeccionTitulo.astro';
 
 interface Props {
   pase: PaseBoletosData;
@@ -12,44 +13,68 @@ const textoLugaresInicial =
   pase.pasesDefault === 1 ? 'lugar reservado' : 'lugares reservados';
 ---
 
-<section class="px-4 py-10 sm:px-6" aria-labelledby="titulo-pase">
+<section aria-labelledby="titulo-pase">
   <div
-    class="mx-auto max-w-lg rounded-3xl border border-dashed border-[var(--accent)] bg-[var(--surface)] px-6 py-8 text-center"
+    class="mx-auto max-w-sm"
     data-pase-widget
     data-pases-default={String(pase.pasesDefault)}
     data-pases-max={String(maxPases)}
   >
-    <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-      {pase.etiqueta || 'Pase de Acceso'}
-    </p>
-    <h2 id="titulo-pase" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)]">
-      {protagonistas}
-    </h2>
+    <SeccionTitulo
+      id="titulo-pase"
+      eyebrow={pase.etiqueta || 'Pase de Acceso'}
+      titulo={protagonistas}
+    />
 
-    <div class="mx-auto my-5 inline-flex items-baseline gap-3 rounded-2xl bg-[var(--accent-soft)] px-7 py-4">
-      <span
-        data-pases-numero
-        class="font-display text-5xl font-semibold leading-none text-[var(--accent)]"
-      >
-        {pase.pasesDefault}
-      </span>
-      <span
-        data-pases-etiqueta
-        class="text-sm font-medium text-[var(--ink)]"
-      >
-        {textoLugaresInicial}
-      </span>
+    <div class="inv-ticket mt-12 border border-[var(--accent)] bg-[var(--accent-soft)] text-center" data-reveal style="--rv: 1">
+      <div class="px-6 pb-8 pt-10">
+        <p class="inv-label">Admite</p>
+        <p class="mt-3 font-display text-[1.5rem] font-medium italic leading-tight text-[var(--ink)]">
+          Pase personal e intransferible
+        </p>
+      </div>
+      <div class="inv-ticket__talon flex flex-col items-center justify-center border-t border-dashed border-[var(--accent)]">
+        <span
+          data-pases-numero
+          class="inv-num text-[3.75rem] leading-none text-[var(--accent)]"
+        >
+          {pase.pasesDefault}
+        </span>
+        <span
+          data-pases-etiqueta
+          class="inv-label mt-2"
+        >
+          {textoLugaresInicial}
+        </span>
+      </div>
     </div>
 
     {
       pase.nota && (
-        <p class="mx-auto max-w-sm text-xs leading-relaxed text-[var(--ink-muted)]">
+        <p class="inv-lede mx-auto mt-8 max-w-xs text-center text-sm" data-reveal style="--rv: 2">
           {pase.nota}
         </p>
       )
     }
   </div>
 </section>
+
+<style>
+  .inv-ticket {
+    --muesca: 12px;
+    --talon: 8.5rem;
+    /* Muescas laterales a la altura de la línea punteada, sin pintar color de fondo */
+    -webkit-mask:
+      radial-gradient(circle var(--muesca) at 0 calc(100% - var(--talon)), transparent 97%, white) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--muesca) at 100% calc(100% - var(--talon)), transparent 97%, white) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle var(--muesca) at 0 calc(100% - var(--talon)), transparent 97%, white) left / 51% 100% no-repeat,
+      radial-gradient(circle var(--muesca) at 100% calc(100% - var(--talon)), transparent 97%, white) right / 51% 100% no-repeat;
+  }
+  .inv-ticket__talon {
+    height: var(--talon);
+  }
+</style>
 
 <script>
   const widgets = document.querySelectorAll<HTMLElement>('[data-pase-widget]');

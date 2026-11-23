@@ -1,78 +1,101 @@
 ---
 import type { UbicacionItem } from '../../types/invitacion';
+import SeccionTitulo from './SeccionTitulo.astro';
 
 interface Props {
   ubicaciones: UbicacionItem[];
 }
 
 const { ubicaciones } = Astro.props;
+const varias = ubicaciones.length > 1;
+
+function partirHora(hora: string): { numero: string; sufijo: string } {
+  const coincidencia = /^(\d{1,2}[:.]\d{2})\s*(.*)$/.exec(hora.trim());
+  return coincidencia
+    ? { numero: coincidencia[1], sufijo: coincidencia[2] }
+    : { numero: hora, sufijo: '' };
+}
 ---
 
-<section class="px-4 py-12 sm:px-6" aria-labelledby="titulo-ubicaciones">
-  <div class="mx-auto max-w-3xl">
-    <div class="text-center">
-      <p class="text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-        Dónde y cuándo
-      </p>
-      <h2 id="titulo-ubicaciones" class="font-display mt-1 text-3xl font-semibold text-[var(--ink)] sm:text-4xl">
-        Ubicaciones
-      </h2>
-    </div>
+<section aria-labelledby="titulo-ubicaciones">
+  <div class="mx-auto max-w-4xl">
+    <SeccionTitulo id="titulo-ubicaciones" eyebrow="Dónde y cuándo" titulo="Ubicaciones" />
 
-    <div class:list={['mt-8 grid gap-5', ubicaciones.length > 1 ? 'md:grid-cols-2' : 'max-w-lg mx-auto']}>
+    <div
+      class:list={[
+        'mx-auto mt-14 grid max-w-md divide-y divide-[var(--border-soft)]',
+        varias && 'md:max-w-none md:grid-cols-2 md:divide-x md:divide-y-0',
+      ]}
+    >
       {
-        ubicaciones.map((lugar) => (
-          <article class="flex flex-col justify-between rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] p-6">
-            <div>
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
-                  {lugar.tipo}
-                </span>
-                <span class="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--ink)]">
-                  {lugar.hora}
-                </span>
-              </div>
+        ubicaciones.map((lugar, i) => {
+          const hora = partirHora(lugar.hora);
+          return (
+            <article
+              class="py-12 text-center first:pt-0 last:pb-0 md:px-10 md:py-0"
+              data-reveal
+              style={`--rv: ${i}`}
+            >
+              <p class="inv-eyebrow">{lugar.tipo}</p>
+              <p class="inv-num mt-5 text-[3.5rem] leading-none">
+                {hora.numero}
+                {hora.sufijo && (
+                  <span class="ml-2 align-baseline font-body text-[0.6875rem] font-semibold uppercase tracking-[0.22em] text-[var(--ink-muted)]">
+                    {hora.sufijo}
+                  </span>
+                )}
+              </p>
 
-              <h3 class="font-display mt-3 text-2xl font-semibold text-[var(--ink)]">
+              <h3 class="mt-6 font-display text-[1.75rem] font-medium italic leading-tight text-[var(--ink)]">
                 {lugar.nombre}
               </h3>
-              <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">
+              <p class="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-[var(--ink-muted)]">
                 {lugar.direccion}
               </p>
               {lugar.referencia && (
-                <p class="mt-2 text-xs italic text-[var(--ink-muted)]">
+                <p class="mx-auto mt-3 max-w-xs font-display text-base italic text-[var(--ink-muted)]">
                   {lugar.referencia}
                 </p>
               )}
-            </div>
 
-            <div class="mt-6 flex flex-wrap gap-2.5">
-              <a
-                href={lugar.googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--surface)] transition-opacity hover:opacity-90"
-              >
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                  <path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10z" />
-                  <circle cx="12" cy="11" r="2.2" />
-                </svg>
-                Google Maps
-              </a>
-
-              {lugar.wazeUrl && (
+              <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <a
-                  href={lugar.wazeUrl}
+                  href={lugar.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center justify-center rounded-full border border-[var(--border-soft)] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--ink)] transition-colors hover:bg-[var(--accent-soft)]"
+                  data-abrir-mapa
+                  class="inv-btn inv-btn--solid active:scale-[0.98]"
                 >
-                  Waze
+                  <span class="inv-swap">
+                    <span data-swap-a>
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 1 1 13 0C18.5 15.4 12 21 12 21z" />
+                        <circle cx="12" cy="10.5" r="2.2" />
+                      </svg>
+                      Google Maps
+                    </span>
+                    <span data-swap-b>Abriendo mapa…</span>
+                  </span>
                 </a>
-              )}
-            </div>
-          </article>
-        ))
+
+                {lugar.wazeUrl && (
+                  <a
+                    href={lugar.wazeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-abrir-mapa
+                    class="inv-btn inv-btn--line active:scale-[0.98]"
+                  >
+                    <span class="inv-swap">
+                      <span data-swap-a>Waze</span>
+                      <span data-swap-b>Abriendo…</span>
+                    </span>
+                  </a>
+                )}
+              </div>
+            </article>
+          );
+        })
       }
     </div>
   </div>

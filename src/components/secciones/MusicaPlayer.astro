@@ -10,37 +10,79 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
 ---
 
 <aside
-  class="fixed right-4 bottom-4 z-40"
+  class="fixed bottom-4 right-4 z-40"
   aria-label="Reproductor de música de fondo"
   data-musica-widget
   data-modo-demo={esModoDemo ? 'true' : 'false'}
 >
-  {!esModoDemo && <audio data-musica-audio preload="none" loop src={musica.audioUrl}></audio>}
+  {!esModoDemo && <audio data-musica-audio preload="none" loop src={musica.audioUrl} />}
 
   <button
     type="button"
     data-musica-boton
     aria-pressed="false"
-    class="flex items-center gap-2.5 rounded-full border border-[var(--border-soft)] bg-[var(--surface)]/95 px-4 py-2.5 text-xs font-medium text-[var(--ink)] shadow-md backdrop-blur-md transition-transform active:scale-95"
+    class="musica-boton flex min-h-12 items-center gap-3 rounded-full border border-[var(--border-soft)] py-1.5 pl-1.5 pr-5 text-left text-xs font-medium text-[var(--ink)] backdrop-blur-md transition-[scale] duration-200 active:scale-[0.98]"
   >
-    <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--surface)]">
-      <svg data-icono-play class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M8 5.5v13l10-6.5-10-6.5z" />
-      </svg>
-      <svg data-icono-pause class="hidden h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <rect x="6" y="5" width="4" height="14" rx="1" />
-        <rect x="14" y="5" width="4" height="14" rx="1" />
-      </svg>
+    <span class="relative flex h-9 w-9 shrink-0 items-center justify-center">
+      <span class="musica-halo" aria-hidden="true"></span>
+      <span class="relative z-10 flex h-9 w-9 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--surface)]">
+        <svg data-icono-play class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8.5 5.5v13l10-6.5-10-6.5z" />
+        </svg>
+        <svg data-icono-pause class="hidden h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <path d="M9 6v12M15 6v12" />
+        </svg>
+      </span>
     </span>
 
-    <span class="max-w-[155px] truncate text-left">
-      <span class="block font-semibold leading-tight truncate">{musica.titulo}</span>
-      <span data-musica-estado class="block text-[10px] text-[var(--ink-muted)] truncate">
+    <span class="max-w-[150px] truncate">
+      <span class="block truncate font-semibold leading-tight">{musica.titulo}</span>
+      <span data-musica-estado class="block truncate text-[10px] text-[var(--ink-muted)]">
         {musica.artista || 'Música del evento'}
       </span>
     </span>
   </button>
 </aside>
+
+<style>
+  .musica-boton {
+    background-color: color-mix(in srgb, var(--bg) 90%, transparent);
+  }
+
+  /* Halo: solo transform + opacity, activo únicamente mientras suena */
+  .musica-halo {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .musica-boton[aria-pressed='true'] .musica-halo {
+      animation: musica-pulso 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .musica-boton[aria-pressed='true'] .musica-halo {
+      opacity: 0.55;
+      transform: scale(1.18);
+    }
+  }
+
+  @keyframes musica-pulso {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1.65);
+      opacity: 0;
+    }
+  }
+</style>
 
 <script>
   const widgets = document.querySelectorAll<HTMLElement>('[data-musica-widget]');

@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import type { ClienteInvitacion } from '../types/invitacion';
 import { formatearFechaLarga } from '../utils/fechas';
+import { variablesTema } from '../utils/paletas';
 
 interface Props {
   cliente: ClienteInvitacion;
@@ -16,22 +17,12 @@ const ogDescripcion =
   `Te invitamos a celebrar ${cliente.titulo} el ${fechaTexto} en ${cliente.ciudad}.`;
 const ogImagen = cliente.ogImage || cliente.fotoPortada;
 
-const accentSoft =
-  temaColores.accentSoft ??
-  `color-mix(in srgb, ${temaColores.accent} 14%, ${temaColores.bg})`;
-const inkMuted =
-  temaColores.inkMuted ??
-  `color-mix(in srgb, ${temaColores.ink} 68%, ${temaColores.bg})`;
-const borderSoft = `color-mix(in srgb, ${temaColores.ink} 14%, ${temaColores.bg})`;
-
+// Solo viajan valores completos; `--accent-soft`, `--ink-muted` y `--border-soft`
+// se derivan en CSS (`.inv-root`) con color-mix sobre las variables base.
 const estiloVariables = [
-  `--bg: ${temaColores.bg}`,
-  `--surface: ${temaColores.surface}`,
-  `--accent: ${temaColores.accent}`,
-  `--accent-soft: ${accentSoft}`,
-  `--ink: ${temaColores.ink}`,
-  `--ink-muted: ${inkMuted}`,
-  `--border-soft: ${borderSoft}`,
+  ...Object.entries(variablesTema(temaColores)).map(
+    ([nombre, valor]) => `${nombre}: ${valor}`,
+  ),
   `--font-display: ${temaColores.fontDisplay ?? "'Cormorant Garamond', Georgia, serif"}`,
   `--font-body: ${temaColores.fontBody ?? "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"}`,
 ].join('; ');
@@ -44,7 +35,7 @@ const estiloVariables = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{cliente.titulo} | Casa Signato</title>
     <meta name="description" content={ogDescripcion} />
-    <meta name="theme-color" content={temaColores.bg} />
+    <meta name="theme-color" content={temaColores.bg} data-theme-color />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <meta property="og:locale" content="es_MX" />
@@ -60,16 +51,393 @@ const estiloVariables = [
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
   </head>
-  <body class="m-0 p-0">
-    <div
-      class="min-h-screen w-full overflow-x-hidden bg-[var(--bg)] text-[var(--ink)] font-body"
-      style={estiloVariables}
-    >
+  <body class="inv-root m-0 p-0" style={estiloVariables}>
+    <div class="min-h-screen w-full overflow-x-hidden font-body">
       <slot />
     </div>
+    <p id="inv-aviso" class="sr-only" role="status" aria-live="polite"></p>
+
+    <script>
+      // Scroll-reveal ligero: solo opacity + translateY, una sola vez por elemento.
+      const elementos = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      const reducirMovimiento = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+
+      if (reducirMovimiento || !('IntersectionObserver' in window)) {
+        elementos.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        const observador = new IntersectionObserver(
+          (entradas) => {
+            for (const entrada of entradas) {
+              if (!entrada.isIntersecting) continue;
+              entrada.target.classList.add('is-visible');
+              observador.unobserve(entrada.target);
+            }
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+        );
+        elementos.forEach((el) => observador.observe(el));
+      }
+
+      const aviso = document.getElementById('inv-aviso');
+      const temporizadores = new WeakMap<Element, number>();
+
+      const activarEstado = (el: HTMLElement, ms: number) => {
+        el.dataset.estado = 'activo';
+        window.clearTimeout(temporizadores.get(el));
+        temporizadores.set(
+          el,
+          window.setTimeout(() => {
+            delete el.dataset.estado;
+          }, ms),
+        );
+      };
+
+      const copiarTexto = async (texto: string): Promise<boolean> => {
+        try {
+          await navigator.clipboard.writeText(texto);
+          return true;
+        } catch {
+          const area = document.createElement('textarea');
+          area.value = texto;
+          area.setAttribute('readonly', '');
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          let copiado = false;
+          try {
+            copiado = document.execCommand('copy');
+          } catch {
+            copiado = false;
+          }
+          area.remove();
+          return copiado;
+        }
+      };
+
+      document.addEventListener('click', async (evento) => {
+        const origen = evento.target as Element | null;
+
+        const mapa = origen?.closest<HTMLElement>('[data-abrir-mapa]');
+        if (mapa) {
+          activarEstado(mapa, 1800);
+          return;
+        }
+
+        const boton = origen?.closest<HTMLElement>('[data-copiar-texto]');
+        if (boton) {
+          const texto = boton.dataset.copiarTexto;
+          if (!texto) return;
+          const copiado = await copiarTexto(texto);
+          if (copiado) activarEstado(boton, 2200);
+          if (aviso) {
+            aviso.textContent = copiado
+              ? 'Copiado al portapapeles'
+              : 'No se pudo copiar, selecciona el texto manualmente';
+          }
+        }
+      });
+    </script>
   </body>
 </html>
+
+<style is:global>
+  @property --bg {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #f7f6f2;
+  }
+  @property --surface {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #ffffff;
+  }
+  @property --accent {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #8ba888;
+  }
+  @property --ink {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #363e35;
+  }
+
+  .inv-root {
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --accent-soft: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    --ink-muted: color-mix(in srgb, var(--ink) 76%, var(--bg));
+    --border-soft: color-mix(in srgb, var(--ink) 16%, var(--bg));
+    --tinta-muted: color-mix(in srgb, var(--bg) 74%, var(--ink));
+    --tinta-linea: color-mix(in srgb, var(--bg) 24%, var(--ink));
+    transition:
+      --bg 0.6s var(--ease),
+      --surface 0.6s var(--ease),
+      --accent 0.6s var(--ease),
+      --ink 0.6s var(--ease);
+  }
+
+  /* ───────── Ritmo de bandas: se calcula sobre las secciones realmente renderizadas ───────── */
+  .inv-flow > section {
+    background-color: var(--surface);
+    border-top: 1px solid var(--border-soft);
+    padding: clamp(4.25rem, 15vw, 7rem) 1.5rem;
+  }
+  .inv-flow > section:nth-of-type(even) {
+    background-color: var(--bg);
+  }
+  .inv-flow > section[data-compacta] {
+    padding-block: clamp(3.25rem, 11vw, 5rem);
+  }
+  .inv-flow > section[data-tono='tinta'] {
+    background-color: var(--ink);
+    color: var(--bg);
+    border-top-color: transparent;
+  }
+  .inv-pie {
+    background-color: var(--bg);
+    border-top: 1px solid var(--border-soft);
+    padding: 3.5rem 1.5rem 7rem;
+  }
+  .inv-flow:has(> section:last-of-type:nth-of-type(even)) > .inv-pie {
+    background-color: var(--surface);
+  }
+  @media (min-width: 640px) {
+    .inv-flow > section {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* ───────── Tipografía editorial ───────── */
+  .inv-eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .inv-label {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .inv-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.2rem, 9vw, 3rem);
+    line-height: 1.04;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .inv-lede {
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: var(--ink-muted);
+    text-wrap: pretty;
+  }
+  .inv-quote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+  .inv-num {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--ink);
+  }
+  .inv-orn {
+    color: var(--accent);
+  }
+
+  /* ───────── Bloque tinta (RSVP) ───────── */
+  [data-tono='tinta'] .inv-eyebrow,
+  [data-tono='tinta'] .inv-lede,
+  [data-tono='tinta'] .inv-label {
+    color: var(--tinta-muted);
+  }
+  [data-tono='tinta'] .inv-title,
+  [data-tono='tinta'] .inv-orn {
+    color: var(--bg);
+  }
+
+  /* ───────── Botones ───────── */
+  .inv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.8rem 1.7rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: center;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      scale 0.25s var(--ease),
+      background-color 0.3s var(--ease),
+      color 0.3s var(--ease),
+      border-color 0.3s var(--ease);
+  }
+  .inv-btn:focus-visible,
+  .inv-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .inv-btn--solid {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--surface);
+  }
+  .inv-btn--line {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .inv-btn--invert {
+    background-color: var(--bg);
+    border-color: var(--bg);
+    color: var(--ink);
+  }
+  .inv-btn--invert-line {
+    border-color: var(--tinta-muted);
+    color: var(--bg);
+  }
+  [data-tono='tinta'] .inv-btn:focus-visible {
+    outline-color: var(--bg);
+  }
+  @media (hover: hover) {
+    .inv-btn--solid:hover {
+      background-color: var(--ink);
+      border-color: var(--ink);
+    }
+    .inv-btn--line:hover {
+      background-color: var(--accent);
+      color: var(--surface);
+    }
+    .inv-btn--invert:hover {
+      background-color: var(--accent-soft);
+      border-color: var(--accent-soft);
+    }
+    .inv-btn--invert-line:hover {
+      border-color: var(--bg);
+    }
+  }
+
+  .inv-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: linear-gradient(currentColor, currentColor) 0 calc(100% - 0.7rem) / 0 1px no-repeat;
+    transition: background-size 0.45s var(--ease);
+  }
+  .inv-link:hover,
+  .inv-link:active {
+    background-size: 100% 1px;
+  }
+
+  /* Cambio limpio de etiqueta (copiar, abrir mapa) */
+  .inv-swap {
+    display: inline-grid;
+    place-items: center;
+  }
+  .inv-swap > * {
+    grid-area: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease);
+  }
+  .inv-swap > [data-swap-b] {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  [data-estado='activo'] .inv-swap > [data-swap-a] {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+  [data-estado='activo'] .inv-swap > [data-swap-b] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ───────── Movimiento: solo opacity y transform ───────── */
+  @keyframes inv-entrada {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes inv-foto {
+    from {
+      transform: scale(1.07);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .inv-enter {
+      animation: inv-entrada 1.1s var(--ease) both;
+      animation-delay: calc(var(--i, 0) * 110ms + 60ms);
+    }
+    .js [data-reveal] {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+      transition:
+        opacity 0.9s var(--ease),
+        transform 0.9s var(--ease);
+      transition-delay: calc(var(--rv, 0) * 90ms);
+      will-change: opacity, transform;
+    }
+    .js [data-reveal].is-visible {
+      opacity: 1;
+      transform: none;
+      will-change: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inv-root {
+      transition: none;
+    }
+    html {
+      scroll-behavior: auto;
+    }
+  }
+</style>

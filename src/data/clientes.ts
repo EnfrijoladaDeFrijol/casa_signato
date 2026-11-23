@@ -1,4 +1,5 @@
 import type { ClienteInvitacion } from '../types/invitacion';
+import { PALETAS_POR_ID } from '../utils/paletas';
 
 export const clientes: ClienteInvitacion[] = [
   {
@@ -260,12 +261,7 @@ export const clientes: ClienteInvitacion[] = [
     tema: 'xv-editorial',
     plan: 'diamante',
     esDemo: true,
-    temaColores: {
-      bg: '#FAF6F3',
-      surface: '#FFFFFF',
-      accent: '#B07D76',
-      ink: '#3A2E2E',
-    },
+    temaColores: PALETAS_POR_ID['rosa-polvo'].colores,
     titulo: 'Mis XV Años · Sofía Ramírez',
     protagonistas: 'Sofía Ramírez',
     subtitulo: 'Mis XV Años',

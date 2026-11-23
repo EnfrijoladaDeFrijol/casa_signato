@@ -1,11 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 1000" fill="none">
-  <rect width="750" height="1000" fill="#FAF6F3"/>
-  <rect x="60" y="60" width="630" height="880" fill="#EFE3DD"/>
-  <rect x="88" y="88" width="574" height="824" stroke="#B07D76" stroke-width="1.8" stroke-opacity="0.65"/>
-  <rect x="106" y="106" width="538" height="788" stroke="#B07D76" stroke-width="1" stroke-opacity="0.35"/>
-  <path d="M375 270L455 410L375 550L295 410L375 270Z" stroke="#B07D76" stroke-width="2"/>
-  <circle cx="375" cy="410" r="36" stroke="#B07D76" stroke-width="1.8"/>
-  <path d="M245 640H505" stroke="#3A2E2E" stroke-width="1.2" stroke-opacity="0.35"/>
-  <text x="375" y="715" text-anchor="middle" font-family="Georgia, serif" font-size="22" letter-spacing="6" fill="#3A2E2E" fill-opacity="0.72">FOTOGRAFÍA DEMO</text>
-  <text x="375" y="750" text-anchor="middle" font-family="sans-serif" font-size="14" letter-spacing="3" fill="#3A2E2E" fill-opacity="0.5">XV AÑOS · CASA SIGNATO</text>
+  <rect width="750" height="1000" fill="#EFDFD8"/>
+  <rect x="60" y="60" width="630" height="880" fill="#F5EAE4"/>
+  <rect x="88" y="88" width="574" height="824" stroke="#86494A" stroke-width="1.8" stroke-opacity="0.55"/>
+  <rect x="106" y="106" width="538" height="788" stroke="#86494A" stroke-width="1" stroke-opacity="0.3"/>
+  <path d="M375 330L455 470L375 610L295 470L375 330Z" stroke="#86494A" stroke-width="2"/>
+  <circle cx="375" cy="470" r="36" stroke="#86494A" stroke-width="1.8"/>
 </svg>
