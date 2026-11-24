@@ -1,6 +1,7 @@
 ---
-import { obtenerFechaObjetivoISO } from '../../utils/fechas';
+import { formatearFechaLarga, obtenerFechaObjetivoISO } from '../../utils/fechas';
 import SeccionTitulo from './SeccionTitulo.astro';
+import InvitacionIcono from './InvitacionIcono.astro';
 
 interface Props {
   fechaISO: string;
@@ -18,28 +19,26 @@ const unidades = [
 ];
 ---
 
-<section aria-labelledby="titulo-contador">
+<section aria-labelledby="titulo-contador" data-compacta data-tono="acento" class="inv-lino">
   <div class="mx-auto max-w-xl">
     <SeccionTitulo id="titulo-contador" eyebrow="Falta muy poco" titulo="Cuenta Regresiva" />
 
-    <div
-      class="mt-14 border-y border-[var(--border-soft)] py-9"
-      data-contador
-      data-fecha-objetivo={fechaObjetivo}
-      data-reveal
-      style="--rv: 1"
-    >
-      <div class="grid grid-cols-4 divide-x divide-[var(--border-soft)]">
+    <div class="mt-10 py-2" data-contador data-fecha-objetivo={fechaObjetivo}>
+      <div class="grid grid-cols-4 gap-2 sm:gap-4">
         {
-          unidades.map((item) => (
-            <div class="px-1 text-center">
-              <span
-                data-tiempo={item.campo}
-                class="inv-num block text-[clamp(2.4rem,12.5vw,4rem)] leading-none"
+          unidades.map((item, i) => (
+            <div class="text-center" data-reveal style={`--rv: ${i + 1}`}>
+              <div
+                class="inv-medallon-num mx-auto flex aspect-square w-full max-w-[82px] items-center justify-center sm:max-w-[96px]"
               >
-                00
-              </span>
-              <span class="inv-label mt-4 block">{item.etiqueta}</span>
+                <span
+                  data-tiempo={item.campo}
+                  class="font-display tabular-nums text-[clamp(1.3rem,5.4vw,2.05rem)] font-medium leading-none"
+                >
+                  00
+                </span>
+              </div>
+              <span class="inv-label mt-3 block">{item.etiqueta}</span>
             </div>
           ))
         }
@@ -47,10 +46,15 @@ const unidades = [
 
       <p
         data-contador-estado
-        class="inv-quote mt-6 hidden text-center text-[var(--accent)]"
+        class="inv-quote mt-6 hidden text-center"
       >
         El gran día ha llegado.
       </p>
+    </div>
+
+    <div class="mt-10 flex flex-col items-center gap-4" data-reveal style="--rv: 5">
+      <InvitacionIcono nombre="rama" class="inv-icon-draw h-7 w-24 text-[var(--bg)]" />
+      <p class="inv-quote text-center text-[1.15rem]">{formatearFechaLarga(fechaISO)}</p>
     </div>
   </div>
 </section>

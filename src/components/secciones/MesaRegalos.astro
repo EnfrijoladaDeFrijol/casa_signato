@@ -1,6 +1,7 @@
 ---
 import type { MesaRegalosData } from '../../types/invitacion';
 import SeccionTitulo from './SeccionTitulo.astro';
+import InvitacionIcono from './InvitacionIcono.astro';
 
 interface Props {
   mesaRegalos: MesaRegalosData;
@@ -12,7 +13,7 @@ const lluvia = mesaRegalos.lluviaSobres;
 const clabeAgrupada = lluvia ? lluvia.clabe.replace(/\s+/g, '').replace(/(\d{4})(?=\d)/g, '$1 ') : '';
 ---
 
-<section aria-labelledby="titulo-regalos">
+<section aria-labelledby="titulo-regalos" class="inv-papel">
   <div class="mx-auto max-w-xl">
     <SeccionTitulo
       id="titulo-regalos"
@@ -23,7 +24,11 @@ const clabeAgrupada = lluvia ? lluvia.clabe.replace(/\s+/g, '').replace(/(\d{4})
 
     {
       tiendas.length > 0 && (
-        <ul class="mt-14 divide-y divide-[var(--border-soft)] border-y border-[var(--border-soft)]">
+        <div class="inv-card-editorial mt-16 px-6 pb-4 pt-0">
+          <div class="inv-medallon -mt-10 mx-auto h-14 w-14" data-reveal>
+            <InvitacionIcono nombre="regalo" class="inv-icon-draw h-7 w-7" />
+          </div>
+          <ul class="mt-4 divide-y divide-[var(--border-soft)]">
           {tiendas.map((tienda, i) => (
             <li class="py-8 text-center" data-reveal style={`--rv: ${i}`}>
               <h3 class="font-display text-[1.9rem] font-medium italic leading-tight text-[var(--ink)]">
@@ -56,14 +61,18 @@ const clabeAgrupada = lluvia ? lluvia.clabe.replace(/\s+/g, '').replace(/(\d{4})
               </a>
             </li>
           ))}
-        </ul>
+          </ul>
+        </div>
       )
     }
 
     {
       lluvia && (
-        <div class="mx-auto mt-12 max-w-md border border-[var(--accent)] bg-[var(--bg)] px-6 py-10 text-center" data-reveal style="--rv: 1">
-          <p class="inv-eyebrow">Lluvia de sobres</p>
+        <div class="inv-card-editorial mx-auto mt-16 max-w-md px-6 pb-10 pt-0 text-center" data-reveal style="--rv: 1">
+          <div class="inv-medallon -mt-10 mx-auto h-14 w-14">
+            <InvitacionIcono nombre="sobre" class="inv-icon-draw h-7 w-7" />
+          </div>
+          <p class="inv-eyebrow mt-5">Lluvia de sobres</p>
           <p class="mt-4 font-display text-[1.6rem] font-medium italic leading-tight text-[var(--ink)]">
             {lluvia.titular}
           </p>

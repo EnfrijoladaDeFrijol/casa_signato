@@ -1,0 +1,156 @@
+---
+import type { ClienteInvitacion } from '../../../types/invitacion';
+import { formatearFechaCorta, formatearHora } from '../../../utils/fechas';
+import { obtenerEtiquetaCategoria } from '../../../utils/categorias';
+import InvitacionIcono from '../../secciones/InvitacionIcono.astro';
+
+interface Props {
+  cliente: ClienteInvitacion;
+}
+
+const { cliente } = Astro.props;
+
+// Borde de papel rasgado a mano: vértices irregulares y finos (semilla fija = build determinista)
+let semilla = 7;
+const azar = () => {
+  semilla = (semilla * 16807) % 2147483647;
+  return semilla / 2147483647;
+};
+const ANCHO = 1200;
+const puntos: string[] = [];
+let yBorde = 14;
+for (let x = 0; x <= ANCHO; x += 5 + Math.round(azar() * 9)) {
+  yBorde += (azar() - 0.5) * 7;
+  yBorde = Math.min(20, Math.max(6, yBorde));
+  const pico = azar() > 0.86 ? (azar() - 0.5) * 7 : 0;
+  puntos.push(`${x},${(yBorde + pico).toFixed(1)}`);
+}
+puntos.push(`${ANCHO},${yBorde.toFixed(1)}`);
+const bordeRasgado = `M0,30 L${puntos.join(' L')} L${ANCHO},30 Z`;
+const etiqueta = cliente.subtitulo || obtenerEtiquetaCategoria(cliente.categoria, true);
+const fechaCorta = formatearFechaCorta(cliente.fechaISO);
+const horaTexto = formatearHora(cliente.horaInicio);
+const posicionFoto = cliente.fotoPosicion ? `object-position: ${cliente.fotoPosicion}` : undefined;
+---
+
+<header class="hero-clasico">
+  <div class="relative flex min-h-[100svh] w-full flex-col justify-between overflow-hidden lg:h-[100svh] lg:max-h-[960px]">
+    <div class="absolute inset-x-0 -top-[5%] h-[110%]" data-parallax data-parallax-speed="0.1" data-parallax-max="44">
+      <img
+        src={cliente.fotoPortada}
+        alt={cliente.fotoPortadaAlt || cliente.titulo}
+        style={posicionFoto}
+        class="hero-foto hero-clasico__img absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </div>
+
+    <div class="hero-clasico__velo-sup pointer-events-none absolute inset-x-0 top-0 h-[30%]" aria-hidden="true"></div>
+    <div class="hero-clasico__velo-inf pointer-events-none absolute inset-x-0 bottom-0 h-[54%]" aria-hidden="true"></div>
+
+    <svg
+      class="pointer-events-none absolute inset-x-0 bottom-[-1px] z-[5] block h-7 w-full sm:h-9"
+      viewBox="0 0 1200 30"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d={bordeRasgado} transform="translate(0 -2.5)" class="hero-clasico__borde-sombra" />
+      <path d={bordeRasgado} class="hero-clasico__borde" />
+    </svg>
+
+    <div class="relative z-10 px-6 text-center" style="padding-top: calc(2.5rem + var(--demo-bar-h, 0px))">
+      <p class="inv-enter hero-clasico__sutil text-[10px] font-semibold uppercase tracking-[0.34em] sm:text-[11px]" style="--i: 0">
+        {etiqueta}
+      </p>
+    </div>
+
+    <div class="relative z-10 mx-auto w-full max-w-2xl px-6 pb-24 text-center sm:pb-16">
+      <h1 class="inv-enter hero-clasico__titulo font-display text-[clamp(2.9rem,12.5vw,5.25rem)] font-medium italic leading-[0.98] tracking-[-0.01em]" style="--i: 1">
+        {cliente.protagonistas}
+      </h1>
+      <span class="inv-enter hero-clasico__linea mx-auto mt-5 block h-px w-12" style="--i: 2" aria-hidden="true"></span>
+      <p class="inv-enter hero-clasico__meta mt-4 text-[11px] font-medium uppercase tracking-[0.22em] sm:text-xs" style="--i: 3">
+        {fechaCorta} · {horaTexto}
+      </p>
+      <p class="inv-enter hero-clasico__sutil mt-1.5 text-[10px] font-medium uppercase tracking-[0.26em]" style="--i: 4">
+        {cliente.ciudad}
+      </p>
+      <div class="inv-enter mt-6 flex justify-center" style="--i: 5" aria-hidden="true">
+        <svg class="hero-clasico__deslizar h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 9.5L12 15l5.5-5.5" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  {
+    cliente.frase && (
+      <div class="inv-papel bg-[var(--bg)] px-6 pb-14 pt-10 text-center sm:px-10 sm:pb-20">
+        <blockquote class="inv-quote mx-auto max-w-lg" data-reveal>
+          “{cliente.frase}”
+        </blockquote>
+        <div class="mt-7 flex justify-center">
+          <InvitacionIcono nombre="rama" class="inv-icon-draw h-7 w-24 text-[var(--accent)]" />
+        </div>
+      </div>
+    )
+  }
+</header>
+
+<style>
+  .hero-clasico__img {
+    object-position: center 22%;
+  }
+  .hero-clasico__borde {
+    fill: var(--bg);
+  }
+  .hero-clasico__borde-sombra {
+    fill: color-mix(in srgb, var(--ink) 30%, transparent);
+  }
+  .hero-clasico__velo-sup {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--ink) 56%, transparent) 0%,
+      color-mix(in srgb, var(--ink) 22%, transparent) 55%,
+      transparent 100%
+    );
+  }
+  .hero-clasico__velo-inf {
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--ink) 80%, transparent) 0%,
+      color-mix(in srgb, var(--ink) 46%, transparent) 52%,
+      transparent 100%
+    );
+  }
+  .hero-clasico__titulo {
+    color: var(--bg);
+    text-shadow: 0 2px 24px color-mix(in srgb, var(--ink) 45%, transparent);
+    text-wrap: balance;
+  }
+  .hero-clasico__meta {
+    color: color-mix(in srgb, var(--bg) 92%, var(--surface));
+    text-shadow: 0 1px 12px color-mix(in srgb, var(--ink) 38%, transparent);
+  }
+  .hero-clasico__sutil {
+    color: color-mix(in srgb, var(--bg) 82%, transparent);
+    text-shadow: 0 1px 10px color-mix(in srgb, var(--ink) 36%, transparent);
+  }
+  .hero-clasico__linea {
+    background-color: color-mix(in srgb, var(--bg) 52%, transparent);
+  }
+  .hero-clasico__deslizar {
+    color: color-mix(in srgb, var(--bg) 76%, transparent);
+  }
+  @keyframes hero-deslizar {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, 5px, 0); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-clasico__img { animation: inv-foto 1.6s var(--ease) both; }
+    .hero-clasico__deslizar { animation: hero-deslizar 2.6s var(--ease) infinite; }
+  }
+</style>

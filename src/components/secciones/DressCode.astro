@@ -1,6 +1,7 @@
 ---
 import type { DressCodeData } from '../../types/invitacion';
 import SeccionTitulo from './SeccionTitulo.astro';
+import InvitacionIcono from './InvitacionIcono.astro';
 
 interface Props {
   dressCode: DressCodeData;
@@ -9,12 +10,10 @@ interface Props {
 const { dressCode } = Astro.props;
 ---
 
-<section aria-labelledby="titulo-dresscode">
-  <div class="mx-auto max-w-2xl text-center">
-    <div class="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border-soft)] text-[var(--accent)]" aria-hidden="true" data-reveal>
-      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 4.5a2 2 0 1 1 2 2c0 1-2 1.4-2 2.5L3.5 15a1 1 0 0 0 .6 1.8h15.8a1 1 0 0 0 .6-1.8L12 9" />
-      </svg>
+<section aria-labelledby="titulo-dresscode" class="inv-papel">
+  <div class="inv-card-editorial mx-auto mt-10 max-w-md px-6 pb-12 pt-0 text-center">
+    <div class="inv-medallon -mt-10 mx-auto mb-8 h-14 w-14" data-reveal>
+      <InvitacionIcono nombre="vestimenta" class="inv-icon-draw h-7 w-7" />
     </div>
 
     <SeccionTitulo
@@ -32,7 +31,7 @@ const { dressCode } = Astro.props;
             {dressCode.coloresSugeridos.map((color) => (
               <li class="flex w-16 flex-col items-center gap-2.5">
                 <span
-                  class="h-14 w-14 rounded-full border border-[var(--border-soft)]"
+                  class="inv-bolita h-14 w-14 rounded-full"
                   style={`background-color: ${color.hex};`}
                   aria-hidden="true"
                 />

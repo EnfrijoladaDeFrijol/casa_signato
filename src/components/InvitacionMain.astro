@@ -1,7 +1,7 @@
 ---
 import type { ClienteInvitacion } from '../types/invitacion';
-import { resolverModulos } from '../utils/planes';
-import { formatearFechaLarga } from '../utils/fechas';
+import { resolverModulos, obtenerLimiteGaleria } from '../utils/planes';
+import HeroClasico from './temas/clasico/Hero.astro';
 import HeroBase from './temas/base/Hero.astro';
 import HeroXvEditorial from './temas/xv-editorial/Hero.astro';
 import PadresPadrinos from './secciones/PadresPadrinos.astro';
@@ -20,6 +20,8 @@ import Hoteles from './secciones/Hoteles.astro';
 import AlbumQR from './secciones/AlbumQR.astro';
 import Ornamento from './secciones/Ornamento.astro';
 import DemoThemeSwitcher from './secciones/DemoThemeSwitcher.astro';
+import DemoTopBar from './secciones/DemoTopBar.astro';
+import InterludioFoto from './secciones/InterludioFoto.astro';
 
 interface Props {
   cliente: ClienteInvitacion;
@@ -29,22 +31,43 @@ const { cliente } = Astro.props;
 const modulos = resolverModulos(cliente);
 const mostrarRsvp = modulos.rsvpWhatsapp || modulos.rsvpGoogleForm;
 const tieneMusica = Boolean(modulos.musica && cliente.musica);
-const fechaTextoSello = formatearFechaLarga(cliente.fechaISO);
+const mostrarSobre = cliente.sobreBienvenida !== false;
+
+// Fotos reales (no SVG) para dispersarlas a lo largo del recorrido
+const galeriaActiva = Boolean(modulos.galeria && cliente.galeria);
+const fotosReales = galeriaActiva
+  ? (cliente.galeria ?? [])
+      .filter((foto) => foto.url && !/\.svg(\?|#|$)/i.test(foto.url))
+      .slice(0, obtenerLimiteGaleria(cliente.plan))
+  : [];
+const hayFotos = fotosReales.length > 0;
+const fotosGaleria = hayFotos
+  ? fotosReales.length > 3
+    ? fotosReales.slice(3)
+    : fotosReales
+  : (cliente.galeria ?? []);
+const bandaDePortada =
+  galeriaActiva &&
+  !hayFotos &&
+  (cliente.plan === 'gold' || cliente.plan === 'diamante') &&
+  /\.webp(\?|#|$)/i.test(cliente.fotoPortada);
 ---
 
 <main class="inv-flow">
+  {cliente.esDemo === true && <DemoTopBar tema={cliente.tema} />}
   {
-    tieneMusica && (
+    mostrarSobre && (
       <SelloBienvenida
         protagonistas={cliente.protagonistas}
         subtitulo={cliente.subtitulo}
-        fechaTexto={fechaTextoSello}
-        ciudad={cliente.ciudad}
+        tieneMusica={tieneMusica}
       />
     )
   }
   {
-    cliente.tema === 'xv-editorial' ? (
+    cliente.tema === 'clasico' ? (
+      <HeroClasico cliente={cliente} />
+    ) : cliente.tema === 'xv-editorial' ? (
       <HeroXvEditorial cliente={cliente} />
     ) : (
       <HeroBase cliente={cliente} />
@@ -58,8 +81,30 @@ const fechaTextoSello = formatearFechaLarga(cliente.fechaISO);
   }
 
   {
+    hayFotos && (
+      <InterludioFoto variante="arco" foto={fotosReales[0]} />
+    )
+  }
+
+  {
     modulos.contador && (
       <Contador fechaISO={cliente.fechaISO} horaInicio={cliente.horaInicio} />
+    )
+  }
+
+  {
+    hayFotos && fotosReales[1] && (
+      <InterludioFoto variante="banda" foto={fotosReales[1]} />
+    )
+  }
+
+  {
+    bandaDePortada && (
+      <InterludioFoto
+        variante="banda"
+        foto={{ url: cliente.fotoPortada, alt: cliente.fotoPortadaAlt || cliente.titulo }}
+        posicion="center 62%"
+      />
     )
   }
 
@@ -77,7 +122,7 @@ const fechaTextoSello = formatearFechaLarga(cliente.fechaISO);
 
   {
     modulos.galeria && cliente.galeria && (
-      <Galeria fotos={cliente.galeria} plan={cliente.plan} />
+      <Galeria fotos={fotosGaleria} plan={cliente.plan} />
     )
   }
 
@@ -99,6 +144,12 @@ const fechaTextoSello = formatearFechaLarga(cliente.fechaISO);
         pase={cliente.paseBoletos}
         protagonistas={cliente.protagonistas}
       />
+    )
+  }
+
+  {
+    hayFotos && fotosReales[2] && (
+      <InterludioFoto variante="arco" foto={fotosReales[2]} />
     )
   }
 

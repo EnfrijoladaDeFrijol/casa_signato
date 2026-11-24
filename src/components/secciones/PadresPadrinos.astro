@@ -1,6 +1,7 @@
 ---
 import type { PadresPadrinosData } from '../../types/invitacion';
 import SeccionTitulo from './SeccionTitulo.astro';
+import InvitacionIcono from './InvitacionIcono.astro';
 
 interface Props {
   datos: PadresPadrinosData;
@@ -10,13 +11,14 @@ const { datos } = Astro.props;
 const dosGrupos = datos.grupos.length === 2;
 ---
 
-<section aria-labelledby="titulo-padres">
+<section aria-labelledby="titulo-padres" class="inv-papel">
   <div class="mx-auto max-w-2xl">
+    <InvitacionIcono nombre="anillos" class="inv-icon-draw mx-auto mb-5 h-9 w-9 text-[var(--accent)]" />
     <SeccionTitulo id="titulo-padres" eyebrow="Con la bendición de" titulo="Padres y Padrinos" />
 
     {
       datos.nota && (
-        <p class="inv-quote mx-auto mt-6 max-w-md text-center text-[1.2rem]" data-reveal style="--rv: 1">
+        <p class="inv-lede mx-auto mt-5 max-w-sm text-center" data-reveal style="--rv: 1">
           {datos.nota}
         </p>
       )
@@ -24,13 +26,13 @@ const dosGrupos = datos.grupos.length === 2;
 
     <div
       class:list={[
-        'mt-12 grid divide-y divide-[var(--border-soft)] border-y border-[var(--border-soft)]',
+        'mt-12 grid divide-y divide-[var(--border-soft)]',
         dosGrupos && 'sm:grid-cols-2 sm:divide-x sm:divide-y-0',
       ]}
     >
       {
         datos.grupos.map((grupo, i) => (
-          <div class="px-4 py-9 text-center" data-reveal style={`--rv: ${i + 2}`}>
+          <div class="px-4 py-8 text-center first:pt-2 last:pb-2 sm:py-4" data-reveal style={`--rv: ${i + 2}`}>
             <h3 class="inv-eyebrow">{grupo.titulo}</h3>
             <ul class="mt-4 space-y-2">
               {grupo.nombres.map((nombre) => (

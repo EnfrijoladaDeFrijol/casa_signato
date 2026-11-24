@@ -1,120 +1,126 @@
 ---
 import { clientes } from '../../data/clientes';
-import { obtenerEtiquetaCategoria } from '../../utils/categorias';
-import { formatearFechaCorta } from '../../utils/fechas';
+import { CATEGORIAS_ORDEN, obtenerEtiquetaCategoria } from '../../utils/categorias';
 import { PLANES_INFO, resolverModulos } from '../../utils/planes';
+import PhoneDemoMockup from './PhoneDemoMockup.astro';
 
 const muestras = clientes.filter((cliente) => cliente.esDemo);
+const categoriasPresentes = CATEGORIAS_ORDEN.filter((cat) =>
+  muestras.some((demo) => demo.categoria === cat),
+);
+
+const muestrasConMeta = muestras.map((demo) => {
+  const infoPlan = PLANES_INFO[demo.plan];
+  const modulos = resolverModulos(demo);
+  const ruta = modulos.paseBoletos
+    ? `/${demo.categoria}/${demo.slug}?pases=4`
+    : `/${demo.categoria}/${demo.slug}`;
+  return {
+    demo,
+    ruta,
+    nombrePlan: infoPlan.nombre,
+    etiquetaSingular: obtenerEtiquetaCategoria(demo.categoria, true),
+  };
+});
+
+const indiceInicial = muestrasConMeta.length >= 3 ? 1 : 0;
+const muestraInicial = muestrasConMeta[indiceInicial] ?? muestrasConMeta[0];
 ---
 
-<section id="muestras" class="border-t border-signato-secundario/35 py-16 sm:py-24">
-  <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
-    <div data-reveal class="max-w-2xl">
-      <div class="flex items-center gap-3">
+<section id="muestras" data-muestras-catalogo class="velo-scope border-t border-signato-secundario/35 py-16 sm:py-24">
+  <div class="velo-orb velo-orb--salvia -top-8 left-1/2 h-64 w-64 -translate-x-1/2 opacity-40 sm:h-80 sm:w-80" aria-hidden="true"></div>
+  <div class="velo-orb velo-orb--arcilla bottom-8 left-1/2 h-56 w-72 -translate-x-1/2 opacity-35 sm:h-72 sm:w-96" aria-hidden="true"></div>
+
+  <div class="relative mx-auto w-full min-w-0 max-w-6xl px-4 sm:px-6">
+    <div data-reveal class="mx-auto max-w-xl text-center">
+      <div class="flex items-center justify-center gap-3">
         <span class="h-px w-6 bg-signato-secundario" aria-hidden="true"></span>
         <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-signato-principal">
           Catálogo interactivo
         </p>
+        <span class="h-px w-6 bg-signato-secundario" aria-hidden="true"></span>
       </div>
-      <h2 class="font-display mt-2.5 text-4xl font-medium leading-[1.06] text-signato-contraste sm:text-5xl">
-        Muestras reales listas para probar en tu celular
+      <h2 class="font-display mt-2.5 text-4xl font-medium leading-[1.05] text-signato-contraste sm:text-5xl">
+        Diseños vivos en tu celular
       </h2>
-      <p class="mt-3 text-sm leading-relaxed text-signato-contraste/75 sm:text-base">
-        Abre cada ejemplo tal como lo recibirán tus invitados: explora su paleta propia, ubicaciones, música y pase de boletos en vivo.
-      </p>
     </div>
 
-    <div class="mt-10 grid gap-5 md:grid-cols-3">
-      {muestras.map((demo, idx) => {
-        const infoPlan = PLANES_INFO[demo.plan];
-        const modulos = resolverModulos(demo);
-        const rutaMuestra = modulos.paseBoletos
-          ? `/${demo.categoria}/${demo.slug}?pases=4`
-          : `/${demo.categoria}/${demo.slug}`;
-        const estiloMuestra = `--m-bg:${demo.temaColores.bg};--m-surface:${demo.temaColores.surface};--m-accent:${demo.temaColores.accent};--m-ink:${demo.temaColores.ink}`;
-        const variante =
-          demo.categoria === 'xv-anos' ? 'xv' : demo.categoria === 'bodas' ? 'boda' : 'bautizo';
+    <div data-reveal style="--rv: 1" class="mt-7 flex flex-col items-center gap-3">
+      <div role="tablist" aria-label="Filtrar muestras por categoría" class="glass-surface inline-flex max-w-full flex-wrap items-center justify-center gap-1 rounded-full p-1">
+        <button type="button" role="tab" aria-selected="true" data-filtro-cat="todas" class="muestras-tab cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold tracking-wide transition-colors">
+          Todas
+        </button>
+        {categoriasPresentes.map((cat) => (
+          <button type="button" role="tab" aria-selected="false" data-filtro-cat={cat} class="muestras-tab cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold tracking-wide transition-colors">
+            {obtenerEtiquetaCategoria(cat)}
+          </button>
+        ))}
+      </div>
 
-        return (
-          <a
-            href={rutaMuestra}
-            data-reveal
-            style={`--rv: ${idx}`}
-            class="glass-surface group flex flex-col justify-between overflow-hidden rounded-3xl p-3 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
-          >
-            <div>
-              <div
-                style={estiloMuestra}
-                class={`muestra-lienzo muestra-lienzo--${variante} relative flex h-60 flex-col justify-between overflow-hidden rounded-[1.35rem] p-5 transition-transform duration-500 group-hover:scale-[1.01]`}
-              >
-                <div class="muestra-marco pointer-events-none absolute inset-3" aria-hidden="true"></div>
-
-                <div class="relative flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.22em]">
-                  <span class="muestra-acento">{demo.subtitulo}</span>
-                  <span class="flex items-center gap-1.5" aria-hidden="true">
-                    <span class="h-2.5 w-2.5 rounded-full border border-white/60" style={`background-color:${demo.temaColores.bg}`}></span>
-                    <span class="h-2.5 w-2.5 rounded-full border border-white/60" style={`background-color:${demo.temaColores.accent}`}></span>
-                    <span class="h-2.5 w-2.5 rounded-full border border-white/60" style={`background-color:${demo.temaColores.ink}`}></span>
-                  </span>
-                </div>
-
-                <div class="relative my-auto py-2 text-center">
-                  <p class:list={['font-display text-[2.15rem] leading-[1.04] transition-transform duration-500 group-hover:scale-[1.02]', variante === 'boda' ? 'italic font-medium' : 'font-semibold']}>
-                    {demo.protagonistas}
-                  </p>
-                  <span class="muestra-linea mx-auto mt-3 block h-px w-12" aria-hidden="true"></span>
-                  <p class="mt-2.5 text-[11px] font-medium tracking-[0.14em] uppercase opacity-80">
-                    {formatearFechaCorta(demo.fechaISO)}
-                  </p>
-                </div>
-
-                <p class="relative text-center text-[11px] opacity-75">{demo.ciudad}</p>
-              </div>
-
-              <div class="px-2 pt-4">
-                <div class="flex items-center justify-between gap-2 border-b border-signato-secundario/30 pb-2.5 text-[11px]">
-                  <span class="font-semibold uppercase tracking-[0.18em] text-signato-principal">
-                    {obtenerEtiquetaCategoria(demo.categoria)}
-                  </span>
-                  <span class="font-medium uppercase tracking-[0.14em] text-signato-contraste/70">
-                    Paquete {infoPlan.nombre}
-                  </span>
-                </div>
-
-                <h3 class="font-display mt-3 text-2xl font-semibold text-signato-contraste transition-colors group-hover:text-signato-principal">
-                  {demo.protagonistas}
-                </h3>
-                <p class="mt-0.5 text-xs text-signato-contraste/70">
-                  {demo.ciudad}
-                  {modulos.paseBoletos && ' · Pase digital con 4 lugares'}
-                </p>
-              </div>
-            </div>
-
-            <div class="mt-4 flex min-h-[48px] items-center justify-between border-t border-signato-secundario/35 px-2 pt-3 text-xs font-semibold uppercase tracking-[0.14em] text-signato-contraste">
-              <span>Abrir muestra en vivo</span>
-              <svg class="h-4 w-4 text-signato-principal transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </div>
-          </a>
-        );
-      })}
+      <button type="button" data-toggle-preview aria-pressed="false" class="glass-surface inline-flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-signato-contraste/80 transition-colors hover:text-signato-contraste">
+        <svg data-icon-pause class="h-3.5 w-3.5 text-signato-principal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M9 6v12M15 6v12" stroke-linecap="round" />
+        </svg>
+        <svg data-icon-play class="hidden h-3.5 w-3.5 text-signato-principal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M8 6.5v11l9-5.5-9-5.5Z" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>Vista previa</span>
+      </button>
     </div>
   </div>
+
+  <div data-reveal style="--rv: 2" class="relative mt-8 w-full min-w-0 sm:mt-10">
+    <button type="button" data-carrusel-prev aria-label="Ver muestra anterior" class="muestras-nav glass-surface absolute top-1/2 left-5 z-20 h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-signato-contraste transition-transform hover:scale-105 disabled:pointer-events-none disabled:opacity-30 lg:left-10">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="m15 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <div data-carrusel-track class="muestras-track">
+      {muestrasConMeta.map(({ demo, ruta, nombrePlan, etiquetaSingular }, idx) => (
+        <div
+          data-slide
+          data-categoria={demo.categoria}
+          data-titulo={demo.protagonistas}
+          data-meta={`${etiquetaSingular} · Paquete ${nombrePlan}`}
+          data-href={ruta}
+          data-active={idx === indiceInicial ? 'true' : 'false'}
+          class="muestras-slide"
+        >
+          <PhoneDemoMockup demo={demo} href={ruta} etiquetaCategoria={etiquetaSingular} nombrePlan={nombrePlan} indice={idx} />
+        </div>
+      ))}
+    </div>
+
+    <button type="button" data-carrusel-next aria-label="Ver muestra siguiente" class="muestras-nav glass-surface absolute top-1/2 right-5 z-20 h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-signato-contraste transition-transform hover:scale-105 disabled:pointer-events-none disabled:opacity-30 lg:right-10">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
+
+  {muestraInicial && (
+    <div data-reveal style="--rv: 3" class="relative mx-auto mt-6 flex w-full max-w-md flex-col items-center px-4 text-center sm:mt-8">
+      <p data-cta-titulo class="font-display text-2xl font-medium text-signato-contraste">
+        {muestraInicial.demo.protagonistas}
+      </p>
+      <p data-cta-meta class="mt-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-signato-contraste/65">
+        {muestraInicial.etiquetaSingular} · Paquete {muestraInicial.nombrePlan}
+      </p>
+      <a href={muestraInicial.ruta} data-cta-link class="mt-4 inline-flex min-h-[46px] items-center gap-2.5 rounded-full bg-signato-contraste px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-signato-lienzo transition-colors hover:bg-signato-principal active:scale-[0.98]">
+        <span>Abrir muestra con animaciones</span>
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+    </div>
+  )}
 </section>
 
-<style>
-  .muestra-lienzo--bautizo { background: linear-gradient(155deg, color-mix(in srgb, var(--m-accent) 26%, var(--m-bg)) 0%, var(--m-bg) 100%); color: var(--m-ink); }
-  .muestra-lienzo--bautizo .muestra-marco { border: 1px solid color-mix(in srgb, var(--m-accent) 55%, transparent); border-radius: 6rem 6rem 0.9rem 0.9rem; }
-  .muestra-lienzo--bautizo .muestra-acento { color: color-mix(in srgb, var(--m-ink) 80%, var(--m-accent)); }
-  .muestra-lienzo--bautizo .muestra-linea { background-color: var(--m-accent); }
-  .muestra-lienzo--boda { background: linear-gradient(150deg, var(--m-ink) 0%, color-mix(in srgb, var(--m-accent) 42%, var(--m-ink)) 100%); color: var(--m-bg); }
-  .muestra-lienzo--boda .muestra-marco { border: 1px solid color-mix(in srgb, var(--m-bg) 32%, transparent); border-radius: 0.75rem; }
-  .muestra-lienzo--boda .muestra-acento { color: color-mix(in srgb, var(--m-bg) 78%, var(--m-accent)); }
-  .muestra-lienzo--boda .muestra-linea { background-color: color-mix(in srgb, var(--m-bg) 60%, var(--m-accent)); }
-  .muestra-lienzo--xv { background: linear-gradient(155deg, var(--m-accent) 0%, color-mix(in srgb, var(--m-accent) 72%, var(--m-ink)) 100%); color: var(--m-bg); }
-  .muestra-lienzo--xv .muestra-marco { border: 1px solid color-mix(in srgb, var(--m-bg) 38%, transparent); border-radius: 7rem 7rem 0.85rem 0.85rem; }
-  .muestra-lienzo--xv .muestra-acento { color: var(--m-surface); }
-  .muestra-lienzo--xv .muestra-linea { background-color: var(--m-surface); }
-</style>
+<script>
+  import { iniciarMuestrasCarrusel } from '../../scripts/muestrasCarrusel';
+
+  document
+    .querySelectorAll<HTMLElement>('[data-muestras-catalogo]')
+    .forEach((seccion) => iniciarMuestrasCarrusel(seccion));
+</script>

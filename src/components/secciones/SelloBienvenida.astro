@@ -2,11 +2,10 @@
 interface Props {
   protagonistas: string;
   subtitulo?: string;
-  fechaTexto?: string;
-  ciudad?: string;
+  tieneMusica?: boolean;
 }
 
-const { protagonistas } = Astro.props;
+const { protagonistas, subtitulo, tieneMusica = false } = Astro.props;
 
 function obtenerIniciales(texto: string): string {
   const limpio = texto.trim();
@@ -26,17 +25,40 @@ const iniciales = obtenerIniciales(protagonistas);
 <div
   id="sello-bienvenida"
   data-sello-bienvenida
+  data-tiene-musica={tieneMusica ? 'true' : 'false'}
   role="dialog"
   aria-modal="true"
   aria-labelledby="sello-bienvenida-titulo"
   class="sello-bienvenida fixed inset-0 z-50 flex min-h-[100svh] flex-col items-center justify-between bg-[var(--bg)] px-6 py-8 text-center sm:py-10"
 >
+  <!-- Textura estática sutil de papel algodón sobre el lienzo (sin filtrar elementos 3D) -->
+  <svg
+    class="sello-papel-lienzo pointer-events-none fixed inset-0 h-full w-full"
+    aria-hidden="true"
+  >
+    <filter id="sello-grano-algodon">
+      <feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="2" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#sello-grano-algodon)" opacity="0.036" />
+  </svg>
+
   <span class="h-6 shrink-0" aria-hidden="true"></span>
 
-  <div class="sello-contenido my-auto flex w-full max-w-sm flex-col items-center overflow-visible">
+  <div class="sello-contenido relative z-10 my-auto flex w-full max-w-sm flex-col items-center overflow-visible">
+    {
+      subtitulo && (
+        <p class="text-[10px] font-medium uppercase tracking-[0.32em] text-[var(--accent)]">
+          {subtitulo}
+        </p>
+      )
+    }
     <p
       id="sello-bienvenida-titulo"
-      class="font-display text-xl font-normal italic tracking-[0.03em] text-[var(--ink-muted)] sm:text-2xl"
+      class:list={[
+        'font-display text-[1.75rem] font-normal italic leading-tight tracking-[0.02em] text-[var(--ink)] sm:text-[2rem]',
+        subtitulo && 'mt-2',
+      ]}
     >
       {protagonistas}
     </p>
@@ -48,19 +70,33 @@ const iniciales = obtenerIniciales(protagonistas);
       class="sello-sobre-btn group relative mt-7 block w-[min(86vw,340px)] cursor-pointer overflow-visible rounded focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-[var(--accent)]"
     >
       <span class="sello-sobre relative block aspect-[3/2] w-full overflow-visible">
-        <!-- Fondo interior del sobre (visible cuando se levanta la solapa) -->
+        <!-- Interior del sobre (visible cuando se levanta la solapa) -->
         <span class="sello-base" aria-hidden="true"></span>
 
-        <!-- Pliegues laterales e inferior del sobre -->
+        <!-- Pliegues laterales, solapa inferior y sombra proyectada estática bajo la solapa -->
         <svg
           class="sello-pliegues pointer-events-none absolute inset-0 z-[2] block h-full w-full"
           viewBox="0 0 340 226"
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          <path d="M1 1 L170 116 L1 225 Z" fill="var(--surface)" />
-          <path d="M339 1 L170 116 L339 225 Z" fill="var(--surface)" />
-          <path d="M1 225 L154 106 Q170 95 186 106 L339 225 Z" fill="var(--surface)" />
+          <defs>
+            <linearGradient id="sello-sombra-solapa" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--ink)" stop-opacity="0.04" />
+              <stop offset="72%" stop-color="var(--ink)" stop-opacity="0.14" />
+              <stop offset="100%" stop-color="var(--ink)" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <path d="M1 1 L170 118 L1 225 Z" class="sello-cara-izq" />
+          <path d="M339 1 L170 118 L339 225 Z" class="sello-cara-der" />
+          <path d="M1 225 L154 106 Q170 95 186 106 L339 225 Z" class="sello-cara-inf" />
+          <path
+            d="M2 224 L154 107 Q170 96 186 107 L338 224"
+            fill="none"
+            class="sello-luz-pliegue"
+            stroke-width="1"
+            vector-effect="non-scaling-stroke"
+          />
           <path
             d="M1 1 L148 102 M339 1 L192 102 M1 225 L154 106 Q170 95 186 106 L339 225"
             fill="none"
@@ -68,9 +104,17 @@ const iniciales = obtenerIniciales(protagonistas);
             stroke-width="1"
             vector-effect="non-scaling-stroke"
           />
+          <path
+            d="M8 2 L332 2 L179 132 Q170 139 161 132 Z"
+            fill="url(#sello-sombra-solapa)"
+            class="sello-solapa-sombra"
+          />
         </svg>
 
-        <!-- Solapa triangular superior sin overflow-hidden para rotar libremente -->
+        <!-- Textura fija sutil sobre el cuerpo del sobre (fuera de la solapa 3D para 60fps) -->
+        <span class="sello-sobre-grano pointer-events-none absolute inset-0 z-[3] overflow-hidden rounded-[4px]" aria-hidden="true"></span>
+
+        <!-- Solapa triangular superior en capa 3D limpia (sin filtros SVG en vivo) -->
         <span class="sello-solapa-escena" aria-hidden="true">
           <span class="sello-solapa">
             <svg
@@ -78,21 +122,89 @@ const iniciales = obtenerIniciales(protagonistas);
               viewBox="0 0 340 134"
               preserveAspectRatio="none"
             >
+              <defs>
+                <linearGradient id="sello-grad-solapa" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--surface)" />
+                  <stop offset="100%" stop-color="var(--bg)" />
+                </linearGradient>
+              </defs>
               <path
                 d="M1 1 L339 1 L178 125 Q170 131 162 125 Z"
                 class="sello-solapa-forma"
+              />
+              <path
+                d="M10 3 L330 3 L177 120 Q170 125 163 120 Z"
+                fill="none"
+                class="sello-solapa-ribete"
+                stroke-width="0.9"
+                vector-effect="non-scaling-stroke"
               />
             </svg>
           </span>
         </span>
 
-        <!-- Sello circular táctil tipo lacre centrado en la punta de la solapa -->
+        <!-- Sello de lacre dimensional con silueta orgánica y doble relieve hundido -->
         <span class="sello-lacre z-10" aria-hidden="true">
           <span class="sello-pulso"></span>
-          <span class="sello-lacre-aro-ext"></span>
-          <span class="sello-lacre-cuerpo">
-            <span class="sello-lacre-aro-int"></span>
-            <span class="font-display relative text-[1.4rem] font-medium italic leading-none tracking-[0.06em] sm:text-[1.55rem]">
+          <span class="sello-lacre-pieza">
+            <svg
+              class="h-full w-full overflow-visible"
+              viewBox="0 0 100 100"
+              fill="none"
+            >
+              <defs>
+                <radialGradient id="sello-cera-grad" cx="34%" cy="28%" r="72%">
+                  <stop offset="0%" stop-color="var(--cera-luz)" />
+                  <stop offset="46%" stop-color="var(--cera-base)" />
+                  <stop offset="84%" stop-color="var(--cera-profunda)" />
+                  <stop offset="100%" stop-color="var(--cera-sombra)" />
+                </radialGradient>
+                <linearGradient id="sello-cuno-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="var(--cera-sombra)" stop-opacity="0.52" />
+                  <stop offset="52%" stop-color="var(--cera-base)" stop-opacity="0.12" />
+                  <stop offset="100%" stop-color="var(--cera-luz)" stop-opacity="0.45" />
+                </linearGradient>
+              </defs>
+              <!-- Sombra de contacto orgánica sobre el papel -->
+              <path
+                d="M52 8 C66 7 79 13 87 24 C95 34 97 49 93 63 C89 77 78 88 65 93 C52 98 36 96 24 88 C12 80 6 66 7 51 C8 36 14 22 26 14 C35 8 43 8.5 52 8 Z"
+                transform="translate(0 3.2)"
+                fill="var(--cera-contacto)"
+              />
+              <!-- Cuerpo orgánico de cera -->
+              <path
+                d="M52 7 C66 6 79 12 87 23 C95 34 97 49 93 63 C89 77 78 88 65 93 C52 98 36 96 24 88 C12 80 6 66 7 51 C8 36 14 22 26 14 C35 8 43 7.5 52 7 Z"
+                fill="url(#sello-cera-grad)"
+              />
+              <!-- Borde elevado del labio de cera -->
+              <circle
+                cx="50"
+                cy="50"
+                r="37"
+                stroke="var(--cera-luz)"
+                stroke-opacity="0.34"
+                stroke-width="1.2"
+              />
+              <!-- Cuño hundido con doble borde en relieve -->
+              <circle cx="50" cy="50" r="32.5" fill="url(#sello-cuno-grad)" />
+              <circle
+                cx="50"
+                cy="50"
+                r="32.5"
+                stroke="var(--cera-sombra)"
+                stroke-opacity="0.52"
+                stroke-width="1.4"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="29"
+                stroke="var(--cera-luz)"
+                stroke-opacity="0.44"
+                stroke-width="0.9"
+              />
+            </svg>
+            <span class="sello-iniciales font-display">
               {iniciales}
             </span>
           </span>
@@ -100,18 +212,24 @@ const iniciales = obtenerIniciales(protagonistas);
       </span>
     </button>
 
-    <p class="mt-6 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--ink-muted)]">
+    <p class="mt-7 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--ink-muted)]">
       Toca el sello
     </p>
   </div>
 
-  <button
-    type="button"
-    data-sello-silencio
-    class="sello-silencio inline-flex min-h-[44px] cursor-pointer items-center justify-center px-4 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--ink-muted)] opacity-75 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-  >
-    Entrar sin música
-  </button>
+  {
+    tieneMusica ? (
+      <button
+        type="button"
+        data-sello-silencio
+        class="sello-silencio relative z-10 inline-flex min-h-[44px] cursor-pointer items-center justify-center px-4 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--ink-muted)] opacity-75 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+      >
+        Entrar sin música
+      </button>
+    ) : (
+      <span class="h-6 shrink-0" aria-hidden="true"></span>
+    )
+  }
 </div>
 
 <style>
@@ -121,7 +239,7 @@ const iniciales = obtenerIniciales(protagonistas);
 
   .sello-bienvenida {
     overscroll-behavior: contain;
-    overflow: visible;
+    overflow: hidden;
     transform: translate3d(0, 0, 0);
     opacity: 1;
     transition:
@@ -152,11 +270,41 @@ const iniciales = obtenerIniciales(protagonistas);
     position: absolute;
     inset: 0;
     border-radius: 4px;
-    background-color: color-mix(in srgb, var(--bg) 48%, var(--surface));
+    background-color: color-mix(in srgb, var(--ink) 7%, var(--bg));
     border: 1px solid var(--border-soft);
     box-shadow:
-      0 24px 48px -30px color-mix(in srgb, var(--ink) 28%, transparent),
-      0 6px 18px -10px color-mix(in srgb, var(--ink) 14%, transparent);
+      inset 0 14px 22px -14px color-mix(in srgb, var(--ink) 16%, transparent),
+      0 26px 46px -28px color-mix(in srgb, var(--ink) 28%, transparent),
+      0 8px 18px -10px color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+
+  .sello-cara-izq {
+    fill: color-mix(in srgb, var(--ink) 3%, var(--surface));
+  }
+
+  .sello-cara-der {
+    fill: color-mix(in srgb, var(--ink) 5.5%, var(--surface));
+  }
+
+  .sello-cara-inf {
+    fill: color-mix(in srgb, var(--bg) 16%, var(--surface));
+  }
+
+  .sello-luz-pliegue {
+    stroke: color-mix(in srgb, var(--surface) 78%, transparent);
+  }
+
+  .sello-solapa-sombra {
+    opacity: 1;
+    transition: opacity 0.24s var(--ease);
+  }
+
+  .sello-sobre-grano {
+    background-image: radial-gradient(
+      circle at 22% 18%,
+      color-mix(in srgb, var(--surface) 45%, transparent),
+      transparent 62%
+    );
   }
 
   .sello-solapa-escena {
@@ -174,18 +322,29 @@ const iniciales = obtenerIniciales(protagonistas);
     height: 59%;
     transform-origin: top center;
     transform: rotateX(0deg);
-    transition: transform 0.52s var(--ease) 0.06s;
+    transition: transform 0.54s var(--ease) 0.06s;
     will-change: transform;
   }
 
   .sello-solapa-forma {
-    fill: color-mix(in srgb, var(--bg) 18%, var(--surface));
+    fill: url(#sello-grad-solapa);
     stroke: var(--border-soft);
     stroke-width: 1;
     vector-effect: non-scaling-stroke;
   }
 
+  .sello-solapa-ribete {
+    stroke: color-mix(in srgb, var(--surface) 64%, var(--border-soft));
+    stroke-opacity: 0.55;
+  }
+
   .sello-lacre {
+    --cera-luz: color-mix(in srgb, var(--surface) 32%, var(--accent));
+    --cera-base: var(--accent);
+    --cera-profunda: color-mix(in srgb, var(--ink) 26%, var(--accent));
+    --cera-sombra: color-mix(in srgb, var(--ink) 44%, var(--accent));
+    --cera-contacto: color-mix(in srgb, var(--ink) 26%, transparent);
+    --cera-tinta: color-mix(in srgb, var(--bg) 92%, var(--surface));
     position: absolute;
     left: 50%;
     top: 56%;
@@ -204,45 +363,44 @@ const iniciales = obtenerIniciales(protagonistas);
     transform: translate3d(-50%, -50%, 0) scale(0.95);
   }
 
-  .sello-lacre-cuerpo {
+  .sello-lacre-pieza {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 4.5rem;
-    width: 4.5rem;
-    border-radius: 9999px;
-    background-color: var(--accent);
-    color: var(--surface);
-    box-shadow:
-      0 10px 22px -10px color-mix(in srgb, var(--ink) 38%, transparent),
-      inset 0 1px 0 color-mix(in srgb, var(--surface) 32%, transparent);
+    width: 4.9rem;
+    height: 4.9rem;
   }
 
   @media (min-width: 640px) {
-    .sello-lacre-cuerpo {
-      height: 4.85rem;
-      width: 4.85rem;
+    .sello-lacre-pieza {
+      width: 5.25rem;
+      height: 5.25rem;
     }
   }
 
-  .sello-lacre-aro-int {
+  .sello-iniciales {
     position: absolute;
-    inset: 5px;
-    border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--surface) 44%, transparent);
+    font-size: 1.35rem;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    color: var(--cera-tinta);
+    text-shadow:
+      0 -1px 0 color-mix(in srgb, var(--ink) 40%, transparent),
+      0 1px 0 color-mix(in srgb, var(--surface) 24%, transparent);
   }
 
-  .sello-lacre-aro-ext {
-    position: absolute;
-    inset: -5px;
-    border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  @media (min-width: 640px) {
+    .sello-iniciales {
+      font-size: 1.5rem;
+    }
   }
 
   .sello-pulso {
     position: absolute;
-    inset: -2px;
+    inset: 2px;
     border-radius: 9999px;
     border: 1px solid var(--accent);
     opacity: 0;
@@ -251,24 +409,24 @@ const iniciales = obtenerIniciales(protagonistas);
 
   @keyframes sello-pulso-suave {
     0% {
-      opacity: 0.48;
+      opacity: 0.42;
       transform: scale(1);
     }
     70%,
     100% {
       opacity: 0;
-      transform: scale(1.42);
+      transform: scale(1.36);
     }
   }
 
   @media (prefers-reduced-motion: no-preference) {
     .sello-pulso {
-      animation: sello-pulso-suave 2.6s var(--ease) infinite;
+      animation: sello-pulso-suave 2.8s var(--ease) infinite;
       will-change: transform, opacity;
     }
   }
 
-  /* Secuencia de apertura al tocar el sello o el sobre */
+  /* Secuencia de apertura 3D al tocar el sello o el sobre */
   .sello-bienvenida[data-estado='abriendo'] {
     opacity: 0;
     transform: translate3d(0, -18px, 0);
@@ -285,6 +443,10 @@ const iniciales = obtenerIniciales(protagonistas);
     opacity: 0;
   }
 
+  .sello-bienvenida[data-estado='abriendo'] .sello-solapa-sombra {
+    opacity: 0;
+  }
+
   .sello-bienvenida[data-estado='abriendo'] .sello-solapa {
     transform: rotateX(-165deg);
   }
@@ -298,7 +460,7 @@ const iniciales = obtenerIniciales(protagonistas);
     opacity: 0;
   }
 
-  /* Salida directa al entrar sin música */
+  /* Salida directa al elegir entrar sin música */
   .sello-bienvenida[data-estado='cerrando'] {
     opacity: 0;
     transform: translate3d(0, -24px, 0);
@@ -312,6 +474,7 @@ const iniciales = obtenerIniciales(protagonistas);
     .sello-bienvenida,
     .sello-contenido,
     .sello-solapa,
+    .sello-solapa-sombra,
     .sello-lacre,
     .sello-silencio {
       transition: none !important;
@@ -329,6 +492,7 @@ const iniciales = obtenerIniciales(protagonistas);
   if (sello) {
     const btnAbrir = sello.querySelector<HTMLButtonElement>('[data-sello-abrir]');
     const btnSilencio = sello.querySelector<HTMLButtonElement>('[data-sello-silencio]');
+    const tieneMusica = sello.dataset.tieneMusica === 'true';
     const consultaMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
     let cerrado = false;
 
@@ -352,19 +516,19 @@ const iniciales = obtenerIniciales(protagonistas);
       liberarScroll();
     }
 
-    const cerrar = (conMusica: boolean) => {
+    const cerrar = (animarSobre: boolean, iniciarMusica: boolean) => {
       if (cerrado) return;
       cerrado = true;
 
-      // Se dispara sincrónicamente dentro del clic para habilitar audio en iOS y Android
-      if (conMusica) {
+      // Se dispara sincrónicamente dentro del clic solo cuando el evento incluye música
+      if (iniciarMusica && tieneMusica) {
         window.dispatchEvent(new CustomEvent('signato:iniciar-musica'));
       }
 
       liberarScroll();
       sello.classList.add('pointer-events-none');
       sello.setAttribute('aria-hidden', 'true');
-      sello.dataset.estado = conMusica ? 'abriendo' : 'cerrando';
+      sello.dataset.estado = animarSobre ? 'abriendo' : 'cerrando';
 
       if (consultaMovimiento.matches) {
         retirarDelFlujo();
@@ -381,13 +545,13 @@ const iniciales = obtenerIniciales(protagonistas);
       sello.addEventListener('transitionend', (evento) => {
         if (evento.target === sello) finalizar();
       });
-      window.setTimeout(finalizar, conMusica ? 1000 : 520);
+      window.setTimeout(finalizar, animarSobre ? 1020 : 520);
     };
 
-    btnAbrir?.addEventListener('click', () => cerrar(true));
-    btnSilencio?.addEventListener('click', () => cerrar(false));
+    btnAbrir?.addEventListener('click', () => cerrar(true, tieneMusica));
+    btnSilencio?.addEventListener('click', () => cerrar(false, false));
     document.addEventListener('keydown', (evento) => {
-      if (evento.key === 'Escape' && !cerrado) cerrar(false);
+      if (evento.key === 'Escape' && !cerrado) cerrar(false, false);
     });
   }
 </script>

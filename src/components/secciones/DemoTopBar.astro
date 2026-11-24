@@ -1,0 +1,66 @@
+---
+import { obtenerEnlaceCotizacion } from '../../data/marca';
+
+interface Props {
+  tema: string;
+}
+
+const { tema } = Astro.props;
+const etiquetas: Record<string, string> = {
+  clasico: 'CLÁSICO',
+  'xv-editorial': 'EDITORIAL',
+  base: 'ESENCIAL',
+};
+const etiqueta = etiquetas[tema] ?? tema.toUpperCase();
+const enlace = obtenerEnlaceCotizacion();
+---
+
+<div class="demo-topbar fixed inset-x-0 top-0 z-[45] h-11">
+  <div class="mx-auto flex h-full w-full max-w-3xl items-center justify-between gap-2 px-3 sm:px-5">
+    <a
+      href="/#muestras"
+      class="demo-topbar__volver inline-flex min-h-11 items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.16em]"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14.5 6.5 9 12l5.5 5.5" />
+      </svg>
+      Volver
+    </a>
+    <p class="demo-topbar__tema text-[10px] font-semibold uppercase tracking-[0.3em]">{etiqueta}</p>
+    <a
+      href={enlace}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="demo-topbar__cta inline-flex h-8 items-center px-3.5 text-[10px] font-semibold uppercase tracking-[0.14em]"
+    >
+      Quiero una así
+    </a>
+  </div>
+</div>
+
+<style>
+  .demo-topbar {
+    background-color: color-mix(in srgb, var(--bg) 78%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .demo-topbar__volver {
+    color: var(--ink);
+  }
+  .demo-topbar__tema {
+    color: var(--ink-muted);
+  }
+  .demo-topbar__cta {
+    border-radius: 999px;
+    background-color: var(--ink);
+    color: var(--bg);
+    text-decoration: none;
+    touch-action: manipulation;
+  }
+  .demo-topbar__volver:focus-visible,
+  .demo-topbar__cta:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>

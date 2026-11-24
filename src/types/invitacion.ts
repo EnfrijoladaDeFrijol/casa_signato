@@ -2,7 +2,7 @@ export type PlanTipo = 'plata' | 'gold' | 'diamante';
 
 export type CategoriaEvento = 'xv-anos' | 'bodas' | 'bautizos' | 'cumpleanos';
 
-export type TemaInvitacion = 'base' | 'xv-editorial';
+export type TemaInvitacion = 'clasico' | 'base' | 'xv-editorial';
 
 export type IconoItinerario =
   | 'ceremonia'
@@ -180,6 +180,8 @@ export interface ClienteInvitacion {
   ciudad: string;
   fotoPortada: string;
   fotoPortadaAlt?: string;
+  fotoPosicion?: string;
+  sobreBienvenida?: boolean;
   ogImage?: string;
 
   padresPadrinos?: PadresPadrinosData;

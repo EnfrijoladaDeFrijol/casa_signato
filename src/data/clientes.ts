@@ -5,7 +5,7 @@ export const clientes: ClienteInvitacion[] = [
   {
     slug: 'mateo',
     categoria: 'bautizos',
-    tema: 'base',
+    tema: 'clasico',
     plan: 'plata',
     esDemo: true,
     temaColores: {
@@ -18,14 +18,15 @@ export const clientes: ClienteInvitacion[] = [
     protagonistas: 'Mateo Hernández',
     subtitulo: 'Mi Bautizo',
     frase:
-      'Con la bendición de Dios y el amor de nuestra familia, damos la bienvenida a Mateo en su primer sacramento.',
+      'Con la bendición de Dios y el amor de nuestra familia, celebramos el primer sacramento de Mateo.',
     fechaISO: '2027-04-17',
     horaInicio: '12:00',
     ciudad: 'Querétaro, Qro.',
     fotoPortada: '/demos/bautizo-portada.webp',
     fotoPortadaAlt: 'Portada editorial del bautizo de Mateo Hernández',
+    fotoPosicion: 'center',
     padresPadrinos: {
-      nota: 'Agradecemos profundamente el cariño y guía de quienes acompañan este día tan especial.',
+      nota: 'Con gratitud a quienes acompañan y guían sus primeros pasos.',
       grupos: [
         {
           titulo: 'Sus papás',
@@ -43,7 +44,7 @@ export const clientes: ClienteInvitacion[] = [
         nombre: 'Parroquia de Santa Rosa de Viterbo',
         direccion: 'Calle José María Arteaga 89, Centro, Santiago de Querétaro, Qro.',
         hora: '12:00 hrs',
-        referencia: 'Se sugiere llegar 15 minutos antes del inicio.',
+        referencia: 'Llegar 15 minutos antes.',
         googleMapsUrl:
           'https://maps.google.com/?q=Templo+de+Santa+Rosa+de+Viterbo+Queretaro',
         wazeUrl:
@@ -54,7 +55,7 @@ export const clientes: ClienteInvitacion[] = [
         nombre: 'Jardín Los Olivos',
         direccion: 'Calzada de los Arcos 214, Carretas, Santiago de Querétaro, Qro.',
         hora: '14:00 hrs',
-        referencia: 'Estacionamiento con valet disponible en la entrada principal.',
+        referencia: 'Valet parking en la entrada principal.',
         googleMapsUrl: 'https://maps.google.com/?q=Calzada+de+los+Arcos+Queretaro',
       },
     ],
@@ -69,7 +70,7 @@ export const clientes: ClienteInvitacion[] = [
   {
     slug: 'karen-y-luis',
     categoria: 'bodas',
-    tema: 'base',
+    tema: 'clasico',
     plan: 'gold',
     modulosOverride: {
       rsvpGoogleForm: true,
@@ -91,6 +92,7 @@ export const clientes: ClienteInvitacion[] = [
     ciudad: 'San Miguel de Allende, Gto.',
     fotoPortada: '/demos/boda-portada.webp',
     fotoPortadaAlt: 'Portada editorial de la boda de Karen y Luis',
+    fotoPosicion: 'center 30%',
     padresPadrinos: {
       nota: 'Con la bendición de nuestros padres, celebramos el amor que nos une.',
       grupos: [
@@ -258,7 +260,7 @@ export const clientes: ClienteInvitacion[] = [
   {
     slug: 'sofia-xv',
     categoria: 'xv-anos',
-    tema: 'xv-editorial',
+    tema: 'clasico',
     plan: 'diamante',
     esDemo: true,
     temaColores: PALETAS_POR_ID['rosa-polvo'].colores,
@@ -270,8 +272,9 @@ export const clientes: ClienteInvitacion[] = [
     fechaISO: '2027-09-18',
     horaInicio: '18:00',
     ciudad: 'Guadalajara, Jal.',
-    fotoPortada: '/demos/portada-xv.svg',
+    fotoPortada: '/demos/xv-portada.webp',
     fotoPortadaAlt: 'Portada editorial de los XV años de Sofía Ramírez',
+    fotoPosicion: 'center 20%',
     padresPadrinos: {
       nota: 'Gracias por sostener mi mano, creer en mis sueños y celebrar conmigo esta noche inolvidable.',
       grupos: [
