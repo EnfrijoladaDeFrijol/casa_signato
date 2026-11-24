@@ -1,0 +1,65 @@
+---
+// Utilidad reutilizable de borde rasgado orgánico (papel hecho a mano, sin ondas geométricas).
+interface Props {
+  posicion: 'superior' | 'inferior';
+  sombra?: 'suave' | 'foto';
+  class?: string;
+}
+
+const { posicion, sombra = 'suave', class: clase } = Astro.props;
+
+let semilla = posicion === 'superior' ? 19 : 37;
+const azar = () => {
+  semilla = (semilla * 16807) % 2147483647;
+  return semilla / 2147483647;
+};
+
+const ANCHO = 1200;
+const ALTO = 32;
+const puntos: string[] = [];
+let yBorde = 15;
+
+for (let x = 0; x <= ANCHO; x += 4 + Math.round(azar() * 8)) {
+  yBorde += (azar() - 0.5) * 6.5;
+  yBorde = Math.min(22, Math.max(7, yBorde));
+  const fibra = azar() > 0.84 ? (azar() - 0.5) * 6 : 0;
+  puntos.push(`${x},${(yBorde + fibra).toFixed(1)}`);
+}
+puntos.push(`${ANCHO},${yBorde.toFixed(1)}`);
+
+const trazoPapel =
+  posicion === 'superior'
+    ? `M0,0 L${puntos.join(' L')} L${ANCHO},0 Z`
+    : `M0,${ALTO} L${puntos.join(' L')} L${ANCHO},${ALTO} Z`;
+
+const desplazamientoSombra =
+  posicion === 'superior' ? 'translate(0 2.2)' : 'translate(0 -2.2)';
+---
+
+<svg
+  class:list={[
+    'borde-rasgado pointer-events-none absolute inset-x-0 z-[5] block h-6 w-full sm:h-8',
+    posicion === 'superior' ? '-top-px' : '-bottom-px',
+    clase,
+  ]}
+  data-sombra={sombra}
+  viewBox={`0 0 ${ANCHO} ${ALTO}`}
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={trazoPapel} transform={desplazamientoSombra} class="borde-rasgado__sombra" />
+  <path d={trazoPapel} class="borde-rasgado__papel" />
+</svg>
+
+<style>
+  .borde-rasgado__papel {
+    fill: var(--bg);
+  }
+  .borde-rasgado__sombra {
+    fill: color-mix(in srgb, var(--ink) 11%, transparent);
+  }
+  .borde-rasgado[data-sombra='foto'] .borde-rasgado__sombra {
+    fill: color-mix(in srgb, var(--ink) 28%, transparent);
+  }
+</style>

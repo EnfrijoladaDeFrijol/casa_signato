@@ -1,7 +1,7 @@
 ---
 import type { RsvpGoogleFormData, RsvpWhatsappData } from '../../types/invitacion';
 import SeccionTitulo from './SeccionTitulo.astro';
-import Ornamento from './Ornamento.astro';
+import InvitacionIcono from './InvitacionIcono.astro';
 
 interface Props {
   mostrarWhatsapp: boolean;
@@ -28,32 +28,40 @@ const instruccion =
     : 'Tu confirmación nos ayuda a preparar cada detalle para recibirte como mereces.';
 ---
 
-<section aria-labelledby="titulo-rsvp" data-tono="tinta">
+<section aria-labelledby="titulo-rsvp" class="inv-papel">
   <div class="mx-auto max-w-xl text-center">
-    <Ornamento class="mb-8" />
+    <InvitacionIcono
+      nombre="mensaje"
+      class="inv-icon-draw mx-auto mb-5 h-10 w-10 text-[var(--ink)] opacity-85"
+    />
+
     <SeccionTitulo
       id="titulo-rsvp"
-      eyebrow="Tu presencia"
+      eyebrow="Confirmación"
       titulo="Confirmar Asistencia"
       lede={instruccion}
     />
 
     {
       fechaLimite && (
-        <p class="inv-quote mt-6 text-[1.15rem] !text-[var(--bg)]" data-reveal style="--rv: 1">
-          Fecha límite: {fechaLimite}
+        <p class="inv-quote mt-6 text-[1.15rem] !text-[var(--ink)]" data-reveal style="--rv: 1">
+          Favor de confirmar antes del {fechaLimite}
         </p>
       )
     }
 
-    <div class="mx-auto mt-10 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center" data-reveal style="--rv: 2">
+    <div
+      class="mx-auto mt-9 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center"
+      data-reveal
+      style="--rv: 2"
+    >
       {
         mostrarGoogleForm && rsvpGoogleForm && (
           <a
             href={rsvpGoogleForm.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="inv-btn inv-btn--invert active:scale-[0.98]"
+            class="inv-btn inv-btn--tinta min-h-[46px] px-7 active:scale-[0.98]"
           >
             {rsvpGoogleForm.etiquetaBoton || 'Confirmar en formulario'}
           </a>
@@ -67,8 +75,10 @@ const instruccion =
             target="_blank"
             rel="noopener noreferrer"
             class:list={[
-              'inv-btn active:scale-[0.98]',
-              mostrarGoogleForm ? 'inv-btn--invert-line' : 'inv-btn--invert',
+              'inv-btn min-h-[46px] px-7 active:scale-[0.98]',
+              mostrarGoogleForm
+                ? 'border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--bg)]'
+                : 'inv-btn--tinta',
             ]}
           >
             {rsvpWhatsapp.etiquetaBoton || 'Confirmar por WhatsApp'}

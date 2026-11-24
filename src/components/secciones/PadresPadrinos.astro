@@ -1,49 +1,149 @@
 ---
-import type { PadresPadrinosData } from '../../types/invitacion';
-import SeccionTitulo from './SeccionTitulo.astro';
-import InvitacionIcono from './InvitacionIcono.astro';
+import type { CategoriaEvento, PadresPadrinosData } from '../../types/invitacion';
 
 interface Props {
   datos: PadresPadrinosData;
+  protagonistas?: string;
+  fechaISO?: string;
+  categoria?: CategoriaEvento;
 }
 
-const { datos } = Astro.props;
-const dosGrupos = datos.grupos.length === 2;
+const { datos, protagonistas, fechaISO, categoria } = Astro.props;
+const totalGrupos = datos.grupos.length;
+
+const MESES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+];
+const DIAS_SEMANA = [
+  'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado',
+];
+
+const parejaMatch = protagonistas
+  ? /^(.+?)\s*(?:&|\by\b)\s*(.+)$/i.exec(protagonistas.trim())
+  : null;
+
+function desglosarFecha(iso?: string) {
+  if (!iso) return null;
+  const partes = iso.split('-').map(Number);
+  if (partes.length !== 3 || partes.some(Number.isNaN)) return null;
+  const [anio, mes, dia] = partes;
+  const utc = new Date(Date.UTC(anio, mes - 1, dia, 12));
+  return {
+    mes: MESES[mes - 1] ?? '',
+    diaSemana: DIAS_SEMANA[utc.getUTCDay()] ?? '',
+    dia: String(dia),
+    anio: String(anio),
+  };
+}
+
+const fechaArq = desglosarFecha(fechaISO);
+
+const lineaHonor =
+  categoria === 'bodas'
+    ? 'Tenemos el honor de invitarte a celebrar nuestra boda'
+    : categoria === 'xv-anos'
+      ? 'Tengo el honor de invitarte a celebrar mis XV años'
+      : categoria === 'bautizos'
+        ? 'Tenemos la alegría de invitarte a compartir este sacramento'
+        : 'Tenemos el honor de invitarte a nuestra celebración';
 ---
 
 <section aria-labelledby="titulo-padres" class="inv-papel">
-  <div class="mx-auto max-w-2xl">
-    <InvitacionIcono nombre="anillos" class="inv-icon-draw mx-auto mb-5 h-9 w-9 text-[var(--accent)]" />
-    <SeccionTitulo id="titulo-padres" eyebrow="Con la bendición de" titulo="Padres y Padrinos" />
+  <div class="mx-auto max-w-2xl text-center">
+    <h2 id="titulo-padres" class="inv-eyebrow" data-reveal>
+      Con la bendición de
+    </h2>
 
     {
       datos.nota && (
-        <p class="inv-lede mx-auto mt-5 max-w-sm text-center" data-reveal style="--rv: 1">
+        <p
+          class="mx-auto mt-4 max-w-md text-[0.75rem] font-medium uppercase leading-[1.9] tracking-[0.18em] text-[var(--ink-muted)]"
+          data-reveal
+          style="--rv: 1"
+        >
           {datos.nota}
         </p>
       )
     }
 
+    <div class="inv-divisor-clasico mt-6" data-reveal style="--rv: 1" aria-hidden="true">
+      <span class="inv-rombo"></span>
+    </div>
+
     <div
       class:list={[
-        'mt-12 grid divide-y divide-[var(--border-soft)]',
-        dosGrupos && 'sm:grid-cols-2 sm:divide-x sm:divide-y-0',
+        'mt-10 grid gap-x-4 gap-y-9 sm:gap-x-12',
+        totalGrupos >= 2 ? 'grid-cols-2' : 'grid-cols-1',
       ]}
     >
       {
-        datos.grupos.map((grupo, i) => (
-          <div class="px-4 py-8 text-center first:pt-2 last:pb-2 sm:py-4" data-reveal style={`--rv: ${i + 2}`}>
-            <h3 class="inv-eyebrow">{grupo.titulo}</h3>
-            <ul class="mt-4 space-y-2">
-              {grupo.nombres.map((nombre) => (
-                <li class="font-display text-[1.6rem] font-medium italic leading-tight text-[var(--ink)]">
-                  {nombre}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
+        datos.grupos.map((grupo, i) => {
+          const esTerceroImpar = totalGrupos === 3 && i === 2;
+          return (
+            <div
+              class:list={[
+                'min-w-0 text-center',
+                esTerceroImpar && 'col-span-2 mx-auto w-full max-w-xs border-t border-[var(--border-soft)] pt-8',
+              ]}
+              data-reveal
+              style={`--rv: ${i + 2}`}
+            >
+              <h3 class="text-[0.625rem] font-semibold uppercase tracking-[0.2em] text-[var(--accent)] sm:text-[0.6875rem]">
+                {grupo.titulo}
+              </h3>
+              <ul class="mt-3 space-y-1.5">
+                {grupo.nombres.map((nombre) => (
+                  <li class="font-display text-[1.15rem] font-medium leading-snug text-[var(--ink)] sm:text-[1.45rem]">
+                    {nombre}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })
       }
     </div>
+
+    {
+      protagonistas && (
+        <div class="mt-14 border-t border-[var(--border-soft)] pt-14 sm:mt-16 sm:pt-16" data-reveal style="--rv: 3">
+          {parejaMatch ? (
+            <p class="inv-script flex flex-col items-center leading-none text-[var(--ink)]">
+              <span class="text-[clamp(3.6rem,15.5vw,5.4rem)] leading-[0.95]">{parejaMatch[1].trim()}</span>
+              <span class="my-1.5 font-display text-[clamp(1.65rem,6vw,2.2rem)] italic text-[var(--accent)]">&amp;</span>
+              <span class="text-[clamp(3.6rem,15.5vw,5.4rem)] leading-[0.95]">{parejaMatch[2].trim()}</span>
+            </p>
+          ) : (
+            <p class="inv-script text-[clamp(3.15rem,13vw,4.8rem)] leading-[1.06] text-[var(--ink)]">
+              {protagonistas}
+            </p>
+          )}
+
+          <p class="mx-auto mt-8 max-w-xs text-[0.6875rem] font-medium uppercase leading-[1.85] tracking-[0.24em] text-[var(--ink-muted)]">
+            {lineaHonor}
+          </p>
+
+          {fechaArq && (
+            <div class="mx-auto mt-8 max-w-xs" data-reveal style="--rv: 4">
+              <p class="text-[0.75rem] font-semibold uppercase tracking-[0.34em] text-[var(--ink)]">
+                {fechaArq.mes}
+              </p>
+              <div class="mt-2.5 grid grid-cols-[1fr_auto_1fr] items-center gap-3.5 sm:gap-5">
+                <div class="border-y border-[var(--border-soft)] py-2 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-[var(--ink-muted)]">
+                  {fechaArq.diaSemana}
+                </div>
+                <span class="inv-num px-1 text-[clamp(3.15rem,13vw,4.2rem)] font-normal leading-none tracking-[-0.02em] text-[var(--ink)]">
+                  {fechaArq.dia}
+                </span>
+                <div class="border-y border-[var(--border-soft)] py-2 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-[var(--ink-muted)]">
+                  {fechaArq.anio}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )
+    }
   </div>
 </section>

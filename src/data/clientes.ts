@@ -117,6 +117,8 @@ export const clientes: ClienteInvitacion[] = [
         direccion: 'Principal s/n, Zona Centro, San Miguel de Allende, Gto.',
         hora: '17:00 hrs',
         referencia: 'Acceso por el atrio principal.',
+        foto: '/demos/parroquia_boda.webp',
+        fotoAlt: 'Fachada de la Parroquia de San Miguel Arcángel',
         googleMapsUrl:
           'https://maps.google.com/?q=Parroquia+de+San+Miguel+Arcangel+San+Miguel+de+Allende',
         wazeUrl:
@@ -128,6 +130,8 @@ export const clientes: ClienteInvitacion[] = [
         direccion: 'Carretera a Querétaro Km 9, San Miguel de Allende, Gto.',
         hora: '19:00 hrs',
         referencia: 'Cóctel de bienvenida en la terraza al llegar.',
+        foto: '/demos/hacienda_boda.webp',
+        fotoAlt: 'Jardines y terraza de Hacienda Viñedo San Lucas',
         googleMapsUrl:
           'https://maps.google.com/?q=San+Miguel+de+Allende+Guanajuato',
         wazeUrl: 'https://waze.com/ul?q=San+Miguel+de+Allende+Guanajuato',
@@ -141,34 +145,20 @@ export const clientes: ClienteInvitacion[] = [
     },
     galeria: [
       {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Sesión previa de Karen y Luis en el viñedo',
-        caption: 'Atardecer en San Miguel',
+        url: '/demos/bodaboda-foto1.webp',
+        alt: 'Retrato editorial de Karen y Luis en San Miguel de Allende',
       },
       {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Karen y Luis caminando por los arcos de piedra',
-        caption: 'Nuestro compromiso',
+        url: '/demos/boda-foto1_horizontal.webp',
+        alt: 'Karen y Luis compartiendo un momento al aire libre',
       },
       {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Detalle floral y argollas de compromiso',
-        caption: 'Los primeros preparativos',
+        url: '/demos/bodaboda-foto2.webp',
+        alt: 'Sesión previa de bodas de Karen y Luis',
       },
       {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Retrato editorial de la pareja en blanco y sepia',
-        caption: 'Camino al altar',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Paseo matutino en el centro histórico',
-        caption: 'Un día inolvidable',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Brindis de compromiso junto a familiares',
-        caption: 'Celebrando el sí',
+        url: '/demos/boda-foto2_horizontal.webp',
+        alt: 'Fotografía panorámica de Karen y Luis al atardecer',
       },
     ],
     itinerario: [

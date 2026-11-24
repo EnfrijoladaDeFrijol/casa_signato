@@ -2,7 +2,7 @@
 import type { ClienteInvitacion } from '../../../types/invitacion';
 import { formatearFechaCorta, formatearHora } from '../../../utils/fechas';
 import { obtenerEtiquetaCategoria } from '../../../utils/categorias';
-import InvitacionIcono from '../../secciones/InvitacionIcono.astro';
+import BordeRasgado from '../../secciones/BordeRasgado.astro';
 
 interface Props {
   cliente: ClienteInvitacion;
@@ -10,27 +10,28 @@ interface Props {
 
 const { cliente } = Astro.props;
 
-// Borde de papel rasgado a mano: vértices irregulares y finos (semilla fija = build determinista)
-let semilla = 7;
-const azar = () => {
-  semilla = (semilla * 16807) % 2147483647;
-  return semilla / 2147483647;
-};
-const ANCHO = 1200;
-const puntos: string[] = [];
-let yBorde = 14;
-for (let x = 0; x <= ANCHO; x += 5 + Math.round(azar() * 9)) {
-  yBorde += (azar() - 0.5) * 7;
-  yBorde = Math.min(20, Math.max(6, yBorde));
-  const pico = azar() > 0.86 ? (azar() - 0.5) * 7 : 0;
-  puntos.push(`${x},${(yBorde + pico).toFixed(1)}`);
-}
-puntos.push(`${ANCHO},${yBorde.toFixed(1)}`);
-const bordeRasgado = `M0,30 L${puntos.join(' L')} L${ANCHO},30 Z`;
-const etiqueta = cliente.subtitulo || obtenerEtiquetaCategoria(cliente.categoria, true);
+const etiquetaPortada = cliente.subtitulo || obtenerEtiquetaCategoria(cliente.categoria, true);
+const etiquetaCategoria = obtenerEtiquetaCategoria(cliente.categoria, true);
 const fechaCorta = formatearFechaCorta(cliente.fechaISO);
 const horaTexto = formatearHora(cliente.horaInicio);
 const posicionFoto = cliente.fotoPosicion ? `object-position: ${cliente.fotoPosicion}` : undefined;
+
+function extraerIniciales(texto: string): [string, string?] {
+  const limpio = texto.trim();
+  const pareja = /^(.+?)\s*(?:&|\by\b)\s*(.+)$/i.exec(limpio);
+  if (pareja) {
+    const a = pareja[1].trim().charAt(0).toUpperCase();
+    const b = pareja[2].trim().charAt(0).toUpperCase();
+    return b ? [a, b] : [a];
+  }
+  const palabras = limpio.split(/\s+/).filter(Boolean);
+  if (palabras.length >= 2) {
+    return [palabras[0].charAt(0).toUpperCase(), palabras[1].charAt(0).toUpperCase()];
+  }
+  return [limpio.charAt(0).toUpperCase()];
+}
+
+const [inicialIzq, inicialDer] = extraerIniciales(cliente.protagonistas);
 ---
 
 <header class="hero-clasico">
@@ -50,20 +51,11 @@ const posicionFoto = cliente.fotoPosicion ? `object-position: ${cliente.fotoPosi
     <div class="hero-clasico__velo-sup pointer-events-none absolute inset-x-0 top-0 h-[30%]" aria-hidden="true"></div>
     <div class="hero-clasico__velo-inf pointer-events-none absolute inset-x-0 bottom-0 h-[54%]" aria-hidden="true"></div>
 
-    <svg
-      class="pointer-events-none absolute inset-x-0 bottom-[-1px] z-[5] block h-7 w-full sm:h-9"
-      viewBox="0 0 1200 30"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d={bordeRasgado} transform="translate(0 -2.5)" class="hero-clasico__borde-sombra" />
-      <path d={bordeRasgado} class="hero-clasico__borde" />
-    </svg>
+    <BordeRasgado posicion="inferior" sombra="foto" class="h-7 sm:h-9" />
 
     <div class="relative z-10 px-6 text-center" style="padding-top: calc(2.5rem + var(--demo-bar-h, 0px))">
       <p class="inv-enter hero-clasico__sutil text-[10px] font-semibold uppercase tracking-[0.34em] sm:text-[11px]" style="--i: 0">
-        {etiqueta}
+        {etiquetaPortada}
       </p>
     </div>
 
@@ -79,36 +71,56 @@ const posicionFoto = cliente.fotoPosicion ? `object-position: ${cliente.fotoPosi
         {cliente.ciudad}
       </p>
       <div class="inv-enter mt-6 flex justify-center" style="--i: 5" aria-hidden="true">
-        <svg class="hero-clasico__deslizar h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="hero-clasico__deslizar h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6.5 9.5L12 15l5.5-5.5" />
         </svg>
       </div>
     </div>
   </div>
 
-  {
-    cliente.frase && (
-      <div class="inv-papel bg-[var(--bg)] px-6 pb-14 pt-10 text-center sm:px-10 sm:pb-20">
-        <blockquote class="inv-quote mx-auto max-w-lg" data-reveal>
-          “{cliente.frase}”
-        </blockquote>
-        <div class="mt-7 flex justify-center">
-          <InvitacionIcono nombre="rama" class="inv-icon-draw h-7 w-24 text-[var(--accent)]" />
+  <div class="inv-papel bg-[var(--bg)] px-6 pb-12 pt-12 text-center sm:px-10 sm:pb-16 sm:pt-16">
+    {
+      cliente.frase && (
+        <div class="mx-auto max-w-lg">
+          <blockquote class="inv-quote" data-reveal>
+            “{cliente.frase}”
+          </blockquote>
+          <div class="inv-divisor-clasico mt-7" data-reveal style="--rv: 1" aria-hidden="true">
+            <span class="inv-rombo"></span>
+          </div>
         </div>
+      )
+    }
+
+    <div class:list={['flex flex-col items-center', cliente.frase ? 'mt-10' : 'mt-2']} data-reveal style="--rv: 2">
+      <div
+        class="flex items-center justify-center gap-5 sm:gap-7"
+        aria-label={`Monograma editorial de ${cliente.protagonistas}`}
+      >
+        <span class="font-display text-[clamp(3.6rem,14vw,5rem)] font-normal leading-none tracking-[0.04em] text-[var(--ink)]">
+          {inicialIzq}
+        </span>
+        {
+          inicialDer && (
+            <>
+              <span class="h-14 w-px bg-[var(--border-soft)] sm:h-16" aria-hidden="true"></span>
+              <span class="font-display text-[clamp(3.6rem,14vw,5rem)] font-normal leading-none tracking-[0.04em] text-[var(--ink)]">
+                {inicialDer}
+              </span>
+            </>
+          )
+        }
       </div>
-    )
-  }
+      <p class="mt-4 text-[0.6875rem] font-semibold uppercase tracking-[0.34em] text-[var(--ink-muted)]">
+        {etiquetaCategoria}
+      </p>
+    </div>
+  </div>
 </header>
 
 <style>
   .hero-clasico__img {
     object-position: center 22%;
-  }
-  .hero-clasico__borde {
-    fill: var(--bg);
-  }
-  .hero-clasico__borde-sombra {
-    fill: color-mix(in srgb, var(--ink) 30%, transparent);
   }
   .hero-clasico__velo-sup {
     background: linear-gradient(

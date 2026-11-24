@@ -15,9 +15,10 @@ const tieneColores = sugeridos.length > 0 || reservados.length > 0;
 
 <section aria-labelledby="titulo-dresscode" class="inv-papel">
   <div class="mx-auto max-w-lg text-center">
-    <div class="inv-medallon mx-auto mb-7 h-16 w-16" data-reveal>
-      <InvitacionIcono nombre="vestimenta" class="inv-icon-draw h-7 w-7" />
-    </div>
+    <InvitacionIcono
+      nombre="vestimenta"
+      class="inv-icon-draw mx-auto mb-5 h-10 w-10 text-[var(--ink)] opacity-85"
+    />
 
     <SeccionTitulo
       id="titulo-dresscode"
@@ -29,8 +30,8 @@ const tieneColores = sugeridos.length > 0 || reservados.length > 0;
     {
       tieneColores && (
         <div
-          class="inv-capsula mx-auto mt-10 max-w-md rounded-[1.75rem] px-6 py-8 text-center"
-          data-reveal="tarjeta"
+          class="mx-auto mt-10 max-w-md border-t border-[var(--border-soft)] pt-9 text-center"
+          data-reveal
           style="--rv: 1"
         >
           {sugeridos.length > 0 && (
@@ -43,7 +44,7 @@ const tieneColores = sugeridos.length > 0 || reservados.length > 0;
                     style={`--bi: ${idx}`}
                   >
                     <span
-                      class="inv-bolita h-14 w-14 rounded-full transition-transform duration-300 hover:scale-110"
+                      class="inv-bolita h-12 w-12 rounded-full transition-transform duration-300 hover:scale-105"
                       style={`background-color: ${color.hex};`}
                       aria-hidden="true"
                     />
@@ -80,7 +81,7 @@ const tieneColores = sugeridos.length > 0 || reservados.length > 0;
 
     {
       dressCode.nota && (
-        <p class="inv-quote mx-auto mt-8 max-w-sm text-center text-[1.1rem]" data-reveal style="--rv: 2">
+        <p class="inv-quote mx-auto mt-9 max-w-sm text-center text-[1.1rem]" data-reveal style="--rv: 2">
           {dressCode.nota}
         </p>
       )

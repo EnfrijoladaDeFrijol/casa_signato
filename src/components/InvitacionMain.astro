@@ -22,6 +22,7 @@ import Ornamento from './secciones/Ornamento.astro';
 import DemoThemeSwitcher from './secciones/DemoThemeSwitcher.astro';
 import DemoTopBar from './secciones/DemoTopBar.astro';
 import InterludioFoto from './secciones/InterludioFoto.astro';
+import BordeRasgado from './secciones/BordeRasgado.astro';
 
 interface Props {
   cliente: ClienteInvitacion;
@@ -33,7 +34,7 @@ const mostrarRsvp = modulos.rsvpWhatsapp || modulos.rsvpGoogleForm;
 const tieneMusica = Boolean(modulos.musica && cliente.musica);
 const mostrarSobre = cliente.sobreBienvenida !== false;
 
-// Fotos reales (no SVG) para dispersarlas a lo largo del recorrido
+// Fotografías reales (no SVG) distribuidas sin repetir entre galería, interludios y cierre
 const galeriaActiva = Boolean(modulos.galeria && cliente.galeria);
 const fotosReales = galeriaActiva
   ? (cliente.galeria ?? [])
@@ -41,16 +42,16 @@ const fotosReales = galeriaActiva
       .slice(0, obtenerLimiteGaleria(cliente.plan))
   : [];
 const hayFotos = fotosReales.length > 0;
+const fotoCierre = hayFotos ? fotosReales[fotosReales.length - 1] : undefined;
+const fotoInterludio = fotosReales.length > 4 ? fotosReales[0] : undefined;
+
 const fotosGaleria = hayFotos
-  ? fotosReales.length > 3
-    ? fotosReales.slice(3)
-    : fotosReales
+  ? fotosReales.length > 4
+    ? fotosReales.slice(1, -1)
+    : fotosReales.length >= 2
+      ? fotosReales.slice(0, -1)
+      : fotosReales
   : (cliente.galeria ?? []);
-const bandaDePortada =
-  galeriaActiva &&
-  !hayFotos &&
-  (cliente.plan === 'oro' || cliente.plan === 'diamante') &&
-  /\.webp(\?|#|$)/i.test(cliente.fotoPortada);
 ---
 
 <main class="inv-flow">
@@ -76,35 +77,24 @@ const bandaDePortada =
 
   {
     modulos.padresPadrinos && cliente.padresPadrinos && (
-      <PadresPadrinos datos={cliente.padresPadrinos} />
+      <PadresPadrinos
+        datos={cliente.padresPadrinos}
+        protagonistas={cliente.protagonistas}
+        fechaISO={cliente.fechaISO}
+        categoria={cliente.categoria}
+      />
     )
   }
 
   {
-    hayFotos && (
-      <InterludioFoto variante="arco" foto={fotosReales[0]} />
+    fotoInterludio && (
+      <InterludioFoto variante="arco" foto={fotoInterludio} />
     )
   }
 
   {
     modulos.contador && (
       <Contador fechaISO={cliente.fechaISO} horaInicio={cliente.horaInicio} />
-    )
-  }
-
-  {
-    hayFotos && fotosReales[1] && (
-      <InterludioFoto variante="banda" foto={fotosReales[1]} />
-    )
-  }
-
-  {
-    bandaDePortada && (
-      <InterludioFoto
-        variante="banda"
-        foto={{ url: cliente.fotoPortada, alt: cliente.fotoPortadaAlt || cliente.titulo }}
-        posicion="center 62%"
-      />
     )
   }
 
@@ -148,12 +138,6 @@ const bandaDePortada =
   }
 
   {
-    hayFotos && fotosReales[2] && (
-      <InterludioFoto variante="arco" foto={fotosReales[2]} />
-    )
-  }
-
-  {
     mostrarRsvp && (
       <RSVP
         mostrarWhatsapp={modulos.rsvpWhatsapp}
@@ -184,6 +168,34 @@ const bandaDePortada =
   {
     modulos.albumQr && cliente.albumQr && (
       <AlbumQR album={cliente.albumQr} />
+    )
+  }
+
+  {
+    fotoCierre && (
+      <div class="inv-cierre bg-[var(--bg)]">
+        <div class="inv-papel border-t border-[var(--border-soft)] px-6 pb-10 pt-12 text-center">
+          <div class="inv-divisor-clasico mb-5" aria-hidden="true">
+            <span class="inv-rombo"></span>
+          </div>
+          <p
+            class="text-[0.6875rem] font-semibold uppercase tracking-[0.3em] text-[var(--ink-muted)]"
+            data-reveal
+          >
+            Te esperamos para celebrar juntos
+          </p>
+        </div>
+        <div class="relative aspect-[16/11] max-h-[560px] w-full overflow-hidden bg-[var(--accent-soft)] sm:aspect-[16/9]">
+          <BordeRasgado posicion="superior" sombra="foto" class="h-7 sm:h-9" />
+          <img
+            src={fotoCierre.url}
+            alt={fotoCierre.alt}
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
+          />
+        </div>
+      </div>
     )
   }
 
