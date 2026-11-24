@@ -10,22 +10,38 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
 ---
 
 <aside
-  class="fixed bottom-4 right-4 z-40"
+  class="fixed bottom-4 right-4 z-40 flex flex-col items-end"
   aria-label="Reproductor de música de fondo"
   data-musica-widget
   data-modo-demo={esModoDemo ? 'true' : 'false'}
+  data-musica-titulo={musica.titulo}
 >
   {!esModoDemo && <audio data-musica-audio preload="none" loop src={musica.audioUrl} />}
+
+  <!-- Etiqueta breve en móvil al activar o pausar -->
+  <div
+    data-musica-toast
+    aria-hidden="true"
+    class="musica-toast pointer-events-none absolute bottom-[3.35rem] right-0 max-w-[14.5rem] rounded-full border border-[var(--border-soft)] px-3.5 py-2 text-right backdrop-blur-md sm:hidden"
+  >
+    <span class="block truncate text-[11px] font-semibold leading-tight text-[var(--ink)]">
+      {musica.titulo}
+    </span>
+    <span data-musica-toast-estado class="block truncate text-[10px] leading-tight text-[var(--ink-muted)]">
+      {musica.artista || 'Música del evento'}
+    </span>
+  </div>
 
   <button
     type="button"
     data-musica-boton
     aria-pressed="false"
-    class="musica-boton flex min-h-12 items-center gap-3 rounded-full border border-[var(--border-soft)] py-1.5 pl-1.5 pr-5 text-left text-xs font-medium text-[var(--ink)] backdrop-blur-md transition-[scale] duration-200 active:scale-[0.98]"
+    aria-label={`Reproducir música: ${musica.titulo}`}
+    class="musica-boton flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-soft)] p-0 text-left text-xs font-medium text-[var(--ink)] backdrop-blur-md transition-[scale,border-color] duration-200 active:scale-[0.98] sm:h-12 sm:w-auto sm:gap-3 sm:py-1.5 sm:pl-1.5 sm:pr-5"
   >
-    <span class="relative flex h-9 w-9 shrink-0 items-center justify-center">
+    <span class="relative flex h-full w-full shrink-0 items-center justify-center rounded-full text-[var(--accent)] sm:h-9 sm:w-9 sm:bg-[var(--accent)] sm:text-[var(--surface)]">
       <span class="musica-halo" aria-hidden="true"></span>
-      <span class="relative z-10 flex h-9 w-9 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--surface)]">
+      <span class="relative z-10 flex items-center justify-center">
         <svg data-icono-play class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
           <path d="M8.5 5.5v13l10-6.5-10-6.5z" />
         </svg>
@@ -35,7 +51,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
       </span>
     </span>
 
-    <span class="max-w-[150px] truncate">
+    <span class="hidden max-w-[155px] truncate sm:block">
       <span class="block truncate font-semibold leading-tight">{musica.titulo}</span>
       <span data-musica-estado class="block truncate text-[10px] text-[var(--ink-muted)]">
         {musica.artista || 'Música del evento'}
@@ -45,14 +61,42 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
 </aside>
 
 <style>
-  .musica-boton {
+  .musica-boton,
+  .musica-toast {
     background-color: color-mix(in srgb, var(--bg) 90%, transparent);
+  }
+
+  .musica-boton:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .musica-boton[aria-pressed='true'] {
+    border-color: var(--accent);
+  }
+
+  /* Etiqueta efímera en móvil: solo opacity + transform */
+  .musica-toast {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, 6px, 0);
+    transition:
+      opacity 0.28s var(--ease),
+      transform 0.28s var(--ease),
+      visibility 0s linear 0.28s;
+  }
+
+  .musica-toast[data-visible='true'] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
   }
 
   /* Halo: solo transform + opacity, activo únicamente mientras suena */
   .musica-halo {
     position: absolute;
-    inset: 0;
+    inset: -1px;
     border-radius: 999px;
     border: 1px solid var(--accent);
     opacity: 0;
@@ -66,9 +110,12 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .musica-toast {
+      transition: none;
+    }
     .musica-boton[aria-pressed='true'] .musica-halo {
       opacity: 0.55;
-      transform: scale(1.18);
+      transform: scale(1.16);
     }
   }
 
@@ -78,7 +125,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
       opacity: 0.6;
     }
     100% {
-      transform: scale(1.65);
+      transform: scale(1.55);
       opacity: 0;
     }
   }
@@ -93,44 +140,71 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
     const iconoPlay = widget.querySelector<SVGElement>('[data-icono-play]');
     const iconoPause = widget.querySelector<SVGElement>('[data-icono-pause]');
     const estado = widget.querySelector<HTMLElement>('[data-musica-estado]');
+    const toast = widget.querySelector<HTMLElement>('[data-musica-toast]');
+    const toastEstado = widget.querySelector<HTMLElement>('[data-musica-toast-estado]');
+    const titulo = widget.dataset.musicaTitulo || 'Música del evento';
     const esDemo = widget.dataset.modoDemo === 'true';
 
     if (!boton) return;
 
     let reproduciendo = false;
+    let temporizadorToast: number | undefined;
 
-    const actualizarUI = (activo: boolean, textoEstado?: string) => {
+    const mostrarToastMovil = (textoEstado?: string) => {
+      if (!toast) return;
+      if (toastEstado && textoEstado) {
+        toastEstado.textContent = textoEstado;
+      }
+      toast.dataset.visible = 'true';
+      window.clearTimeout(temporizadorToast);
+      temporizadorToast = window.setTimeout(() => {
+        delete toast.dataset.visible;
+      }, 2600);
+    };
+
+    const actualizarUI = (activo: boolean, textoEstado?: string, anunciar = false) => {
       reproduciendo = activo;
       boton.setAttribute('aria-pressed', activo ? 'true' : 'false');
+      boton.setAttribute(
+        'aria-label',
+        `${activo ? 'Pausar' : 'Reproducir'} música: ${titulo}`,
+      );
       iconoPlay?.classList.toggle('hidden', activo);
       iconoPause?.classList.toggle('hidden', !activo);
       if (estado && textoEstado) {
         estado.textContent = textoEstado;
       }
+      if (anunciar) {
+        mostrarToastMovil(textoEstado);
+      }
     };
 
     audio?.addEventListener('error', () => {
-      actualizarUI(false, 'Audio no disponible');
+      actualizarUI(false, 'Audio no disponible', true);
     });
 
     boton.addEventListener('click', async () => {
       if (esDemo || !audio) {
         const siguiente = !reproduciendo;
-        actualizarUI(siguiente, siguiente ? 'Demo sin archivo MP3' : 'Pausado (modo demo)');
+        actualizarUI(
+          siguiente,
+          siguiente ? 'Demo sin archivo MP3' : 'Pausado (modo demo)',
+          true,
+        );
         return;
       }
 
       if (reproduciendo) {
         audio.pause();
-        actualizarUI(false, 'Música en pausa');
+        actualizarUI(false, 'Música en pausa', true);
         return;
       }
 
       try {
         await audio.play();
-        actualizarUI(true, 'Reproduciendo');
+        actualizarUI(true, 'Reproduciendo', true);
       } catch {
-        actualizarUI(false, 'Toca para reintentar');
+        actualizarUI(false, 'Toca para reintentar', true);
       }
     });
   });

@@ -65,26 +65,86 @@ const estiloVariables = [
     <p id="inv-aviso" class="sr-only" role="status" aria-live="polite"></p>
 
     <script>
-      // Scroll-reveal ligero: solo opacity + translateY, una sola vez por elemento.
-      const elementos = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      // Scroll-reveal ligero y resiliente a scroll rápido en móvil:
+      // solo opacity + translateY, una sola vez por elemento.
+      const elementos = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-reveal]'),
+      );
       const reducirMovimiento = window.matchMedia(
         '(prefers-reduced-motion: reduce)',
       ).matches;
 
       if (reducirMovimiento || !('IntersectionObserver' in window)) {
         elementos.forEach((el) => el.classList.add('is-visible'));
-      } else {
-        const observador = new IntersectionObserver(
+      } else if (elementos.length > 0) {
+        const pendientes = new Set<HTMLElement>(elementos);
+        let rafPendiente = false;
+        let observador: IntersectionObserver | null = null;
+
+        const desconectarTodo = () => {
+          observador?.disconnect();
+          observador = null;
+          window.removeEventListener('scroll', programarRevision);
+          window.removeEventListener('resize', programarRevision);
+          window.removeEventListener('pageshow', verificarVisibles);
+        };
+
+        const revelar = (el: HTMLElement) => {
+          if (!pendientes.has(el)) return;
+          el.classList.add('is-visible');
+          pendientes.delete(el);
+          observador?.unobserve(el);
+          if (pendientes.size === 0) {
+            desconectarTodo();
+          }
+        };
+
+        const verificarVisibles = () => {
+          rafPendiente = false;
+          if (pendientes.size === 0) return;
+
+          const altoVentana =
+            window.innerHeight || document.documentElement.clientHeight;
+          const alFinal =
+            window.scrollY + altoVentana >=
+            document.documentElement.scrollHeight - 48;
+
+          for (const el of Array.from(pendientes)) {
+            if (alFinal || el.getBoundingClientRect().top <= altoVentana + 60) {
+              revelar(el);
+            }
+          }
+        };
+
+        const programarRevision = () => {
+          if (rafPendiente || pendientes.size === 0) return;
+          rafPendiente = true;
+          window.requestAnimationFrame(verificarVisibles);
+        };
+
+        observador = new IntersectionObserver(
           (entradas) => {
+            const altoVentana =
+              window.innerHeight || document.documentElement.clientHeight;
             for (const entrada of entradas) {
-              if (!entrada.isIntersecting) continue;
-              entrada.target.classList.add('is-visible');
-              observador.unobserve(entrada.target);
+              if (
+                entrada.isIntersecting ||
+                entrada.boundingClientRect.top <= altoVentana + 60
+              ) {
+                revelar(entrada.target as HTMLElement);
+              }
             }
           },
-          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+          { threshold: 0, rootMargin: '0px 0px 60px 0px' },
         );
-        elementos.forEach((el) => observador.observe(el));
+
+        pendientes.forEach((el) => observador?.observe(el));
+        window.addEventListener('scroll', programarRevision, { passive: true });
+        window.addEventListener('resize', programarRevision, { passive: true });
+        window.addEventListener('pageshow', verificarVisibles);
+
+        // Revela de inmediato lo que ya esté visible o sobre el pliegue actual
+        verificarVisibles();
       }
 
       const aviso = document.getElementById('inv-aviso');
