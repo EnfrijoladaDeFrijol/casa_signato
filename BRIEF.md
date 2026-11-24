@@ -70,7 +70,7 @@ Todas las invitaciones se renderizan desde un **único orquestador** (`src/compo
   - `src/types/invitacion.ts`: Tipos estrictos (`PlanTipo`, `CategoriaEvento`, `ModulosInvitacion`, `ClienteInvitacion`).
   - `src/utils/`: Lógica pura (`planes.ts`, `fechas.ts`, `categorias.ts`).
   - `src/data/clientes.ts`: Lista tipada de demos y clientes reales.
-  - `src/layouts/`: `BrandLayout.astro` (Casa Signato) e `InvitacionLayout.astro` (eventos).
+  - `src/layouts/`: `MarcaLayout.astro` (Casa Signato) e `InvitacionLayout.astro` (eventos).
   - `src/components/InvitacionMain.astro`: Orquestador central único.
   - `src/components/secciones/`: Secciones funcionales reutilizadas por todos los eventos (<150 líneas c/u).
   - `src/components/temas/`: Portadas (`Hero.astro`) y acentos visuales por estilo de invitación.

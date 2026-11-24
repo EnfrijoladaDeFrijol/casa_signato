@@ -1,0 +1,114 @@
+---
+import HeroMockup from './HeroMockup.astro';
+import {
+  esWhatsappActivo,
+  obtenerEnlaceCotizacion,
+  obtenerEtiquetaCtaCotizar,
+} from '../../data/marca';
+
+const enlaceCotizar = obtenerEnlaceCotizacion();
+const usaWhatsapp = esWhatsappActivo();
+const etiquetaCotizar = obtenerEtiquetaCtaCotizar();
+---
+
+<section id="inicio" class="velo-scope">
+  <div
+    class="velo-orb velo-orb--salvia cs-drift -top-10 -left-16 h-80 w-80 sm:h-[26rem] sm:w-[26rem]"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="velo-orb velo-orb--arcilla cs-drift-alt top-28 right-0 h-80 w-80 sm:right-6 sm:h-[28rem] sm:w-[28rem]"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="velo-orb velo-orb--salvia cs-drift-alt bottom-6 left-1/3 h-64 w-64 opacity-80"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 pt-7 pb-16 sm:px-6 sm:pt-12 sm:pb-20 lg:grid-cols-12 lg:gap-12 lg:py-20">
+    <div class="lg:col-span-7">
+      <div class="cs-enter flex items-center gap-3" style="--i: 0">
+        <span class="h-px w-6 bg-signato-secundario" aria-hidden="true"></span>
+        <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-signato-contraste/70">
+          Papelería digital boutique · México
+        </span>
+      </div>
+
+      <h1
+        class="cs-enter font-display mt-5 text-[2.6rem] font-medium leading-[1.03] tracking-[-0.01em] text-signato-contraste sm:text-6xl lg:text-[4.15rem]"
+        style="--i: 1"
+      >
+        Invitaciones digitales para{' '}
+        <em class="font-normal italic text-signato-principal">XV Años, bodas</em>{' '}
+        y bautizos
+      </h1>
+
+      <p
+        class="cs-enter mt-4 max-w-xl text-[15px] leading-relaxed text-signato-contraste/80 sm:mt-5 sm:text-base"
+        style="--i: 2"
+      >
+        Diseño editorial pensado para abrir al instante desde WhatsApp, con envíos ilimitados, entrega en{' '}
+        <strong class="font-semibold text-signato-contraste">24 a 72 horas</strong> y pago único desde{' '}
+        <strong class="font-semibold text-signato-contraste">$349 MXN</strong>.
+      </p>
+
+      <div
+        class="cs-enter mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center"
+        style="--i: 3"
+      >
+        <a
+          href="#muestras"
+          class="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full bg-signato-contraste px-6 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-signato-lienzo transition-all hover:bg-signato-principal active:scale-[0.98] sm:w-auto"
+        >
+          <span>Ver muestras en vivo</span>
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+
+        <a
+          href={enlaceCotizar}
+          target={usaWhatsapp ? '_blank' : undefined}
+          rel={usaWhatsapp ? 'noopener noreferrer' : undefined}
+          class="glass-surface inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-signato-contraste transition-all hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto"
+        >
+          <span>{etiquetaCotizar}</span>
+        </a>
+      </div>
+
+      <dl
+        class="cs-enter mt-7 grid grid-cols-3 gap-3 border-t border-signato-secundario/45 pt-5 sm:mt-9 sm:max-w-lg sm:gap-6"
+        style="--i: 4"
+      >
+        <div>
+          <dt class="text-[11px] font-medium uppercase tracking-[0.12em] text-signato-contraste/60">
+            Entrega
+          </dt>
+          <dd class="font-display mt-0.5 text-xl font-semibold text-signato-contraste sm:text-2xl">
+            24–72 hrs
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[11px] font-medium uppercase tracking-[0.12em] text-signato-contraste/60">
+            Envíos
+          </dt>
+          <dd class="font-display mt-0.5 text-xl font-semibold text-signato-contraste sm:text-2xl">
+            Ilimitados
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[11px] font-medium uppercase tracking-[0.12em] text-signato-contraste/60">
+            Desde
+          </dt>
+          <dd class="font-display mt-0.5 text-xl font-semibold text-signato-contraste sm:text-2xl">
+            $349 MXN
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="cs-enter lg:col-span-5" style="--i: 4">
+      <HeroMockup />
+    </div>
+  </div>
+</section>

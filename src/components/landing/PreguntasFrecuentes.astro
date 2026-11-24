@@ -1,0 +1,84 @@
+---
+import { PREGUNTAS_FRECUENTES } from '../../data/landing';
+---
+
+<section id="preguntas" class="border-t border-signato-secundario/35 bg-white/45 py-16 sm:py-24">
+  <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-12">
+    <div data-reveal class="lg:col-span-4">
+      <div class="flex items-center gap-3">
+        <span class="h-px w-6 bg-signato-secundario" aria-hidden="true"></span>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-signato-principal">
+          Dudas comunes
+        </p>
+      </div>
+      <h2 class="font-display mt-2.5 text-4xl font-medium leading-[1.06] text-signato-contraste sm:text-5xl">
+        Preguntas frecuentes
+      </h2>
+      <p class="mt-3 text-sm leading-relaxed text-signato-contraste/75">
+        Todo lo importante sobre tiempos de entrega, envíos, cambios y formas de pago antes de solicitar tu invitación.
+      </p>
+    </div>
+
+    <div class="divide-y divide-signato-secundario/45 border-y border-signato-secundario/45 lg:col-span-8">
+      {PREGUNTAS_FRECUENTES.map((item, idx) => (
+        <div data-reveal style={`--rv: ${Math.min(idx, 3)}`} data-faq-item>
+          <button
+            type="button"
+            data-faq-boton
+            aria-expanded="false"
+            aria-controls={`faq-panel-${idx}`}
+            class="flex min-h-[56px] w-full cursor-pointer items-center justify-between gap-4 py-4 text-left text-base font-medium text-signato-contraste transition-colors hover:text-signato-principal active:scale-[0.995] sm:py-5"
+          >
+            <span>{item.pregunta}</span>
+            <span
+              data-faq-icono
+              class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-signato-secundario/60 text-signato-principal transition-transform duration-300"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+              </svg>
+            </span>
+          </button>
+
+          <div
+            id={`faq-panel-${idx}`}
+            data-faq-panel
+            class="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-300 ease-out"
+          >
+            <div class="overflow-hidden">
+              <p class="pb-5 pr-8 text-sm leading-relaxed text-signato-contraste/75">
+                {item.respuesta}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-faq-item]'));
+
+  const fijarEstado = (item: HTMLElement, abrir: boolean) => {
+    const boton = item.querySelector<HTMLButtonElement>('[data-faq-boton]');
+    const panel = item.querySelector<HTMLElement>('[data-faq-panel]');
+    const icono = item.querySelector<HTMLElement>('[data-faq-icono]');
+
+    boton?.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    panel?.classList.toggle('grid-rows-[1fr]', abrir);
+    panel?.classList.toggle('grid-rows-[0fr]', !abrir);
+    panel?.classList.toggle('opacity-100', abrir);
+    panel?.classList.toggle('opacity-0', !abrir);
+    icono?.classList.toggle('rotate-45', abrir);
+  };
+
+  items.forEach((item) => {
+    const boton = item.querySelector<HTMLButtonElement>('[data-faq-boton]');
+    boton?.addEventListener('click', () => {
+      const abierto = boton.getAttribute('aria-expanded') === 'true';
+      items.forEach((otro) => fijarEstado(otro, false));
+      if (!abierto) fijarEstado(item, true);
+    });
+  });
+</script>

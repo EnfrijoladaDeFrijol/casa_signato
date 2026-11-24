@@ -29,12 +29,12 @@ export const PLANES_INFO: Record<PlanTipo, PlanInfo> = {
     descripcion:
       'Ideal para eventos íntimos que buscan presencia elegante, clara y rápida de compartir por WhatsApp.',
     beneficios: [
-      'Enlace personalizado y diseño Mobile-First',
+      'Enlace personalizado pensado para celular',
       'Portada editorial con 1 fotografía y frase emotiva',
-      'Mención de padres y padrinos',
+      'Mención honorífica de padres y padrinos',
       'Cuenta regresiva en tiempo real',
-      'Ubicaciones con acceso a Google Maps y Waze',
-      'Confirmación directa por WhatsApp',
+      'Ubicaciones directas a Google Maps y Waze',
+      'Confirmación rápida por WhatsApp',
     ],
   },
   gold: {
@@ -48,10 +48,10 @@ export const PLANES_INFO: Record<PlanTipo, PlanInfo> = {
       'La experiencia favorita para XV Años y Bodas, con narrativa completa del evento y detalles interactivos.',
     beneficios: [
       'Todo lo incluido en el paquete Plata',
-      'Reproductor flotante de música de fondo',
-      'Galería fotográfica optimizada (hasta 6 fotos)',
-      'Itinerario visual con horarios del evento',
-      'Código de vestimenta con paleta sugerida',
+      'Reproductor discreto de música de fondo',
+      'Galería fotográfica de alta nitidez (hasta 6 fotos)',
+      'Itinerario visual con horarios de tu evento',
+      'Código de vestimenta con paleta de colores sugerida',
       'Mesa de regalos y datos para lluvia de sobres',
     ],
   },
@@ -66,11 +66,11 @@ export const PLANES_INFO: Record<PlanTipo, PlanInfo> = {
       'Pensado para celebraciones con control de pases, logística para invitados foráneos y registro organizado.',
     beneficios: [
       'Todo lo incluido en el paquete Gold',
-      'Galería extendida (hasta 12 fotos)',
-      'Pase digital de boletos con lectura ?pases=X',
-      'Confirmación inteligente en Google Form + Sheets',
+      'Galería fotográfica extendida (hasta 12 fotos)',
+      'Pase digital personalizado con los lugares por familia',
+      'Confirmación en línea conectada a tu lista en vivo',
       'Botón para agendar en Google y Apple Calendar',
-      'Hoteles sugeridos y álbum compartido con QR',
+      'Hoteles sugeridos y álbum compartido con código QR',
     ],
   },
 };

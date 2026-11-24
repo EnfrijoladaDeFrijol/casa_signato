@@ -1,0 +1,39 @@
+---
+import { PASOS_PROCESO } from '../../data/landing';
+---
+
+<section id="como-funciona" class="border-t border-signato-secundario/35 bg-white/45 py-14 sm:py-20">
+  <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
+    <div data-reveal class="max-w-2xl">
+      <div class="flex items-center gap-3">
+        <span class="h-px w-6 bg-signato-secundario" aria-hidden="true"></span>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-signato-principal">
+          Proceso sencillo
+        </p>
+      </div>
+      <h2 class="font-display mt-2.5 text-4xl font-medium leading-[1.06] text-signato-contraste sm:text-5xl">
+        Tu invitación lista en tres pasos
+      </h2>
+    </div>
+
+    <ol class="mt-9 grid gap-7 md:grid-cols-3 md:gap-8">
+      {PASOS_PROCESO.map((paso, idx) => (
+        <li
+          data-reveal
+          style={`--rv: ${idx}`}
+          class="flex flex-col border-t border-signato-secundario/55 pt-5"
+        >
+          <span class="font-display text-3xl italic text-signato-principal">
+            {paso.numero}
+          </span>
+          <h3 class="font-display mt-2 text-2xl font-semibold text-signato-contraste">
+            {paso.titulo}
+          </h3>
+          <p class="mt-2 text-sm leading-relaxed text-signato-contraste/75">
+            {paso.descripcion}
+          </p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

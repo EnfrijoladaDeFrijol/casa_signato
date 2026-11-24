@@ -20,6 +20,7 @@
   --border-soft: color-mix(in srgb, var(--ink) 14%, var(--bg));
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --cs-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
@@ -45,4 +46,172 @@ body {
 
 .font-body {
   font-family: var(--font-body);
+}
+
+/* ───────── Sistema Liquid Glass (Casa Signato) ───────── */
+.glass-surface {
+  background: rgba(255, 255, 255, 0.52);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 18px 40px -24px rgba(54, 62, 53, 0.14),
+    0 4px 12px -4px rgba(54, 62, 53, 0.08);
+}
+
+.glass-nav {
+  background: rgba(247, 246, 242, 0.68);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 12px 32px -16px rgba(54, 62, 53, 0.12),
+    0 2px 8px -2px rgba(54, 62, 53, 0.06);
+}
+
+.glass-card-featured {
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.68) 0%,
+    rgba(247, 246, 242, 0.5) 100%
+  );
+  -webkit-backdrop-filter: blur(22px) saturate(155%);
+  backdrop-filter: blur(22px) saturate(155%);
+  border: 1px solid rgba(139, 168, 136, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    0 24px 48px -24px rgba(54, 62, 53, 0.16),
+    0 8px 22px -8px rgba(139, 168, 136, 0.22);
+}
+
+/* ───────── Contenedor de velos sin romper position: sticky ───────── */
+.velo-scope {
+  position: relative;
+  overflow-x: clip;
+}
+
+.velo-orb {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.velo-orb--salvia {
+  background: rgba(139, 168, 136, 0.32);
+}
+
+.velo-orb--arcilla {
+  background: rgba(198, 180, 166, 0.34);
+}
+
+/* ───────── Cambio limpio de etiqueta (copiar correo) ───────── */
+.cs-swap {
+  display: inline-grid;
+  place-items: center;
+}
+
+.cs-swap > * {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  transition:
+    opacity 0.28s var(--cs-ease),
+    transform 0.28s var(--cs-ease);
+}
+
+.cs-swap > [data-swap-b] {
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+}
+
+[data-estado='activo'] .cs-swap > [data-swap-a] {
+  opacity: 0;
+  transform: translate3d(0, -6px, 0);
+}
+
+[data-estado='activo'] .cs-swap > [data-swap-b] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ───────── Animaciones 60fps (solo transform y opacity) ───────── */
+@keyframes cs-entrada {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cs-flotar {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes cs-deriva {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(14px, -12px, 0) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cs-enter {
+    animation: cs-entrada 0.9s var(--cs-ease) both;
+    animation-delay: calc(var(--i, 0) * 95ms + 40ms);
+  }
+
+  .cs-float {
+    animation: cs-flotar 9s ease-in-out infinite;
+  }
+
+  .cs-drift {
+    animation: cs-deriva 11s ease-in-out infinite;
+  }
+
+  .cs-drift-alt {
+    animation: cs-deriva 12s ease-in-out infinite reverse;
+  }
+
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+    transition:
+      opacity 0.8s var(--cs-ease),
+      transform 0.8s var(--cs-ease);
+    transition-delay: calc(var(--rv, 0) * 80ms);
+    will-change: opacity, transform;
+  }
+
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-enter,
+  .cs-float,
+  .cs-drift,
+  .cs-drift-alt {
+    animation: none !important;
+  }
 }

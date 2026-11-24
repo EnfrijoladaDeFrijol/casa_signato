@@ -1,0 +1,77 @@
+---
+import {
+  MARCA,
+  esWhatsappActivo,
+  obtenerEnlaceCotizacion,
+  obtenerEtiquetaCtaCotizar,
+} from '../../data/marca';
+
+const enlaceCotizar = obtenerEnlaceCotizacion();
+const usaWhatsapp = esWhatsappActivo();
+const etiquetaCotizar = obtenerEtiquetaCtaCotizar();
+---
+
+<section class="py-16 sm:py-24">
+  <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
+    <div
+      data-reveal
+      class="velo-scope relative overflow-hidden rounded-[2rem] bg-signato-contraste px-6 py-12 text-center text-signato-lienzo sm:rounded-[2.5rem] sm:px-12 sm:py-16"
+    >
+      <div
+        class="velo-orb velo-orb--salvia -top-20 -left-16 h-64 w-64"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="velo-orb velo-orb--arcilla -bottom-24 -right-16 h-64 w-64"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative mx-auto max-w-2xl">
+        <div class="mx-auto inline-flex h-12 w-20 items-center justify-center overflow-hidden">
+          <img
+            src="/marca/logo-blanco.png"
+            alt={MARCA.nombre}
+            loading="lazy"
+            width="108"
+            height="135"
+            class="h-auto w-full max-w-none -translate-y-[2%]"
+          />
+        </div>
+
+        <h2 class="font-display mt-4 text-4xl font-medium leading-[1.06] text-signato-lienzo sm:text-5xl">
+          Reserva la fecha de tu{' '}
+          <em class="font-normal italic text-signato-secundario">invitación digital</em>
+        </h2>
+
+        <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-signato-lienzo/80 sm:text-base">
+          Cuéntanos el tipo de celebración y la fecha aproximada. Preparamos tu diseño personalizado en {MARCA.tiempoEntrega} con pago único desde $349 MXN.
+        </p>
+
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a
+            href={enlaceCotizar}
+            target={usaWhatsapp ? '_blank' : undefined}
+            rel={usaWhatsapp ? 'noopener noreferrer' : undefined}
+            class="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full bg-signato-principal px-7 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-signato-lienzo transition-all hover:bg-signato-lienzo hover:text-signato-contraste active:scale-[0.98] sm:w-auto"
+          >
+            <span>{etiquetaCotizar}</span>
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+
+          <button
+            type="button"
+            data-copiar-correo={MARCA.email}
+            class="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center rounded-full border border-signato-lienzo/30 px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-signato-lienzo transition-colors hover:border-signato-lienzo/65 active:scale-[0.98] sm:w-auto"
+          >
+            <span class="cs-swap">
+              <span data-swap-a>Copiar {MARCA.email}</span>
+              <span data-swap-b class="text-signato-secundario">Correo copiado</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

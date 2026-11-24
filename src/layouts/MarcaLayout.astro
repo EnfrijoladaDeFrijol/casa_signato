@@ -1,0 +1,178 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Casa Signato — Invitaciones digitales boutique hechas en México para XV Años, Bodas, Bautizos y Cumpleaños.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#F7F6F2" />
+
+    <link rel="icon" type="image/png" href="/marca/logo-color.png" />
+    <link rel="apple-touch-icon" href="/marca/logo-color.png" />
+
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/marca/logo-color.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body class="min-h-screen bg-signato-lienzo text-signato-contraste antialiased flex flex-col">
+    <slot />
+    <p id="marca-aviso" class="sr-only" role="status" aria-live="polite"></p>
+
+    <script>
+      const elementos = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-reveal]'),
+      );
+      const reducirMovimiento = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+
+      if (reducirMovimiento || !('IntersectionObserver' in window)) {
+        elementos.forEach((el) => el.classList.add('is-visible'));
+      } else if (elementos.length > 0) {
+        const pendientes = new Set<HTMLElement>(elementos);
+        let rafPendiente = false;
+        let observador: IntersectionObserver | null = null;
+
+        const desconectar = () => {
+          observador?.disconnect();
+          observador = null;
+          window.removeEventListener('scroll', programar);
+          window.removeEventListener('resize', programar);
+          window.removeEventListener('pageshow', revisar);
+        };
+
+        const revelar = (el: HTMLElement) => {
+          if (!pendientes.has(el)) return;
+          el.classList.add('is-visible');
+          pendientes.delete(el);
+          observador?.unobserve(el);
+          if (pendientes.size === 0) desconectar();
+        };
+
+        const revisar = () => {
+          rafPendiente = false;
+          if (pendientes.size === 0) return;
+          const alto = window.innerHeight || document.documentElement.clientHeight;
+          const alFinal =
+            window.scrollY + alto >= document.documentElement.scrollHeight - 48;
+
+          for (const el of Array.from(pendientes)) {
+            if (alFinal || el.getBoundingClientRect().top <= alto + 60) {
+              revelar(el);
+            }
+          }
+        };
+
+        const programar = () => {
+          if (rafPendiente || pendientes.size === 0) return;
+          rafPendiente = true;
+          window.requestAnimationFrame(revisar);
+        };
+
+        observador = new IntersectionObserver(
+          (entradas) => {
+            const alto =
+              window.innerHeight || document.documentElement.clientHeight;
+            for (const entrada of entradas) {
+              if (
+                entrada.isIntersecting ||
+                entrada.boundingClientRect.top <= alto + 60
+              ) {
+                revelar(entrada.target as HTMLElement);
+              }
+            }
+          },
+          { threshold: 0, rootMargin: '0px 0px 60px 0px' },
+        );
+
+        pendientes.forEach((el) => observador?.observe(el));
+        window.addEventListener('scroll', programar, { passive: true });
+        window.addEventListener('resize', programar, { passive: true });
+        window.addEventListener('pageshow', revisar);
+        revisar();
+      }
+
+      const aviso = document.getElementById('marca-aviso');
+      const temporizadores = new WeakMap<Element, number>();
+
+      const copiarTexto = async (texto: string): Promise<boolean> => {
+        try {
+          await navigator.clipboard.writeText(texto);
+          return true;
+        } catch {
+          const area = document.createElement('textarea');
+          area.value = texto;
+          area.setAttribute('readonly', '');
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          let ok = false;
+          try {
+            ok = document.execCommand('copy');
+          } catch {
+            ok = false;
+          }
+          area.remove();
+          return ok;
+        }
+      };
+
+      document.addEventListener('click', async (evento) => {
+        const origen = evento.target as Element | null;
+        const boton = origen?.closest<HTMLElement>('[data-copiar-correo]');
+        if (!boton) return;
+
+        const correo = boton.dataset.copiarCorreo;
+        if (!correo) return;
+
+        const copiado = await copiarTexto(correo);
+        if (copiado) {
+          boton.dataset.estado = 'activo';
+          window.clearTimeout(temporizadores.get(boton));
+          temporizadores.set(
+            boton,
+            window.setTimeout(() => {
+              delete boton.dataset.estado;
+            }, 2200),
+          );
+        }
+
+        if (aviso) {
+          aviso.textContent = copiado
+            ? `Correo ${correo} copiado al portapapeles`
+            : `No se pudo copiar, escribe a ${correo}`;
+        }
+      });
+    </script>
+  </body>
+</html>
