@@ -108,6 +108,31 @@ body {
   right: 0;
   z-index: 40;
   width: 100%;
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  transition:
+    transform 380ms var(--cs-ease),
+    opacity 260ms ease-out;
+}
+
+.nav-header[data-hidden='true'] {
+  transform: translate3d(0, calc(-100% - 1.5rem), 0);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 560ms var(--cs-ease),
+    opacity 420ms ease-out;
+}
+
+.nav-header a:focus-visible,
+.nav-header button:focus-visible {
+  outline: 2px solid rgba(139, 168, 136, 0.85);
+  outline-offset: 2px;
+}
+
+.nav-header a:focus:not(:focus-visible),
+.nav-header button:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .nav-shell {
@@ -303,13 +328,27 @@ body {
   transition: color 300ms ease-out;
 }
 
+.nav-movil-pie {
+  border-top: 1px solid rgba(247, 246, 242, 0.14);
+  transition: border-color 300ms ease-out;
+}
+
+.nav-movil-nota {
+  color: rgba(247, 246, 242, 0.68);
+  transition: color 300ms ease-out;
+}
+
 .nav-movil-cta {
   background: #f7f6f2;
   color: #363e35;
   transition:
-    background-color 300ms ease-out,
-    color 300ms ease-out,
+    background-color 250ms ease-out,
+    color 250ms ease-out,
     transform 150ms ease-out;
+}
+
+.nav-movil-cta:hover {
+  background: rgba(247, 246, 242, 0.9);
 }
 
 .nav-header[data-scrolled='true'] .nav-movil-menu {
@@ -336,9 +375,21 @@ body {
   color: #8ba888;
 }
 
+.nav-header[data-scrolled='true'] .nav-movil-pie {
+  border-top-color: rgba(198, 180, 166, 0.42);
+}
+
+.nav-header[data-scrolled='true'] .nav-movil-nota {
+  color: rgba(54, 62, 53, 0.65);
+}
+
 .nav-header[data-scrolled='true'] .nav-movil-cta {
-  background: #8ba888;
+  background: #363e35;
   color: #f7f6f2;
+}
+
+.nav-header[data-scrolled='true'] .nav-movil-cta:hover {
+  background: #8ba888;
 }
 
 .glass-card-featured {
@@ -612,6 +663,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .nav-header,
   .nav-shell,
   .nav-bar,
   .nav-logo-stack > img,
@@ -619,7 +671,10 @@ body {
   .nav-link,
   .nav-cta,
   .nav-toggle,
-  .nav-movil-menu {
+  .nav-movil-menu,
+  .nav-movil-pie,
+  .nav-movil-nota,
+  .nav-movil-cta {
     transition: none !important;
   }
 

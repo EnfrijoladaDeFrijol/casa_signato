@@ -12,12 +12,13 @@ const enlaces = [
 ];
 ---
 
-<header id="site-navbar" data-scrolled="false" class="nav-header">
+<header id="site-navbar" data-scrolled="false" data-hidden="false" class="nav-header">
   <div class="nav-shell">
     <div class="nav-bar">
       <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-3 py-2 sm:px-6 sm:py-2.5">
         <a
           href="#inicio"
+          data-nav-enlace
           class="nav-brand inline-flex min-h-[44px] items-center gap-2.5 pr-2 hover:opacity-85"
         >
           <span class="nav-logo-stack relative inline-flex h-9 w-12 shrink-0 items-center justify-center">
@@ -26,6 +27,8 @@ const enlaces = [
               alt={MARCA.nombre}
               width="48"
               height="36"
+              decoding="async"
+              fetchpriority="high"
               class="nav-logo-claro absolute inset-0 h-9 w-12 object-contain object-center"
             />
             <img
@@ -34,6 +37,7 @@ const enlaces = [
               aria-hidden="true"
               width="48"
               height="36"
+              decoding="async"
               class="nav-logo-color absolute inset-0 h-9 w-12 object-contain object-center"
             />
           </span>
@@ -44,7 +48,7 @@ const enlaces = [
 
         <nav class="hidden items-center gap-7 md:flex" aria-label="Secciones principales">
           {enlaces.map((item) => (
-            <a href={item.href} class="nav-link text-sm font-medium">
+            <a href={item.href} data-nav-seccion class="nav-link text-sm font-medium">
               {item.etiqueta}
             </a>
           ))}
@@ -53,6 +57,7 @@ const enlaces = [
         <div class="flex items-center gap-2">
           <a
             href="#muestras"
+            data-nav-seccion
             class="nav-cta inline-flex min-h-[38px] items-center justify-center rounded-full px-4 py-1.5 text-[13px] font-medium tracking-[0.01em] active:scale-[0.98] md:hidden"
           >
             Muestras
@@ -84,12 +89,13 @@ const enlaces = [
       </div>
     </div>
 
-    <div id="nav-movil-menu" class="nav-movil-menu mt-2 hidden flex-col gap-1 rounded-3xl p-3 md:hidden">
+    <div id="nav-movil-menu" class="nav-movil-menu mt-2 hidden flex-col gap-0.5 rounded-3xl p-2.5 md:hidden">
       {enlaces.map((item) => (
         <a
           href={item.href}
           data-nav-enlace
-          class="nav-movil-enlace flex min-h-[48px] items-center justify-between rounded-2xl px-4 text-sm font-medium"
+          data-nav-seccion
+          class="nav-movil-enlace flex min-h-[44px] items-center justify-between rounded-2xl px-4 text-sm font-medium"
         >
           <span>{item.etiqueta}</span>
           <svg class="nav-movil-flecha h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -97,15 +103,23 @@ const enlaces = [
           </svg>
         </a>
       ))}
-      <a
-        href={enlaceCotizar}
-        target={usaWhatsapp ? '_blank' : undefined}
-        rel={usaWhatsapp ? 'noopener noreferrer' : undefined}
-        data-nav-enlace
-        class="nav-movil-cta mt-1 flex min-h-[48px] items-center justify-center rounded-lg px-5 text-sm font-medium tracking-[0.01em] active:scale-[0.98]"
-      >
-        Cotizar mi evento
-      </a>
+      <div class="nav-movil-pie mt-1.5 flex items-center justify-between gap-3 px-4 pt-3 pb-1">
+        <span class="nav-movil-nota text-xs leading-snug">
+          ¿Planeas un evento?
+        </span>
+        <a
+          href={enlaceCotizar}
+          target={usaWhatsapp ? '_blank' : undefined}
+          rel={usaWhatsapp ? 'noopener noreferrer' : undefined}
+          data-nav-enlace
+          class="nav-movil-cta inline-flex min-h-[38px] shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-[13px] font-medium tracking-[0.01em] active:scale-[0.98]"
+        >
+          <span>Cotizar</span>
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 </header>
@@ -117,8 +131,11 @@ const enlaces = [
   const iconoAbrir = boton?.querySelector('[data-icono-abrir]');
   const iconoCerrar = boton?.querySelector('[data-icono-cerrar]');
 
+  let menuAbierto = false;
+
   const alternar = (abrir: boolean) => {
-    if (!boton || !menu) return;
+    if (!boton || !menu || menuAbierto === abrir) return;
+    menuAbierto = abrir;
     boton.setAttribute('aria-expanded', abrir ? 'true' : 'false');
     boton.setAttribute('aria-label', abrir ? 'Cerrar menú' : 'Abrir menú de navegación');
     menu.classList.toggle('hidden', !abrir);
@@ -127,19 +144,149 @@ const enlaces = [
     iconoCerrar?.classList.toggle('hidden', !abrir);
   };
 
-  boton?.addEventListener('click', () => alternar(boton.getAttribute('aria-expanded') !== 'true'));
-  menu?.querySelectorAll('[data-nav-enlace]').forEach((el) => el.addEventListener('click', () => alternar(false)));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') alternar(false); });
+  boton?.addEventListener('click', () => alternar(!menuAbierto));
+  header?.querySelectorAll('[data-nav-enlace]').forEach((el) =>
+    el.addEventListener('click', () => alternar(false)),
+  );
+
+  document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && menuAbierto) {
+      alternar(false);
+      boton?.focus();
+    }
+  });
+
+  document.addEventListener('click', (evento) => {
+    if (!menuAbierto || !header) return;
+    const destino = evento.target as Node | null;
+    if (destino && !header.contains(destino)) {
+      alternar(false);
+    }
+  });
 
   if (header) {
+    const UMBRAL_ESTILO = 40;
+    const UMBRAL_TOPE_VISIBLE = 48;
+    const UMBRAL_TOPE_OCULTAR = 480;
+    const UMBRAL_BAJADA = 520;
+    const UMBRAL_SUBIDA = 220;
+    const PAUSA_REINICIO_MS = 1200;
+    const RETARDO_OCULTAR_CLICK_MS = 180;
+
     let rafId = 0;
+    let ultimoY = Math.max(0, window.scrollY);
+    let bajadaAcumulada = 0;
+    let subidaAcumulada = 0;
+    let navegandoSeccion = false;
+    let timerFinNavegacion = 0;
+    let timerOcultarClick = 0;
+    let timerPausaScroll = 0;
+
+    const establecerEstado = (clave: 'scrolled' | 'hidden', activo: boolean) => {
+      const valor = activo ? 'true' : 'false';
+      if (header.dataset[clave] !== valor) {
+        header.dataset[clave] = valor;
+      }
+    };
+
+    const finalizarNavegacionSeccion = () => {
+      window.clearTimeout(timerFinNavegacion);
+      if (!navegandoSeccion) return;
+      window.clearTimeout(timerOcultarClick);
+      establecerEstado('hidden', true);
+      navegandoSeccion = false;
+      ultimoY = Math.max(0, window.scrollY);
+      bajadaAcumulada = 0;
+      subidaAcumulada = 0;
+    };
+
+    const iniciarNavegacionSeccion = () => {
+      navegandoSeccion = true;
+      bajadaAcumulada = 0;
+      subidaAcumulada = 0;
+      alternar(false);
+      window.clearTimeout(timerOcultarClick);
+      timerOcultarClick = window.setTimeout(() => {
+        establecerEstado('hidden', true);
+      }, RETARDO_OCULTAR_CLICK_MS);
+      window.clearTimeout(timerFinNavegacion);
+      timerFinNavegacion = window.setTimeout(finalizarNavegacionSeccion, 850);
+    };
+
+    header.querySelectorAll<HTMLAnchorElement>('[data-nav-seccion]').forEach((enlace) => {
+      enlace.addEventListener('click', iniciarNavegacionSeccion);
+    });
+
+    header.addEventListener('focusin', (evento) => {
+      const destino = evento.target as HTMLElement | null;
+      if (destino && destino.matches(':focus-visible') && !navegandoSeccion) {
+        establecerEstado('hidden', false);
+      }
+    });
 
     const actualizarEstadoScroll = () => {
       rafId = 0;
-      const desplazado = window.scrollY > 40;
-      const valor = desplazado ? 'true' : 'false';
-      if (header.dataset.scrolled !== valor) {
-        header.dataset.scrolled = valor;
+      const yActual = Math.max(0, window.scrollY);
+
+      establecerEstado('scrolled', yActual > UMBRAL_ESTILO);
+
+      if (navegandoSeccion) {
+        ultimoY = yActual;
+        bajadaAcumulada = 0;
+        subidaAcumulada = 0;
+        window.clearTimeout(timerFinNavegacion);
+        timerFinNavegacion = window.setTimeout(finalizarNavegacionSeccion, 180);
+        return;
+      }
+
+      const delta = yActual - ultimoY;
+      ultimoY = yActual;
+
+      if (yActual <= UMBRAL_TOPE_VISIBLE) {
+        bajadaAcumulada = 0;
+        subidaAcumulada = 0;
+        establecerEstado('hidden', false);
+        return;
+      }
+
+      if (delta > 0) {
+        subidaAcumulada = 0;
+        bajadaAcumulada += delta;
+        window.clearTimeout(timerPausaScroll);
+        timerPausaScroll = window.setTimeout(() => {
+          bajadaAcumulada = 0;
+        }, PAUSA_REINICIO_MS);
+
+        if (menuAbierto && bajadaAcumulada >= 60) {
+          alternar(false);
+        }
+
+        if (yActual > UMBRAL_TOPE_OCULTAR && bajadaAcumulada >= UMBRAL_BAJADA && !menuAbierto) {
+          establecerEstado('hidden', true);
+          bajadaAcumulada = 0;
+        }
+      } else if (delta < 0) {
+        bajadaAcumulada = 0;
+
+        // Evita que el rebote elástico al final de la página muestre la barra
+        const maxScroll = Math.max(
+          0,
+          document.documentElement.scrollHeight - window.innerHeight,
+        );
+        if (maxScroll > 0 && yActual >= maxScroll - 16) {
+          return;
+        }
+
+        subidaAcumulada += -delta;
+        window.clearTimeout(timerPausaScroll);
+        timerPausaScroll = window.setTimeout(() => {
+          subidaAcumulada = 0;
+        }, PAUSA_REINICIO_MS);
+
+        if (subidaAcumulada >= UMBRAL_SUBIDA) {
+          establecerEstado('hidden', false);
+          subidaAcumulada = 0;
+        }
       }
     };
 
@@ -148,8 +295,20 @@ const enlaces = [
       rafId = window.requestAnimationFrame(actualizarEstadoScroll);
     };
 
+    const manejarResize = () => {
+      if (menuAbierto && window.innerWidth >= 768) {
+        alternar(false);
+      }
+      programarScroll();
+    };
+
     window.addEventListener('scroll', programarScroll, { passive: true });
-    window.addEventListener('resize', programarScroll, { passive: true });
-    actualizarEstadoScroll();
+    window.addEventListener('resize', manejarResize, { passive: true });
+    if ('onscrollend' in window) {
+      window.addEventListener('scrollend', finalizarNavegacionSeccion, { passive: true });
+    }
+
+    establecerEstado('scrolled', ultimoY > UMBRAL_ESTILO);
+    establecerEstado('hidden', false);
   }
 </script>
