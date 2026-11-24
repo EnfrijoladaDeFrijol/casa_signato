@@ -22,7 +22,7 @@ export const clientes: ClienteInvitacion[] = [
     fechaISO: '2027-04-17',
     horaInicio: '12:00',
     ciudad: 'Querétaro, Qro.',
-    fotoPortada: '/demos/portada-bautizo.svg',
+    fotoPortada: '/demos/bautizo-portada.webp',
     fotoPortadaAlt: 'Portada editorial del bautizo de Mateo Hernández',
     padresPadrinos: {
       nota: 'Agradecemos profundamente el cariño y guía de quienes acompañan este día tan especial.',
@@ -89,7 +89,7 @@ export const clientes: ClienteInvitacion[] = [
     fechaISO: '2027-06-12',
     horaInicio: '17:00',
     ciudad: 'San Miguel de Allende, Gto.',
-    fotoPortada: '/demos/portada-boda.svg',
+    fotoPortada: '/demos/boda-portada.webp',
     fotoPortadaAlt: 'Portada editorial de la boda de Karen y Luis',
     padresPadrinos: {
       nota: 'Con la bendición de nuestros padres, celebramos el amor que nos une.',

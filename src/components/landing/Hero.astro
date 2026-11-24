@@ -10,43 +10,66 @@ const enlaceCotizar = obtenerEnlaceCotizacion();
 const usaWhatsapp = esWhatsappActivo();
 const etiquetaCotizar = obtenerEtiquetaCtaCotizar();
 
-// 9 círculos y aros delicados en ascenso suave desfasado (6px a 26px)
-const burbujas = [
+// 3 planos de profundidad al hacer scroll (fondo difuso, plano medio con aros mínimos, primer plano de puntos suaves)
+const capasAtmosfera = [
   {
-    clase: 'border border-signato-lienzo/15',
-    estilo: 'left: 7%; width: 14px; height: 14px; --b-dur: 18s; --b-delay: -3s; --b-dx: 14px; --b-op: 0.72; --b-y: 22%;',
+    factorScroll: '0.12',
+    elementos: [
+      {
+        clase: 'cs-burbuja--bruma-salvia',
+        estilo: 'left: 6%; width: 52px; height: 52px; --b-dur: 26s; --b-delay: -5s; --b-dx: 12px; --b-op: 0.42; --b-y: 20%;',
+      },
+      {
+        clase: 'cs-burbuja--bruma-arcilla',
+        estilo: 'left: 78%; width: 64px; height: 64px; --b-dur: 28s; --b-delay: -16s; --b-dx: -14px; --b-op: 0.38; --b-y: 62%;',
+      },
+      {
+        clase: 'cs-burbuja--bruma-salvia',
+        estilo: 'left: 42%; width: 44px; height: 44px; --b-dur: 24s; --b-delay: -11s; --b-dx: 10px; --b-op: 0.32; --b-y: 78%;',
+      },
+    ],
   },
   {
-    clase: 'bg-signato-principal/20 blur-[0.5px]',
-    estilo: 'left: 16%; width: 8px; height: 8px; --b-dur: 14s; --b-delay: -9s; --b-dx: -10px; --b-op: 0.7; --b-y: 64%;',
+    factorScroll: '0.28',
+    elementos: [
+      {
+        clase: 'cs-burbuja--aro-tenue',
+        estilo: 'left: 9%; width: 18px; height: 18px; --b-dur: 21s; --b-delay: -4s; --b-dx: 10px; --b-op: 0.36; --b-y: 68%;',
+      },
+      {
+        clase: 'cs-burbuja--aro-salvia',
+        estilo: 'left: 24%; width: 12px; height: 12px; --b-dur: 18s; --b-delay: -12s; --b-dx: -9px; --b-op: 0.34; --b-y: 26%;',
+      },
+      {
+        clase: 'cs-burbuja--aro-arcilla',
+        estilo: 'left: 72%; width: 14px; height: 14px; --b-dur: 19.5s; --b-delay: -7s; --b-dx: 9px; --b-op: 0.34; --b-y: 30%;',
+      },
+      {
+        clase: 'cs-burbuja--aro-tenue',
+        estilo: 'left: 88%; width: 22px; height: 22px; --b-dur: 22.5s; --b-delay: -15s; --b-dx: -11px; --b-op: 0.32; --b-y: 44%;',
+      },
+    ],
   },
   {
-    clase: 'border border-signato-lienzo/15',
-    estilo: 'left: 27%; width: 24px; height: 24px; --b-dur: 21s; --b-delay: -14s; --b-dx: 16px; --b-op: 0.55; --b-y: 42%;',
-  },
-  {
-    clase: 'bg-signato-secundario/20 blur-[0.5px]',
-    estilo: 'left: 40%; width: 10px; height: 10px; --b-dur: 15.5s; --b-delay: -5s; --b-dx: -12px; --b-op: 0.62; --b-y: 76%;',
-  },
-  {
-    clase: 'border border-signato-lienzo/15',
-    estilo: 'left: 53%; width: 18px; height: 18px; --b-dur: 19s; --b-delay: -11s; --b-dx: 10px; --b-op: 0.6; --b-y: 28%;',
-  },
-  {
-    clase: 'bg-signato-principal/25',
-    estilo: 'left: 65%; width: 6px; height: 6px; --b-dur: 13s; --b-delay: -2s; --b-dx: -8px; --b-op: 0.75; --b-y: 54%;',
-  },
-  {
-    clase: 'border border-signato-lienzo/15',
-    estilo: 'left: 76%; width: 26px; height: 26px; --b-dur: 22s; --b-delay: -16s; --b-dx: -14px; --b-op: 0.5; --b-y: 34%;',
-  },
-  {
-    clase: 'bg-signato-principal/20 blur-[1px]',
-    estilo: 'left: 85%; width: 12px; height: 12px; --b-dur: 16s; --b-delay: -7s; --b-dx: 12px; --b-op: 0.68; --b-y: 70%;',
-  },
-  {
-    clase: 'border border-signato-lienzo/15',
-    estilo: 'left: 92%; width: 9px; height: 9px; --b-dur: 17s; --b-delay: -12s; --b-dx: -10px; --b-op: 0.64; --b-y: 18%;',
+    factorScroll: '0.46',
+    elementos: [
+      {
+        clase: 'cs-burbuja--destello',
+        estilo: 'left: 14%; width: 6px; height: 6px; --b-dur: 15s; --b-delay: -2.5s; --b-dx: -7px; --b-op: 0.42; --b-y: 36%;',
+      },
+      {
+        clase: 'cs-burbuja--destello',
+        estilo: 'left: 33%; width: 5px; height: 5px; --b-dur: 14s; --b-delay: -9.5s; --b-dx: 8px; --b-op: 0.36; --b-y: 82%;',
+      },
+      {
+        clase: 'cs-burbuja--destello',
+        estilo: 'left: 63%; width: 6px; height: 6px; --b-dur: 16s; --b-delay: -5.5s; --b-dx: -8px; --b-op: 0.38; --b-y: 18%;',
+      },
+      {
+        clase: 'cs-burbuja--destello',
+        estilo: 'left: 85%; width: 7px; height: 7px; --b-dur: 15.5s; --b-delay: -11s; --b-dx: 9px; --b-op: 0.44; --b-y: 74%;',
+      },
+    ],
   },
 ];
 ---
@@ -55,13 +78,21 @@ const burbujas = [
   id="inicio"
   class="hero-bosque velo-scope relative flex min-h-[100svh] flex-col justify-between pt-20 pb-6 text-signato-lienzo sm:pt-24 sm:pb-8"
 >
-  <!-- Atmósfera orgánica en el fondo: velos suaves y burbujas en ascenso -->
+  <!-- Atmósfera orgánica en el fondo: velos suaves y planos de profundidad al hacer scroll -->
   <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
-    <div class="hero-velo hero-velo--salvia cs-velo-respirar -top-16 -left-24 h-80 w-80 sm:h-[30rem] sm:w-[30rem] lg:-left-10 lg:top-6"></div>
-    <div class="hero-velo hero-velo--arcilla cs-velo-respirar-alt -right-20 bottom-10 h-80 w-80 sm:h-[32rem] sm:w-[32rem] lg:right-[6%] lg:bottom-8"></div>
+    <div class="hero-profundidad" data-hero-capa="0.14">
+      <div class="hero-velo hero-velo--salvia cs-velo-respirar -top-16 -left-24 h-80 w-80 sm:h-[30rem] sm:w-[30rem] lg:-left-10 lg:top-6"></div>
+    </div>
+    <div class="hero-profundidad" data-hero-capa="0.22">
+      <div class="hero-velo hero-velo--arcilla cs-velo-respirar-alt -right-20 bottom-10 h-80 w-80 sm:h-[32rem] sm:w-[32rem] lg:right-[6%] lg:bottom-8"></div>
+    </div>
 
-    {burbujas.map((burbuja) => (
-      <span class={`cs-burbuja ${burbuja.clase}`} style={burbuja.estilo}></span>
+    {capasAtmosfera.map((capa) => (
+      <div class="hero-profundidad" data-hero-capa={capa.factorScroll}>
+        {capa.elementos.map((burbuja) => (
+          <span class={`cs-burbuja ${burbuja.clase}`} style={burbuja.estilo}></span>
+        ))}
+      </div>
     ))}
   </div>
 
@@ -91,15 +122,15 @@ const burbujas = [
         >
           <a
             href="#muestras"
-            class="group inline-flex min-h-[48px] w-full max-w-[268px] items-center justify-center gap-2.5 rounded-lg border border-signato-lienzo/80 bg-signato-lienzo px-6 py-3 text-[15px] font-medium tracking-[0.01em] text-signato-contraste transition-colors duration-200 hover:bg-white active:scale-[0.99] sm:w-auto sm:max-w-none sm:px-8"
+            class="hero-cta-primary group relative mx-auto inline-flex min-h-[48px] w-auto items-center justify-center gap-2.5 overflow-hidden isolate rounded-full px-7 py-3 text-[14.5px] font-medium tracking-[0.015em] active:scale-[0.98] sm:text-[15px] lg:mx-0"
           >
-            <span>Ver muestras en vivo</span>
+            <span class="relative z-10">Ver muestras en vivo</span>
             <svg
-              class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+              class="hero-cta-flecha relative z-10 h-4 w-4 shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="1.5"
+              stroke-width="1.6"
               aria-hidden="true"
             >
               <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
@@ -198,3 +229,35 @@ const burbujas = [
 >
   <HeroMockup />
 </section>
+
+<script>
+  const hero = document.getElementById('inicio');
+  const capas = hero?.querySelectorAll<HTMLElement>('[data-hero-capa]');
+  const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (hero && capas && capas.length > 0 && !reducirMovimiento) {
+    let rafId = 0;
+
+    const actualizarProfundidad = () => {
+      rafId = 0;
+      const altoHero = hero.offsetHeight || window.innerHeight;
+      const scrollY = Math.max(0, window.scrollY);
+      if (scrollY > altoHero * 1.25) return;
+
+      capas.forEach((capa) => {
+        const factor = Number(capa.dataset.heroCapa || '0');
+        const desplazamiento = Math.round(scrollY * factor * 10) / 10;
+        capa.style.transform = `translate3d(0, ${desplazamiento}px, 0)`;
+      });
+    };
+
+    const programar = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(actualizarProfundidad);
+    };
+
+    window.addEventListener('scroll', programar, { passive: true });
+    window.addEventListener('resize', programar, { passive: true });
+    actualizarProfundidad();
+  }
+</script>

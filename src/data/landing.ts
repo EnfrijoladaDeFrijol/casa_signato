@@ -1,7 +1,11 @@
+export type IconoPaso = 'estilo' | 'datos' | 'enlace';
+
 export interface PasoProceso {
   numero: string;
   titulo: string;
   descripcion: string;
+  icono: IconoPaso;
+  destacado?: boolean;
 }
 
 export interface PreguntaFrecuente {
@@ -12,21 +16,22 @@ export interface PreguntaFrecuente {
 export const PASOS_PROCESO: PasoProceso[] = [
   {
     numero: '01',
-    titulo: 'Elige tu paquete y muestra',
-    descripcion:
-      'Explora nuestras invitaciones reales en tu celular y selecciona el nivel que mejor acompaña tu celebración.',
+    titulo: 'Elige tu estilo',
+    descripcion: 'Explora las muestras y elige tu paquete.',
+    icono: 'estilo',
   },
   {
     numero: '02',
-    titulo: 'Comparte tus datos y fotos',
-    descripcion:
-      'Envíanos nombres, horarios, ubicaciones, música y fotografías. Nosotros cuidamos la tipografía, el color y cada detalle.',
+    titulo: 'Envía tus datos',
+    descripcion: 'Mándanos fotos, horarios y música en minutos.',
+    icono: 'datos',
   },
   {
     numero: '03',
-    titulo: 'Recibe tu enlace en 24 a 72 horas',
-    descripcion:
-      'Te entregamos tu invitación lista para abrir al instante en cualquier celular y compartirla sin límite por WhatsApp.',
+    titulo: 'Comparte tu enlace',
+    descripcion: 'Lista en 24 a 72 hrs para WhatsApp.',
+    icono: 'enlace',
+    destacado: true,
   },
 ];
 
