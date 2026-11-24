@@ -306,10 +306,10 @@ export const clientes: ClienteInvitacion[] = [
       },
     ],
     musica: {
-      titulo: 'A Thousand Years (Piano & Strings)',
-      artista: 'Tema de XV Años',
-      audioUrl: '',
-      modoDemo: true,
+      titulo: 'A Thousand Years',
+      artista: 'Christina Perri',
+      audioUrl: '/demos/musica/Christina%20Perri%20-%20A%20Thousand%20Years.m4a',
+      modoDemo: false,
     },
     galeria: [
       {

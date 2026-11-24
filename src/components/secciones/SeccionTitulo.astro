@@ -12,5 +12,6 @@ const { id, eyebrow, titulo, lede } = Astro.props;
 <header class="mx-auto max-w-xl text-center" data-reveal>
   <p class="inv-eyebrow">{eyebrow}</p>
   <h2 id={id} class="inv-title mt-3">{titulo}</h2>
+  <span class="inv-linea-centro mx-auto mt-5 w-12" aria-hidden="true"></span>
   {lede && <p class="inv-lede mx-auto mt-4 max-w-md">{lede}</p>}
 </header>

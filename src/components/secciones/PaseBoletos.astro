@@ -61,6 +61,8 @@ const textoLugaresInicial =
 
 <style>
   .inv-ticket {
+    position: relative;
+    overflow: hidden;
     --muesca: 12px;
     --talon: 8.5rem;
     /* Muescas laterales a la altura de la línea punteada, sin pintar color de fondo */
@@ -73,6 +75,44 @@ const textoLugaresInicial =
   }
   .inv-ticket__talon {
     height: var(--talon);
+  }
+
+  @keyframes inv-ticket-destello {
+    0% {
+      opacity: 0;
+      transform: translate3d(-105%, 0, 0) skewX(-18deg);
+    }
+    22% {
+      opacity: 0.9;
+    }
+    78% {
+      opacity: 0.65;
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(105%, 0, 0) skewX(-18deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .inv-ticket::after {
+      content: '';
+      position: absolute;
+      inset: -20% -55%;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(
+        115deg,
+        transparent 35%,
+        color-mix(in srgb, var(--surface) 64%, transparent) 50%,
+        transparent 65%
+      );
+      transform: translate3d(-105%, 0, 0) skewX(-18deg);
+    }
+
+    .inv-ticket.is-visible::after {
+      animation: inv-ticket-destello 1.25s var(--ease) 0.35s 1 both;
+    }
   }
 </style>
 

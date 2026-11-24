@@ -49,6 +49,16 @@ body {
 }
 
 /* ───────── Sistema Liquid Glass (Casa Signato) ───────── */
+.hero-bosque {
+  background-color: #363e35;
+  background-image: radial-gradient(
+    ellipse 88% 72% at 50% 22%,
+    #3f493e 0%,
+    #363e35 54%,
+    #2b322a 100%
+  );
+}
+
 .glass-surface {
   background: rgba(255, 255, 255, 0.52);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
@@ -60,8 +70,27 @@ body {
     0 4px 12px -4px rgba(54, 62, 53, 0.08);
 }
 
+.glass-dark {
+  background: rgba(247, 246, 242, 0.08);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(247, 246, 242, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 246, 242, 0.18),
+    0 20px 44px -26px rgba(34, 40, 33, 0.56),
+    0 6px 16px -6px rgba(34, 40, 33, 0.28);
+}
+
+.glass-dark-sutil {
+  background: rgba(247, 246, 242, 0.05);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  backdrop-filter: blur(14px) saturate(135%);
+  border: 1px solid rgba(247, 246, 242, 0.16);
+  box-shadow: inset 0 1px 0 rgba(247, 246, 242, 0.14);
+}
+
 .glass-nav {
-  background: rgba(247, 246, 242, 0.68);
+  background: rgba(247, 246, 242, 0.72);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
   backdrop-filter: blur(20px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.82);
@@ -69,6 +98,247 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.92),
     0 12px 32px -16px rgba(54, 62, 53, 0.12),
     0 2px 8px -2px rgba(54, 62, 53, 0.06);
+}
+
+/* ───────── Navbar adaptativa: cristal oscuro sobre Hero -> píldora clara ───────── */
+.nav-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  width: 100%;
+}
+
+.nav-shell {
+  width: 100%;
+  padding-inline: 0;
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 300ms ease-out,
+    padding-inline 300ms ease-out;
+}
+
+.nav-bar {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0;
+  border: 1px solid transparent;
+  border-bottom-color: rgba(247, 246, 242, 0.12);
+  background: rgba(54, 62, 53, 0.26);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  backdrop-filter: blur(14px) saturate(135%);
+  box-shadow: none;
+  transition:
+    max-width 300ms ease-out,
+    border-radius 300ms ease-out,
+    background-color 300ms ease-out,
+    border-color 300ms ease-out,
+    box-shadow 300ms ease-out;
+}
+
+.nav-logo-stack {
+  position: relative;
+  display: inline-flex;
+  height: 2.25rem;
+  width: 3rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-logo-stack > img {
+  position: absolute;
+  inset: 0;
+  height: 2.25rem;
+  width: 3rem;
+  object-fit: contain;
+  object-position: center;
+  transition: opacity 300ms ease-out;
+}
+
+.nav-logo-claro {
+  opacity: 1;
+}
+
+.nav-logo-color {
+  opacity: 0;
+}
+
+.nav-brand {
+  color: #f7f6f2;
+  transition:
+    color 300ms ease-out,
+    opacity 200ms ease-out;
+}
+
+.nav-link {
+  color: rgba(247, 246, 242, 0.82);
+  transition: color 300ms ease-out;
+}
+
+.nav-link:hover {
+  color: #f7f6f2;
+}
+
+.nav-cta {
+  background: transparent;
+  border: 1px solid rgba(247, 246, 242, 0.3);
+  color: #f7f6f2;
+  transition:
+    background-color 300ms ease-out,
+    border-color 300ms ease-out,
+    color 300ms ease-out,
+    transform 150ms ease-out;
+}
+
+.nav-cta:hover {
+  background: rgba(247, 246, 242, 0.1);
+  border-color: rgba(247, 246, 242, 0.48);
+}
+
+.nav-toggle {
+  border: 1px solid rgba(247, 246, 242, 0.28);
+  background: rgba(247, 246, 242, 0.08);
+  color: #f7f6f2;
+  transition:
+    background-color 300ms ease-out,
+    border-color 300ms ease-out,
+    color 300ms ease-out,
+    transform 150ms ease-out;
+}
+
+.nav-header[data-scrolled='true'] .nav-shell {
+  padding-inline: 0.75rem;
+  transform: translate3d(0, 0.75rem, 0);
+}
+
+@media (min-width: 640px) {
+  .nav-header[data-scrolled='true'] .nav-shell {
+    padding-inline: 1.5rem;
+  }
+}
+
+.nav-header[data-scrolled='true'] .nav-bar {
+  max-width: 64rem;
+  border-radius: 9999px;
+  background: rgba(247, 246, 242, 0.78);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 12px 32px -16px rgba(54, 62, 53, 0.14),
+    0 2px 8px -2px rgba(54, 62, 53, 0.08);
+}
+
+.nav-header[data-scrolled='true'] .nav-logo-claro {
+  opacity: 0;
+}
+
+.nav-header[data-scrolled='true'] .nav-logo-color {
+  opacity: 1;
+}
+
+.nav-header[data-scrolled='true'] .nav-brand {
+  color: #363e35;
+}
+
+.nav-header[data-scrolled='true'] .nav-link {
+  color: rgba(54, 62, 53, 0.8);
+}
+
+.nav-header[data-scrolled='true'] .nav-link:hover {
+  color: #363e35;
+}
+
+.nav-header[data-scrolled='true'] .nav-cta {
+  background: #363e35;
+  border-color: #363e35;
+  color: #f7f6f2;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.nav-header[data-scrolled='true'] .nav-cta:hover {
+  background: #8ba888;
+  border-color: #8ba888;
+}
+
+.nav-header[data-scrolled='true'] .nav-toggle {
+  border-color: rgba(198, 180, 166, 0.55);
+  background: transparent;
+  color: #363e35;
+}
+
+.nav-movil-menu {
+  margin-inline: 0.75rem;
+  background: rgba(43, 50, 42, 0.94);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(247, 246, 242, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 246, 242, 0.16),
+    0 20px 44px -18px rgba(34, 40, 33, 0.65);
+  transition:
+    background-color 300ms ease-out,
+    border-color 300ms ease-out,
+    box-shadow 300ms ease-out;
+}
+
+.nav-movil-enlace {
+  color: #f7f6f2;
+  transition:
+    background-color 200ms ease-out,
+    color 300ms ease-out;
+}
+
+.nav-movil-enlace:hover {
+  background: rgba(247, 246, 242, 0.1);
+}
+
+.nav-movil-flecha {
+  color: #a9c4a6;
+  transition: color 300ms ease-out;
+}
+
+.nav-movil-cta {
+  background: #f7f6f2;
+  color: #363e35;
+  transition:
+    background-color 300ms ease-out,
+    color 300ms ease-out,
+    transform 150ms ease-out;
+}
+
+.nav-header[data-scrolled='true'] .nav-movil-menu {
+  margin-inline: auto;
+  max-width: 64rem;
+  background: rgba(247, 246, 242, 0.94);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 14px 36px -16px rgba(54, 62, 53, 0.16);
+}
+
+.nav-header[data-scrolled='true'] .nav-movil-enlace {
+  color: #363e35;
+}
+
+.nav-header[data-scrolled='true'] .nav-movil-enlace:hover {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.nav-header[data-scrolled='true'] .nav-movil-flecha {
+  color: #8ba888;
+}
+
+.nav-header[data-scrolled='true'] .nav-movil-cta {
+  background: #8ba888;
+  color: #f7f6f2;
 }
 
 .glass-card-featured {
@@ -106,6 +376,30 @@ body {
 
 .velo-orb--arcilla {
   background: rgba(198, 180, 166, 0.34);
+}
+
+.hero-velo {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(88px);
+  will-change: transform, opacity;
+}
+
+.hero-velo--salvia {
+  background: radial-gradient(
+    circle,
+    rgba(139, 168, 136, 0.44) 0%,
+    rgba(139, 168, 136, 0) 72%
+  );
+}
+
+.hero-velo--arcilla {
+  background: radial-gradient(
+    circle,
+    rgba(198, 180, 166, 0.36) 0%,
+    rgba(198, 180, 166, 0) 72%
+  );
 }
 
 /* ───────── Cambio limpio de etiqueta (copiar correo) ───────── */
@@ -172,6 +466,89 @@ body {
   }
 }
 
+@keyframes cs-velo-respirar {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(18px, -16px, 0) scale(1.08);
+  }
+}
+
+@keyframes cs-velo-respirar-alt {
+  0%,
+  100% {
+    opacity: 0.68;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.96;
+    transform: translate3d(-16px, 14px, 0) scale(1.07);
+  }
+}
+
+@keyframes cs-burbuja-subir {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.86);
+  }
+  14% {
+    opacity: var(--b-op, 0.6);
+  }
+  82% {
+    opacity: var(--b-op, 0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--b-dx, 12px), -108vh, 0) scale(1.04);
+  }
+}
+
+@keyframes cs-flecha-bajar {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate3d(0, 5px, 0);
+  }
+}
+
+@keyframes cs-eq-bar {
+  0%,
+  100% {
+    transform: scaleY(0.32);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes cs-tick-pulse {
+  0% {
+    opacity: 0.62;
+    transform: scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.cs-burbuja {
+  position: absolute;
+  bottom: -36px;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .cs-enter {
     animation: cs-entrada 0.9s var(--cs-ease) both;
@@ -188,6 +565,33 @@ body {
 
   .cs-drift-alt {
     animation: cs-deriva 12s ease-in-out infinite reverse;
+  }
+
+  .cs-velo-respirar {
+    animation: cs-velo-respirar 13s ease-in-out infinite;
+  }
+
+  .cs-velo-respirar-alt {
+    animation: cs-velo-respirar-alt 15s ease-in-out infinite;
+  }
+
+  .cs-burbuja {
+    animation: cs-burbuja-subir var(--b-dur, 16s) ease-in-out var(--b-delay, 0s) infinite;
+  }
+
+  .cs-flecha-bajar {
+    animation: cs-flecha-bajar 2.8s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+
+  .cs-eq-bar {
+    transform-origin: bottom center;
+    animation: cs-eq-bar var(--eq-dur, 1.3s) ease-in-out var(--eq-delay, 0s) infinite;
+    will-change: transform;
+  }
+
+  .cs-tick-pulse {
+    animation: cs-tick-pulse 0.38s var(--cs-ease);
   }
 
   .js [data-reveal] {
@@ -208,10 +612,32 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .nav-shell,
+  .nav-bar,
+  .nav-logo-stack > img,
+  .nav-brand,
+  .nav-link,
+  .nav-cta,
+  .nav-toggle,
+  .nav-movil-menu {
+    transition: none !important;
+  }
+
   .cs-enter,
   .cs-float,
   .cs-drift,
-  .cs-drift-alt {
+  .cs-drift-alt,
+  .cs-velo-respirar,
+  .cs-velo-respirar-alt,
+  .cs-burbuja,
+  .cs-flecha-bajar,
+  .cs-eq-bar,
+  .cs-tick-pulse {
     animation: none !important;
+  }
+
+  .cs-burbuja {
+    bottom: var(--b-y, 40%);
+    opacity: calc(var(--b-op, 0.55) * 0.45);
   }
 }

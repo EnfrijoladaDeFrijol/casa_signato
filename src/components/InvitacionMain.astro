@@ -1,12 +1,14 @@
 ---
 import type { ClienteInvitacion } from '../types/invitacion';
 import { resolverModulos } from '../utils/planes';
+import { formatearFechaLarga } from '../utils/fechas';
 import HeroBase from './temas/base/Hero.astro';
 import HeroXvEditorial from './temas/xv-editorial/Hero.astro';
 import PadresPadrinos from './secciones/PadresPadrinos.astro';
 import Contador from './secciones/Contador.astro';
 import Ubicaciones from './secciones/Ubicaciones.astro';
 import MusicaPlayer from './secciones/MusicaPlayer.astro';
+import SelloBienvenida from './secciones/SelloBienvenida.astro';
 import Galeria from './secciones/Galeria.astro';
 import Itinerario from './secciones/Itinerario.astro';
 import DressCode from './secciones/DressCode.astro';
@@ -26,9 +28,21 @@ interface Props {
 const { cliente } = Astro.props;
 const modulos = resolverModulos(cliente);
 const mostrarRsvp = modulos.rsvpWhatsapp || modulos.rsvpGoogleForm;
+const tieneMusica = Boolean(modulos.musica && cliente.musica);
+const fechaTextoSello = formatearFechaLarga(cliente.fechaISO);
 ---
 
 <main class="inv-flow">
+  {
+    tieneMusica && (
+      <SelloBienvenida
+        protagonistas={cliente.protagonistas}
+        subtitulo={cliente.subtitulo}
+        fechaTexto={fechaTextoSello}
+        ciudad={cliente.ciudad}
+      />
+    )
+  }
   {
     cliente.tema === 'xv-editorial' ? (
       <HeroXvEditorial cliente={cliente} />

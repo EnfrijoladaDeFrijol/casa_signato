@@ -1,15 +1,59 @@
 ---
+import { obtenerFechaObjetivoISO } from '../../utils/fechas';
+
+interface Props {
+  sobreOscuro?: boolean;
+}
+
+const { sobreOscuro = false } = Astro.props;
 const hrefDemo = '/xv-anos/sofia-xv?pases=4';
+const fechaObjetivoDemo = obtenerFechaObjetivoISO('2027-09-18', '18:00');
 ---
 
 <div class="relative mx-auto w-full max-w-[308px] pb-4 sm:max-w-[328px]">
+  <div class="mb-2.5 flex items-center justify-center gap-2.5" aria-hidden="true">
+    <span
+      class:list={[
+        'h-px w-5',
+        sobreOscuro ? 'bg-signato-lienzo/30' : 'bg-signato-secundario/70',
+      ]}
+    ></span>
+    <span
+      class:list={[
+        'text-[10px] font-medium uppercase tracking-[0.22em]',
+        sobreOscuro ? 'text-signato-lienzo/70' : 'text-signato-contraste/60',
+      ]}
+    >
+      Vista previa interactiva
+    </span>
+    <span
+      class:list={[
+        'h-px w-5',
+        sobreOscuro ? 'bg-signato-lienzo/30' : 'bg-signato-secundario/70',
+      ]}
+    ></span>
+  </div>
+
   <a
     href={hrefDemo}
     aria-label="Abrir muestra interactiva de XV Años de Sofía Ramírez con pase de 4 boletos"
-    class="glass-surface group block rounded-[2.4rem] p-3 transition-transform duration-300 hover:-translate-y-1 active:scale-[0.98]"
+    class:list={[
+      'group block rounded-[2.5rem] p-2.5 transition-transform duration-300 hover:-translate-y-1 active:scale-[0.98]',
+      sobreOscuro
+        ? 'glass-dark'
+        : 'glass-surface border border-signato-contraste/15',
+    ]}
   >
-    <div class="overflow-hidden rounded-[1.85rem] border border-[#86494A]/20 bg-[#FBF6F2] px-4 pt-5 pb-4">
-      <div class="relative mx-auto overflow-hidden rounded-t-[9rem] rounded-b-2xl border border-[#86494A]/35 bg-[#F5EAE4] px-5 pt-9 pb-7 text-center">
+    <div
+      class:list={[
+        'mx-auto mb-2 h-1 w-10 rounded-full',
+        sobreOscuro ? 'bg-signato-lienzo/30' : 'bg-signato-contraste/15',
+      ]}
+      aria-hidden="true"
+    ></div>
+
+    <div class="overflow-hidden rounded-[1.85rem] border border-[#86494A]/20 bg-[#FBF6F2] px-3.5 pt-5 pb-4 sm:px-4">
+      <div class="relative mx-auto overflow-hidden rounded-t-[9rem] rounded-b-2xl border border-[#86494A]/35 bg-[#F5EAE4] px-4 pt-8 pb-6 text-center sm:px-5 sm:pt-9 sm:pb-7">
         <div
           class="pointer-events-none absolute inset-2 rounded-t-[8.5rem] rounded-b-xl border border-[#86494A]/20"
           aria-hidden="true"
@@ -19,14 +63,14 @@ const hrefDemo = '/xv-anos/sofia-xv?pases=4';
           Mis XV Años
         </p>
 
-        <p class="font-display relative mt-3 text-[2.85rem] font-medium leading-[0.95] text-[#3B2B2B] transition-transform duration-500 group-hover:scale-[1.02]">
+        <p class="font-display relative mt-3 text-[2.75rem] font-medium leading-[0.95] text-[#3B2B2B] transition-transform duration-500 group-hover:scale-[1.02] sm:text-[2.85rem]">
           Sofía
         </p>
         <p class="font-display relative italic text-2xl leading-tight text-[#86494A]">
           Ramírez
         </p>
 
-        <div class="relative mx-auto my-4 h-px w-12 bg-[#86494A]/45" aria-hidden="true"></div>
+        <div class="relative mx-auto my-3.5 h-px w-12 bg-[#86494A]/45 sm:my-4" aria-hidden="true"></div>
 
         <p class="relative text-[10px] font-semibold uppercase tracking-[0.2em] text-[#3B2B2B]/80">
           18 · Septiembre · 2027
@@ -36,18 +80,42 @@ const hrefDemo = '/xv-anos/sofia-xv?pases=4';
         </p>
       </div>
 
-      <div class="mt-3.5 grid grid-cols-3 gap-2">
-        <div class="rounded-xl border border-[#86494A]/15 bg-white/75 py-2 text-center">
-          <p class="font-display text-lg font-semibold leading-none text-[#3B2B2B]">142</p>
-          <p class="mt-0.5 text-[9px] uppercase tracking-wider text-[#3B2B2B]/65">Días</p>
+      <div
+        class="mt-3.5 grid grid-cols-4 gap-1.5"
+        data-mockup-contador
+        data-fecha-objetivo={fechaObjetivoDemo}
+      >
+        <div class="min-w-0 rounded-xl border border-[#86494A]/15 bg-white/75 px-1 py-2 text-center">
+          <p data-mc="dias" class="font-display whitespace-nowrap text-base font-semibold leading-none tabular-nums text-[#3B2B2B] sm:text-lg">
+            298
+          </p>
+          <p class="mt-1 truncate text-[8.5px] font-medium uppercase tracking-[0.06em] text-[#3B2B2B]/65 sm:text-[9px]">
+            Días
+          </p>
         </div>
-        <div class="rounded-xl border border-[#86494A]/15 bg-white/75 py-2 text-center">
-          <p class="font-display text-lg font-semibold leading-none text-[#3B2B2B]">08</p>
-          <p class="mt-0.5 text-[9px] uppercase tracking-wider text-[#3B2B2B]/65">Horas</p>
+        <div class="min-w-0 rounded-xl border border-[#86494A]/15 bg-white/75 px-1 py-2 text-center">
+          <p data-mc="horas" class="font-display whitespace-nowrap text-base font-semibold leading-none tabular-nums text-[#3B2B2B] sm:text-lg">
+            08
+          </p>
+          <p class="mt-1 truncate text-[8.5px] font-medium uppercase tracking-[0.06em] text-[#3B2B2B]/65 sm:text-[9px]">
+            Hrs
+          </p>
         </div>
-        <div class="rounded-xl border border-[#86494A]/15 bg-white/75 py-2 text-center">
-          <p class="font-display text-lg font-semibold leading-none text-[#3B2B2B]">45</p>
-          <p class="mt-0.5 text-[9px] uppercase tracking-wider text-[#3B2B2B]/65">Min</p>
+        <div class="min-w-0 rounded-xl border border-[#86494A]/15 bg-white/75 px-1 py-2 text-center">
+          <p data-mc="minutos" class="font-display whitespace-nowrap text-base font-semibold leading-none tabular-nums text-[#3B2B2B] sm:text-lg">
+            45
+          </p>
+          <p class="mt-1 truncate text-[8.5px] font-medium uppercase tracking-[0.06em] text-[#3B2B2B]/65 sm:text-[9px]">
+            Min
+          </p>
+        </div>
+        <div class="min-w-0 rounded-xl border border-[#86494A]/15 bg-white/75 px-1 py-2 text-center">
+          <p data-mc="segundos" class="font-display whitespace-nowrap text-base font-semibold leading-none tabular-nums text-[#86494A] sm:text-lg">
+            30
+          </p>
+          <p class="mt-1 truncate text-[8.5px] font-medium uppercase tracking-[0.06em] text-[#3B2B2B]/65 sm:text-[9px]">
+            Seg
+          </p>
         </div>
       </div>
 
@@ -62,13 +130,118 @@ const hrefDemo = '/xv-anos/sofia-xv?pases=4';
     </div>
   </a>
 
-  <div class="glass-surface cs-float pointer-events-none absolute right-2 bottom-0 flex items-center gap-2 rounded-2xl px-3 py-1.5 sm:-right-4">
-    <svg class="h-3.5 w-3.5 text-signato-principal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-      <path d="M4 9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V9Z" />
-      <path d="M13 7v10" stroke-dasharray="2 2" stroke-linecap="round" />
-    </svg>
-    <span class="text-[11px] font-semibold tracking-wide text-signato-contraste">
-      Pase · 4 lugares
+  <div
+    class:list={[
+      'cs-float pointer-events-none absolute right-2 bottom-0 flex items-center gap-2.5 rounded-2xl px-3 py-1.5 sm:-right-4',
+      sobreOscuro ? 'glass-dark' : 'glass-surface',
+    ]}
+  >
+    <span class="inline-flex h-3.5 items-end gap-[2px]" aria-hidden="true">
+      <span
+        class:list={[
+          'cs-eq-bar h-2.5 w-[2px] rounded-full',
+          sobreOscuro ? 'bg-[#A9C4A6]' : 'bg-signato-principal',
+        ]}
+        style="--eq-dur: 1.15s; --eq-delay: 0s;"
+      ></span>
+      <span
+        class:list={[
+          'cs-eq-bar h-3.5 w-[2px] rounded-full',
+          sobreOscuro ? 'bg-[#A9C4A6]' : 'bg-signato-principal',
+        ]}
+        style="--eq-dur: 0.95s; --eq-delay: 0.25s;"
+      ></span>
+      <span
+        class:list={[
+          'cs-eq-bar h-2 w-[2px] rounded-full',
+          sobreOscuro ? 'bg-[#A9C4A6]' : 'bg-signato-principal',
+        ]}
+        style="--eq-dur: 1.3s; --eq-delay: 0.5s;"
+      ></span>
+    </span>
+    <span
+      class:list={[
+        'h-3 w-px',
+        sobreOscuro ? 'bg-signato-lienzo/25' : 'bg-signato-secundario/60',
+      ]}
+      aria-hidden="true"
+    ></span>
+    <span class="inline-flex items-center gap-1.5">
+      <svg
+        class:list={[
+          'h-3.5 w-3.5',
+          sobreOscuro ? 'text-[#A9C4A6]' : 'text-signato-principal',
+        ]}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        aria-hidden="true"
+      >
+        <path d="M4 9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V9Z" />
+        <path d="M13 7v10" stroke-dasharray="2 2" stroke-linecap="round" />
+      </svg>
+      <span
+        class:list={[
+          'text-[11px] font-semibold tracking-wide',
+          sobreOscuro ? 'text-signato-lienzo' : 'text-signato-contraste',
+        ]}
+      >
+        Pase · 4 lugares
+      </span>
     </span>
   </div>
 </div>
+
+<script>
+  const mockupContadores = document.querySelectorAll<HTMLElement>('[data-mockup-contador]');
+  const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  mockupContadores.forEach((contenedor) => {
+    const objetivoTexto = contenedor.dataset.fechaObjetivo;
+    if (!objetivoTexto) return;
+
+    const objetivoMs = Date.parse(objetivoTexto);
+    if (Number.isNaN(objetivoMs)) return;
+
+    const elDias = contenedor.querySelector<HTMLElement>('[data-mc="dias"]');
+    const elHoras = contenedor.querySelector<HTMLElement>('[data-mc="horas"]');
+    const elMinutos = contenedor.querySelector<HTMLElement>('[data-mc="minutos"]');
+    const elSegundos = contenedor.querySelector<HTMLElement>('[data-mc="segundos"]');
+
+    const pad = (valor: number) => String(valor).padStart(2, '0');
+    let ultimoSegundo = '';
+
+    const actualizar = () => {
+      const diferencia = Math.max(0, objetivoMs - Date.now());
+      const totalSegundos = Math.floor(diferencia / 1000);
+      const dias = Math.floor(totalSegundos / 86400);
+      const horas = Math.floor((totalSegundos % 86400) / 3600);
+      const minutos = Math.floor((totalSegundos % 3600) / 60);
+      const segundos = totalSegundos % 60;
+
+      if (elDias) elDias.textContent = String(dias);
+      if (elHoras) elHoras.textContent = pad(horas);
+      if (elMinutos) elMinutos.textContent = pad(minutos);
+
+      const segTexto = pad(segundos);
+      if (elSegundos && segTexto !== ultimoSegundo) {
+        ultimoSegundo = segTexto;
+        elSegundos.textContent = segTexto;
+        if (!reducirMovimiento) {
+          elSegundos.classList.remove('cs-tick-pulse');
+          void elSegundos.offsetWidth;
+          elSegundos.classList.add('cs-tick-pulse');
+        }
+      }
+
+      return diferencia > 0;
+    };
+
+    if (actualizar()) {
+      const intervalo = window.setInterval(() => {
+        if (!actualizar()) window.clearInterval(intervalo);
+      }, 1000);
+    }
+  });
+</script>

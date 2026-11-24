@@ -9,106 +9,192 @@ import {
 const enlaceCotizar = obtenerEnlaceCotizacion();
 const usaWhatsapp = esWhatsappActivo();
 const etiquetaCotizar = obtenerEtiquetaCtaCotizar();
+
+// 9 círculos y aros delicados en ascenso suave desfasado (6px a 26px)
+const burbujas = [
+  {
+    clase: 'border border-signato-lienzo/15',
+    estilo: 'left: 7%; width: 14px; height: 14px; --b-dur: 18s; --b-delay: -3s; --b-dx: 14px; --b-op: 0.72; --b-y: 22%;',
+  },
+  {
+    clase: 'bg-signato-principal/20 blur-[0.5px]',
+    estilo: 'left: 16%; width: 8px; height: 8px; --b-dur: 14s; --b-delay: -9s; --b-dx: -10px; --b-op: 0.7; --b-y: 64%;',
+  },
+  {
+    clase: 'border border-signato-lienzo/15',
+    estilo: 'left: 27%; width: 24px; height: 24px; --b-dur: 21s; --b-delay: -14s; --b-dx: 16px; --b-op: 0.55; --b-y: 42%;',
+  },
+  {
+    clase: 'bg-signato-secundario/20 blur-[0.5px]',
+    estilo: 'left: 40%; width: 10px; height: 10px; --b-dur: 15.5s; --b-delay: -5s; --b-dx: -12px; --b-op: 0.62; --b-y: 76%;',
+  },
+  {
+    clase: 'border border-signato-lienzo/15',
+    estilo: 'left: 53%; width: 18px; height: 18px; --b-dur: 19s; --b-delay: -11s; --b-dx: 10px; --b-op: 0.6; --b-y: 28%;',
+  },
+  {
+    clase: 'bg-signato-principal/25',
+    estilo: 'left: 65%; width: 6px; height: 6px; --b-dur: 13s; --b-delay: -2s; --b-dx: -8px; --b-op: 0.75; --b-y: 54%;',
+  },
+  {
+    clase: 'border border-signato-lienzo/15',
+    estilo: 'left: 76%; width: 26px; height: 26px; --b-dur: 22s; --b-delay: -16s; --b-dx: -14px; --b-op: 0.5; --b-y: 34%;',
+  },
+  {
+    clase: 'bg-signato-principal/20 blur-[1px]',
+    estilo: 'left: 85%; width: 12px; height: 12px; --b-dur: 16s; --b-delay: -7s; --b-dx: 12px; --b-op: 0.68; --b-y: 70%;',
+  },
+  {
+    clase: 'border border-signato-lienzo/15',
+    estilo: 'left: 92%; width: 9px; height: 9px; --b-dur: 17s; --b-delay: -12s; --b-dx: -10px; --b-op: 0.64; --b-y: 18%;',
+  },
+];
 ---
 
-<section id="inicio" class="velo-scope">
-  <div
-    class="velo-orb velo-orb--salvia cs-drift -top-10 -left-16 h-80 w-80 sm:h-[26rem] sm:w-[26rem]"
-    aria-hidden="true"
-  ></div>
-  <div
-    class="velo-orb velo-orb--arcilla cs-drift-alt top-28 right-0 h-80 w-80 sm:right-6 sm:h-[28rem] sm:w-[28rem]"
-    aria-hidden="true"
-  ></div>
-  <div
-    class="velo-orb velo-orb--salvia cs-drift-alt bottom-6 left-1/3 h-64 w-64 opacity-80"
-    aria-hidden="true"
-  ></div>
+<section
+  id="inicio"
+  class="hero-bosque velo-scope relative flex min-h-[100svh] flex-col justify-between pt-20 pb-6 text-signato-lienzo sm:pt-24 sm:pb-8"
+>
+  <!-- Atmósfera orgánica en el fondo: velos suaves y burbujas en ascenso -->
+  <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+    <div class="hero-velo hero-velo--salvia cs-velo-respirar -top-16 -left-24 h-80 w-80 sm:h-[30rem] sm:w-[30rem] lg:-left-10 lg:top-6"></div>
+    <div class="hero-velo hero-velo--arcilla cs-velo-respirar-alt -right-20 bottom-10 h-80 w-80 sm:h-[32rem] sm:w-[32rem] lg:right-[6%] lg:bottom-8"></div>
 
-  <div class="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 pt-7 pb-16 sm:px-6 sm:pt-12 sm:pb-20 lg:grid-cols-12 lg:gap-12 lg:py-20">
-    <div class="lg:col-span-7">
-      <div class="cs-enter flex items-center gap-3" style="--i: 0">
-        <span class="h-px w-6 bg-signato-secundario" aria-hidden="true"></span>
-        <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-signato-contraste/70">
-          Papelería digital boutique · México
-        </span>
+    {burbujas.map((burbuja) => (
+      <span class={`cs-burbuja ${burbuja.clase}`} style={burbuja.estilo}></span>
+    ))}
+  </div>
+
+  <!-- Contenido principal centrado en móvil y en 2 columnas en PC -->
+  <div class="relative z-10 mx-auto flex w-full max-w-6xl flex-1 items-center px-4 py-4 sm:px-6 lg:py-8">
+    <div class="grid w-full items-center gap-10 lg:grid-cols-12 lg:gap-12">
+      <div class="flex flex-col items-center text-center lg:col-span-7 lg:items-start lg:text-left">
+        <h1
+          class="cs-enter font-display max-w-xl text-[2.45rem] font-medium leading-[1.03] tracking-[-0.01em] text-signato-lienzo sm:text-5xl lg:max-w-none lg:text-[4.2rem]"
+          style="--i: 0"
+        >
+          Invitaciones digitales para{' '}
+          <em class="font-normal italic text-[#A9C4A6]">XV Años, bodas</em>{' '}
+          y bautizos
+        </h1>
+
+        <p
+          class="cs-enter mt-4 max-w-md text-[15px] leading-relaxed text-signato-lienzo/80 sm:mt-5 sm:max-w-lg sm:text-base"
+          style="--i: 1"
+        >
+          Diseño editorial pensado para abrir al instante desde WhatsApp, con envíos ilimitados y pago único sin mensualidades.
+        </p>
+
+        <div
+          class="cs-enter mt-7 flex w-full flex-col items-center gap-4 sm:mt-8 sm:w-auto sm:flex-row sm:items-center sm:gap-7"
+          style="--i: 2"
+        >
+          <a
+            href="#muestras"
+            class="group inline-flex min-h-[48px] w-full max-w-[268px] items-center justify-center gap-2.5 rounded-lg border border-signato-lienzo/80 bg-signato-lienzo px-6 py-3 text-[15px] font-medium tracking-[0.01em] text-signato-contraste transition-colors duration-200 hover:bg-white active:scale-[0.99] sm:w-auto sm:max-w-none sm:px-8"
+          >
+            <span>Ver muestras en vivo</span>
+            <svg
+              class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+
+          <a
+            href={enlaceCotizar}
+            target={usaWhatsapp ? '_blank' : undefined}
+            rel={usaWhatsapp ? 'noopener noreferrer' : undefined}
+            class="group inline-flex min-h-[44px] items-center justify-center px-1 text-[14px] font-normal tracking-[0.02em] text-signato-lienzo/90 transition-colors duration-300 hover:text-signato-lienzo"
+          >
+            <span class="inline-flex items-center gap-1.5 border-b border-signato-secundario/60 pb-1 transition-colors duration-300 group-hover:border-signato-lienzo">
+              <span>{etiquetaCotizar}</span>
+              <svg
+                class="h-3.5 w-3.5 text-signato-secundario transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signato-lienzo"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                aria-hidden="true"
+              >
+                <path d="M7 17L17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+        </div>
       </div>
 
-      <h1
-        class="cs-enter font-display mt-5 text-[2.6rem] font-medium leading-[1.03] tracking-[-0.01em] text-signato-contraste sm:text-6xl lg:text-[4.15rem]"
-        style="--i: 1"
-      >
-        Invitaciones digitales para{' '}
-        <em class="font-normal italic text-signato-principal">XV Años, bodas</em>{' '}
-        y bautizos
-      </h1>
-
-      <p
-        class="cs-enter mt-4 max-w-xl text-[15px] leading-relaxed text-signato-contraste/80 sm:mt-5 sm:text-base"
-        style="--i: 2"
-      >
-        Diseño editorial pensado para abrir al instante desde WhatsApp, con envíos ilimitados, entrega en{' '}
-        <strong class="font-semibold text-signato-contraste">24 a 72 horas</strong> y pago único desde{' '}
-        <strong class="font-semibold text-signato-contraste">$349 MXN</strong>.
-      </p>
-
-      <div
-        class="cs-enter mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center"
-        style="--i: 3"
-      >
-        <a
-          href="#muestras"
-          class="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full bg-signato-contraste px-6 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-signato-lienzo transition-all hover:bg-signato-principal active:scale-[0.98] sm:w-auto"
-        >
-          <span>Ver muestras en vivo</span>
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </a>
-
-        <a
-          href={enlaceCotizar}
-          target={usaWhatsapp ? '_blank' : undefined}
-          rel={usaWhatsapp ? 'noopener noreferrer' : undefined}
-          class="glass-surface inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-signato-contraste transition-all hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto"
-        >
-          <span>{etiquetaCotizar}</span>
-        </a>
+      <!-- Vista previa en cristal oscuro para escritorio -->
+      <div class="cs-enter hidden lg:col-span-5 lg:block" style="--i: 2">
+        <HeroMockup sobreOscuro={true} />
       </div>
-
-      <dl
-        class="cs-enter mt-7 grid grid-cols-3 gap-3 border-t border-signato-secundario/45 pt-5 sm:mt-9 sm:max-w-lg sm:gap-6"
-        style="--i: 4"
-      >
-        <div>
-          <dt class="text-[11px] font-medium uppercase tracking-[0.12em] text-signato-contraste/60">
-            Entrega
-          </dt>
-          <dd class="font-display mt-0.5 text-xl font-semibold text-signato-contraste sm:text-2xl">
-            24–72 hrs
-          </dd>
-        </div>
-        <div>
-          <dt class="text-[11px] font-medium uppercase tracking-[0.12em] text-signato-contraste/60">
-            Envíos
-          </dt>
-          <dd class="font-display mt-0.5 text-xl font-semibold text-signato-contraste sm:text-2xl">
-            Ilimitados
-          </dd>
-        </div>
-        <div>
-          <dt class="text-[11px] font-medium uppercase tracking-[0.12em] text-signato-contraste/60">
-            Desde
-          </dt>
-          <dd class="font-display mt-0.5 text-xl font-semibold text-signato-contraste sm:text-2xl">
-            $349 MXN
-          </dd>
-        </div>
-      </dl>
-    </div>
-
-    <div class="cs-enter lg:col-span-5" style="--i: 4">
-      <HeroMockup />
     </div>
   </div>
+
+  <!-- Barra inferior compacta en cristal limpio + flecha para bajar -->
+  <div class="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-3 px-4 sm:px-6">
+    <dl
+      class="cs-enter glass-dark-sutil grid w-full max-w-md grid-cols-3 divide-x divide-signato-lienzo/15 rounded-xl px-2 py-2.5 text-center sm:max-w-lg sm:py-3"
+      style="--i: 3"
+    >
+      <div class="min-w-0 px-1.5">
+        <dt class="text-[9.5px] font-medium uppercase tracking-[0.14em] text-signato-lienzo/60 sm:text-[10px]">
+          Entrega
+        </dt>
+        <dd class="font-display mt-0.5 whitespace-nowrap text-base font-semibold leading-tight text-signato-lienzo sm:text-xl">
+          24–72 hrs
+        </dd>
+      </div>
+      <div class="min-w-0 px-1.5">
+        <dt class="text-[9.5px] font-medium uppercase tracking-[0.14em] text-signato-lienzo/60 sm:text-[10px]">
+          Envíos
+        </dt>
+        <dd class="font-display mt-0.5 whitespace-nowrap text-base font-semibold leading-tight text-signato-lienzo sm:text-xl">
+          Ilimitados
+        </dd>
+      </div>
+      <div class="min-w-0 px-1.5">
+        <dt class="text-[9.5px] font-medium uppercase tracking-[0.14em] text-signato-lienzo/60 sm:text-[10px]">
+          Pago único
+        </dt>
+        <dd class="font-display mt-0.5 whitespace-nowrap text-base font-semibold leading-tight text-[#A9C4A6] sm:text-xl">
+          Desde $349
+        </dd>
+      </div>
+    </dl>
+
+    <a
+      href="#vista-previa"
+      aria-label="Deslizar a la vista previa interactiva"
+      class="cs-flecha-bajar inline-flex h-8 w-8 items-center justify-center rounded-full text-signato-lienzo/70 transition-colors hover:text-signato-lienzo lg:hidden"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+
+    <a
+      href="#muestras"
+      aria-label="Explorar muestras interactivas"
+      class="cs-flecha-bajar hidden h-8 w-8 items-center justify-center rounded-full text-signato-lienzo/70 transition-colors hover:text-signato-lienzo lg:inline-flex"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- En móvil el mockup aparece limpio justo al bajar del Hero a pantalla completa -->
+<section
+  id="vista-previa"
+  aria-label="Vista previa interactiva en celular"
+  class="bg-signato-lienzo px-4 py-14 sm:py-16 lg:hidden"
+>
+  <HeroMockup />
 </section>

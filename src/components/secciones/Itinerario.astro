@@ -31,16 +31,33 @@ function obtenerTrazo(icono?: IconoItinerario): string {
   <div class="mx-auto max-w-xl">
     <SeccionTitulo id="titulo-itinerario" eyebrow="Paso a paso" titulo="Itinerario del Evento" />
 
-    <ol class="mt-14">
+    <ol class="relative mt-14" data-itinerario-lista>
+      <div
+        data-itinerario-pista
+        class="pointer-events-none absolute top-3 bottom-3 left-[calc(4.4rem+1.5rem)] w-px -translate-x-1/2"
+        aria-hidden="true"
+      >
+        <span class="block h-full w-full bg-[var(--border-soft)] opacity-50"></span>
+        <span
+          data-itinerario-progreso
+          class="itinerario-linea-viva absolute inset-0 block h-full w-full origin-top bg-[var(--accent)]"
+        ></span>
+      </div>
+
       {
-        itinerario.map((momento) => (
-          <li class="group grid grid-cols-[4.4rem_1fr] gap-x-6" data-reveal>
+        itinerario.map((momento, i) => (
+          <li
+            class="group grid grid-cols-[4.4rem_1fr] gap-x-6"
+            data-reveal
+            style={`--rv: ${Math.min(i, 5)}`}
+          >
             <span class="inv-num pt-0.5 text-right text-[1.75rem] leading-none">
               {momento.hora}
             </span>
-            <div class="relative border-l border-[var(--border-soft)] pb-11 pl-8 group-last:border-transparent group-last:pb-0">
+            <div class="relative pb-11 pl-8 group-last:pb-0">
               <span
-                class="absolute -left-[12px] top-0 flex h-6 w-6 items-center justify-center rounded-full border border-[var(--accent)] bg-[var(--bg)] text-[var(--accent)]"
+                data-itinerario-nodo
+                class="itinerario-nodo absolute -left-[12px] top-0 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-[var(--accent)] bg-[var(--bg)] text-[var(--accent)]"
                 aria-hidden="true"
               >
                 <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -62,3 +79,89 @@ function obtenerTrazo(icono?: IconoItinerario): string {
     </ol>
   </div>
 </section>
+
+<style>
+  .itinerario-linea-viva {
+    transform: scaleY(1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .itinerario-linea-viva {
+      transform: scaleY(0);
+      will-change: transform;
+    }
+
+    :global(.js) li[data-reveal] .itinerario-nodo {
+      transform: scale(0.84);
+      transition: transform 0.65s var(--ease);
+      transition-delay: calc(var(--rv, 0) * 90ms + 80ms);
+    }
+
+    :global(.js) li[data-reveal].is-visible .itinerario-nodo {
+      transform: scale(1);
+    }
+  }
+</style>
+
+<script>
+  const listas = document.querySelectorAll<HTMLElement>('[data-itinerario-lista]');
+  const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  listas.forEach((lista) => {
+    const pista = lista.querySelector<HTMLElement>('[data-itinerario-pista]');
+    const lineaViva = lista.querySelector<HTMLElement>('[data-itinerario-progreso]');
+    const items = lista.querySelectorAll<HTMLElement>(':scope > li');
+
+    if (!pista || !lineaViva || items.length < 2) {
+      if (pista && items.length < 2) pista.style.display = 'none';
+      return;
+    }
+
+    // Usa offsetTop (geometría de layout inmune a transformaciones de reveal)
+    const ajustarExtremos = () => {
+      const inicio = items[0].offsetTop + 12;
+      const fin = items[items.length - 1].offsetTop + 12;
+      pista.style.top = `${inicio}px`;
+      pista.style.bottom = 'auto';
+      pista.style.height = `${Math.max(0, fin - inicio)}px`;
+    };
+
+    ajustarExtremos();
+
+    if (reducirMovimiento) {
+      lineaViva.style.transform = 'scaleY(1)';
+      window.addEventListener('resize', ajustarExtremos, { passive: true });
+      return;
+    }
+
+    let rafId = 0;
+
+    const actualizarLinea = () => {
+      rafId = 0;
+      const rect = pista.getBoundingClientRect();
+      const altoVentana = window.innerHeight || document.documentElement.clientHeight;
+      const pivote = altoVentana * 0.72;
+      const progreso =
+        rect.height > 0
+          ? Math.min(1, Math.max(0, (pivote - rect.top) / rect.height))
+          : 1;
+      lineaViva.style.transform = `scaleY(${progreso})`;
+    };
+
+    const programar = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(actualizarLinea);
+    };
+
+    window.addEventListener('scroll', programar, { passive: true });
+    window.addEventListener('resize', () => {
+      ajustarExtremos();
+      programar();
+    }, { passive: true });
+    window.addEventListener('pageshow', () => {
+      ajustarExtremos();
+      actualizarLinea();
+    });
+    actualizarLinea();
+  });
+</script>

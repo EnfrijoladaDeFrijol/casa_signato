@@ -16,7 +16,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
   data-modo-demo={esModoDemo ? 'true' : 'false'}
   data-musica-titulo={musica.titulo}
 >
-  {!esModoDemo && <audio data-musica-audio preload="none" loop src={musica.audioUrl} />}
+  {!esModoDemo && <audio data-musica-audio preload="metadata" loop src={musica.audioUrl} />}
 
   <!-- Etiqueta breve en móvil al activar o pausar -->
   <div
@@ -179,8 +179,43 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
       }
     };
 
+    const iniciarReproduccion = async () => {
+      if (esDemo || !audio) {
+        if (!reproduciendo) {
+          actualizarUI(true, 'Demo sin archivo MP3', true);
+        }
+        return;
+      }
+
+      if (reproduciendo && !audio.paused) return;
+
+      try {
+        const promesa = audio.play();
+        if (promesa) await promesa;
+        actualizarUI(true, 'Reproduciendo', true);
+      } catch {
+        actualizarUI(false, 'Toca para reproducir', true);
+      }
+    };
+
     audio?.addEventListener('error', () => {
       actualizarUI(false, 'Audio no disponible', true);
+    });
+
+    audio?.addEventListener('pause', () => {
+      if (reproduciendo) {
+        actualizarUI(false, 'Música en pausa', false);
+      }
+    });
+
+    audio?.addEventListener('play', () => {
+      if (!reproduciendo) {
+        actualizarUI(true, 'Reproduciendo', false);
+      }
+    });
+
+    window.addEventListener('signato:iniciar-musica', () => {
+      void iniciarReproduccion();
     });
 
     boton.addEventListener('click', async () => {
@@ -200,12 +235,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
         return;
       }
 
-      try {
-        await audio.play();
-        actualizarUI(true, 'Reproduciendo', true);
-      } catch {
-        actualizarUI(false, 'Toca para reintentar', true);
-      }
+      await iniciarReproduccion();
     });
   });
 </script>

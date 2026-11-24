@@ -1,0 +1,393 @@
+---
+interface Props {
+  protagonistas: string;
+  subtitulo?: string;
+  fechaTexto?: string;
+  ciudad?: string;
+}
+
+const { protagonistas } = Astro.props;
+
+function obtenerIniciales(texto: string): string {
+  const limpio = texto.trim();
+  if (limpio.includes('&')) {
+    const partes = limpio.split('&').map((p) => p.trim()).filter(Boolean);
+    if (partes.length >= 2) return `${partes[0][0] ?? ''}&${partes[1][0] ?? ''}`.toUpperCase();
+  }
+  const palabras = limpio.split(/\s+/).filter(Boolean);
+  return palabras.length >= 2
+    ? `${palabras[0][0] ?? ''}${palabras[1][0] ?? ''}`.toUpperCase()
+    : limpio.slice(0, 2).toUpperCase();
+}
+
+const iniciales = obtenerIniciales(protagonistas);
+---
+
+<div
+  id="sello-bienvenida"
+  data-sello-bienvenida
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="sello-bienvenida-titulo"
+  class="sello-bienvenida fixed inset-0 z-50 flex min-h-[100svh] flex-col items-center justify-between bg-[var(--bg)] px-6 py-8 text-center sm:py-10"
+>
+  <span class="h-6 shrink-0" aria-hidden="true"></span>
+
+  <div class="sello-contenido my-auto flex w-full max-w-sm flex-col items-center overflow-visible">
+    <p
+      id="sello-bienvenida-titulo"
+      class="font-display text-xl font-normal italic tracking-[0.03em] text-[var(--ink-muted)] sm:text-2xl"
+    >
+      {protagonistas}
+    </p>
+
+    <button
+      type="button"
+      data-sello-abrir
+      aria-label={`Abrir invitación de ${protagonistas}`}
+      class="sello-sobre-btn group relative mt-7 block w-[min(86vw,340px)] cursor-pointer overflow-visible rounded focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-[var(--accent)]"
+    >
+      <span class="sello-sobre relative block aspect-[3/2] w-full overflow-visible">
+        <!-- Fondo interior del sobre (visible cuando se levanta la solapa) -->
+        <span class="sello-base" aria-hidden="true"></span>
+
+        <!-- Pliegues laterales e inferior del sobre -->
+        <svg
+          class="sello-pliegues pointer-events-none absolute inset-0 z-[2] block h-full w-full"
+          viewBox="0 0 340 226"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path d="M1 1 L170 116 L1 225 Z" fill="var(--surface)" />
+          <path d="M339 1 L170 116 L339 225 Z" fill="var(--surface)" />
+          <path d="M1 225 L154 106 Q170 95 186 106 L339 225 Z" fill="var(--surface)" />
+          <path
+            d="M1 1 L148 102 M339 1 L192 102 M1 225 L154 106 Q170 95 186 106 L339 225"
+            fill="none"
+            stroke="var(--border-soft)"
+            stroke-width="1"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
+
+        <!-- Solapa triangular superior sin overflow-hidden para rotar libremente -->
+        <span class="sello-solapa-escena" aria-hidden="true">
+          <span class="sello-solapa">
+            <svg
+              class="block h-full w-full overflow-visible"
+              viewBox="0 0 340 134"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M1 1 L339 1 L178 125 Q170 131 162 125 Z"
+                class="sello-solapa-forma"
+              />
+            </svg>
+          </span>
+        </span>
+
+        <!-- Sello circular táctil tipo lacre centrado en la punta de la solapa -->
+        <span class="sello-lacre z-10" aria-hidden="true">
+          <span class="sello-pulso"></span>
+          <span class="sello-lacre-aro-ext"></span>
+          <span class="sello-lacre-cuerpo">
+            <span class="sello-lacre-aro-int"></span>
+            <span class="font-display relative text-[1.4rem] font-medium italic leading-none tracking-[0.06em] sm:text-[1.55rem]">
+              {iniciales}
+            </span>
+          </span>
+        </span>
+      </span>
+    </button>
+
+    <p class="mt-6 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--ink-muted)]">
+      Toca el sello
+    </p>
+  </div>
+
+  <button
+    type="button"
+    data-sello-silencio
+    class="sello-silencio inline-flex min-h-[44px] cursor-pointer items-center justify-center px-4 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--ink-muted)] opacity-75 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+  >
+    Entrar sin música
+  </button>
+</div>
+
+<style>
+  :global(html:not(.js)) .sello-bienvenida {
+    display: none;
+  }
+
+  .sello-bienvenida {
+    overscroll-behavior: contain;
+    overflow: visible;
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    transition:
+      opacity 0.48s var(--ease) 0.42s,
+      transform 0.56s var(--ease) 0.38s;
+    will-change: transform, opacity;
+  }
+
+  .sello-contenido {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    transition:
+      opacity 0.44s var(--ease) 0.34s,
+      transform 0.52s var(--ease) 0.32s;
+    will-change: transform, opacity;
+  }
+
+  .sello-silencio {
+    transition: opacity 0.24s var(--ease);
+  }
+
+  .sello-sobre-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .sello-base {
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    background-color: color-mix(in srgb, var(--bg) 48%, var(--surface));
+    border: 1px solid var(--border-soft);
+    box-shadow:
+      0 24px 48px -30px color-mix(in srgb, var(--ink) 28%, transparent),
+      0 6px 18px -10px color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+
+  .sello-solapa-escena {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    perspective: 1100px;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .sello-solapa {
+    display: block;
+    width: 100%;
+    height: 59%;
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform 0.52s var(--ease) 0.06s;
+    will-change: transform;
+  }
+
+  .sello-solapa-forma {
+    fill: color-mix(in srgb, var(--bg) 18%, var(--surface));
+    stroke: var(--border-soft);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .sello-lacre {
+    position: absolute;
+    left: 50%;
+    top: 56%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+    opacity: 1;
+    transition:
+      opacity 0.26s var(--ease),
+      transform 0.28s var(--ease);
+    will-change: transform, opacity;
+  }
+
+  .sello-sobre-btn:active .sello-lacre {
+    transform: translate3d(-50%, -50%, 0) scale(0.95);
+  }
+
+  .sello-lacre-cuerpo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4.5rem;
+    width: 4.5rem;
+    border-radius: 9999px;
+    background-color: var(--accent);
+    color: var(--surface);
+    box-shadow:
+      0 10px 22px -10px color-mix(in srgb, var(--ink) 38%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--surface) 32%, transparent);
+  }
+
+  @media (min-width: 640px) {
+    .sello-lacre-cuerpo {
+      height: 4.85rem;
+      width: 4.85rem;
+    }
+  }
+
+  .sello-lacre-aro-int {
+    position: absolute;
+    inset: 5px;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--surface) 44%, transparent);
+  }
+
+  .sello-lacre-aro-ext {
+    position: absolute;
+    inset: -5px;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  }
+
+  .sello-pulso {
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    border: 1px solid var(--accent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes sello-pulso-suave {
+    0% {
+      opacity: 0.48;
+      transform: scale(1);
+    }
+    70%,
+    100% {
+      opacity: 0;
+      transform: scale(1.42);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sello-pulso {
+      animation: sello-pulso-suave 2.6s var(--ease) infinite;
+      will-change: transform, opacity;
+    }
+  }
+
+  /* Secuencia de apertura al tocar el sello o el sobre */
+  .sello-bienvenida[data-estado='abriendo'] {
+    opacity: 0;
+    transform: translate3d(0, -18px, 0);
+    pointer-events: none;
+  }
+
+  .sello-bienvenida[data-estado='abriendo'] .sello-lacre {
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0.84);
+  }
+
+  .sello-bienvenida[data-estado='abriendo'] .sello-pulso {
+    animation: none;
+    opacity: 0;
+  }
+
+  .sello-bienvenida[data-estado='abriendo'] .sello-solapa {
+    transform: rotateX(-165deg);
+  }
+
+  .sello-bienvenida[data-estado='abriendo'] .sello-contenido {
+    opacity: 0;
+    transform: translate3d(0, -34px, 0) scale(0.98);
+  }
+
+  .sello-bienvenida[data-estado='abriendo'] .sello-silencio {
+    opacity: 0;
+  }
+
+  /* Salida directa al entrar sin música */
+  .sello-bienvenida[data-estado='cerrando'] {
+    opacity: 0;
+    transform: translate3d(0, -24px, 0);
+    pointer-events: none;
+    transition:
+      opacity 0.42s var(--ease),
+      transform 0.46s var(--ease);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sello-bienvenida,
+    .sello-contenido,
+    .sello-solapa,
+    .sello-lacre,
+    .sello-silencio {
+      transition: none !important;
+    }
+
+    .sello-pulso {
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  const sello = document.querySelector<HTMLElement>('[data-sello-bienvenida]');
+
+  if (sello) {
+    const btnAbrir = sello.querySelector<HTMLButtonElement>('[data-sello-abrir]');
+    const btnSilencio = sello.querySelector<HTMLButtonElement>('[data-sello-silencio]');
+    const consultaMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let cerrado = false;
+
+    const liberarScroll = () => {
+      delete document.body.dataset.selloAbierto;
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
+    };
+
+    const retirarDelFlujo = () => {
+      sello.classList.add('pointer-events-none');
+      sello.setAttribute('aria-hidden', 'true');
+      sello.hidden = true;
+      sello.style.display = 'none';
+      liberarScroll();
+    };
+
+    if (!consultaMovimiento.matches) {
+      document.body.dataset.selloAbierto = 'true';
+    } else {
+      liberarScroll();
+    }
+
+    const cerrar = (conMusica: boolean) => {
+      if (cerrado) return;
+      cerrado = true;
+
+      // Se dispara sincrónicamente dentro del clic para habilitar audio en iOS y Android
+      if (conMusica) {
+        window.dispatchEvent(new CustomEvent('signato:iniciar-musica'));
+      }
+
+      liberarScroll();
+      sello.classList.add('pointer-events-none');
+      sello.setAttribute('aria-hidden', 'true');
+      sello.dataset.estado = conMusica ? 'abriendo' : 'cerrando';
+
+      if (consultaMovimiento.matches) {
+        retirarDelFlujo();
+        return;
+      }
+
+      let retirado = false;
+      const finalizar = () => {
+        if (retirado) return;
+        retirado = true;
+        retirarDelFlujo();
+      };
+
+      sello.addEventListener('transitionend', (evento) => {
+        if (evento.target === sello) finalizar();
+      });
+      window.setTimeout(finalizar, conMusica ? 1000 : 520);
+    };
+
+    btnAbrir?.addEventListener('click', () => cerrar(true));
+    btnSilencio?.addEventListener('click', () => cerrar(false));
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape' && !cerrado) cerrar(false);
+    });
+  }
+</script>

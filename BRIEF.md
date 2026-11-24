@@ -42,7 +42,7 @@ Todas las invitaciones se renderizan desde un **único orquestador** (`src/compo
 
 ## 4. Identidad Visual y Dirección de Arte (Anti-Genérico)
 ### A. Marca Casa Signato (Landing Page `/` y Panel `/admin`)
-- **Personalidad:** Boutique editorial de papelería fina digital — sobria, cálida, orgánica y de lujo accesible.
+- **Personalidad:** invitaciones digitales boutique — sobria, cálida, orgánica y de lujo accesible.
 - **Símbolo oficial:** Caballito de mar en SVG limpio.
 - **Paleta estricta de marca:**
   - Lienzo / Fondo principal: `#F7F6F2` (Blanco Hueso / Alabastro — sensación de papel fino)

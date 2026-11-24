@@ -4,10 +4,15 @@ interface Props {
 }
 
 const { class: clase = '' } = Astro.props;
+const usaEntradaPropia = clase.includes('inv-enter');
 ---
 
-<div class:list={['inv-orn flex items-center justify-center gap-3', clase]} aria-hidden="true">
-  <span class="h-px w-10 bg-current opacity-40"></span>
+<div
+  class:list={['inv-orn flex items-center justify-center gap-3', clase]}
+  data-reveal={!usaEntradaPropia ? '' : undefined}
+  aria-hidden="true"
+>
+  <span class="inv-orn__linea--izq h-px w-10 bg-current opacity-40"></span>
   <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none">
     <path
       d="M8 1.5L11 8L8 14.5L5 8L8 1.5Z"
@@ -15,5 +20,5 @@ const { class: clase = '' } = Astro.props;
       stroke-width="1.25"
       stroke-linejoin="round"></path>
   </svg>
-  <span class="h-px w-10 bg-current opacity-40"></span>
+  <span class="inv-orn__linea--der h-px w-10 bg-current opacity-40"></span>
 </div>

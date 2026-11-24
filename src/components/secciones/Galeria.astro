@@ -23,13 +23,16 @@ const proporciones = ['aspect-[4/5]', 'aspect-square', 'aspect-[3/4]', 'aspect-[
 
     {
       destacada && (
-        <figure class="mx-auto mt-14 w-[78%] sm:w-[46%]" data-reveal>
+        <figure
+          class="mx-auto mt-14 w-[78%] overflow-hidden rounded-t-full sm:w-[46%]"
+          data-reveal="galeria"
+        >
           <img
             src={destacada.url}
             alt={destacada.alt}
             loading="lazy"
             decoding="async"
-            class="aspect-[3/4] w-full rounded-t-full object-cover"
+            class="aspect-[3/4] w-full object-cover"
           />
         </figure>
       )
@@ -39,13 +42,17 @@ const proporciones = ['aspect-[4/5]', 'aspect-square', 'aspect-[3/4]', 'aspect-[
       resto.length > 0 && (
         <div class="mt-12 columns-2 gap-3 sm:columns-3 sm:gap-5">
           {resto.map((foto, i) => (
-            <figure class="mb-3 break-inside-avoid sm:mb-5" data-reveal style={`--rv: ${i % 2}`}>
+            <figure
+              class="mb-3 break-inside-avoid overflow-hidden rounded-sm sm:mb-5"
+              data-reveal="galeria"
+              style={`--rv: ${i % 3}`}
+            >
               <img
                 src={foto.url}
                 alt={foto.alt}
                 loading="lazy"
                 decoding="async"
-                class:list={['w-full rounded-sm object-cover', proporciones[i % proporciones.length]]}
+                class:list={['w-full object-cover', proporciones[i % proporciones.length]]}
               />
             </figure>
           ))}
