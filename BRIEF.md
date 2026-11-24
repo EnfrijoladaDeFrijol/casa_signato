@@ -8,7 +8,7 @@
 - **Operación administrativa:** Existe una cuenta de Google oficial exclusiva de Casa Signato para alojar el Google Drive de recursos/fotos, los Google Forms de confirmación (RSVP) y las hojas de Google Sheets compartidas con cada cliente.
 
 ## 2. Las 3 Superficies del Sitio (Todo en el mismo proyecto)
-1. **`/` (Landing Page Comercial):** Sitio de ventas para presentar la marca, mostrar el catálogo de muestras, explicar los 3 paquetes (Plata, Gold, Diamante), resolver dudas y llevar a cotizar por WhatsApp.
+1. **`/` (Landing Page Comercial):** Sitio de ventas para presentar la marca, mostrar el catálogo de muestras, explicar los 3 paquetes (Plata, Oro, Diamante), resolver dudas y llevar a cotizar por WhatsApp.
 2. **`/admin` (Panel Interno):** Dashboard 100% responsivo (Mobile-First) con buscador en tiempo real y filtros por categoría para encontrar, revisar y abrir enlaces de clientes y demos rápidamente desde el celular.
 3. **`/[categoria]/[slug]` (Invitaciones Finales):** Rutas estáticas dinámicas para cada evento (ej. `/xv-anos/sofia-xv`, `/bodas/karen-y-luis`, `/bautizos/mateo`, `/cumpleanos/lucas`).
 
@@ -23,7 +23,7 @@ Todas las invitaciones se renderizan desde un **único orquestador** (`src/compo
   - Cuenta regresiva en tiempo real (días, horas, minutos, segundos).
   - Ubicaciones interactivas (Ceremonia y Recepción) con botones directos a Google Maps / Waze.
   - Confirmación básica por botón de WhatsApp (`https://wa.me/` con mensaje pre-llenado codificado).
-- **🥇 GOLD — $449 MXN ⭐** *(El más vendido — XV Años y Bodas)*
+- **🥇 ORO — $449 MXN ⭐** *(El más vendido — XV Años y Bodas)*
   - Todo lo de Plata, más:
   - Reproductor flotante de música de fondo (Play/Pause con audio ligero).
   - Galería fotográfica optimizada en WebP (**hasta 6 fotos**).
@@ -31,14 +31,14 @@ Todas las invitaciones se renderizan desde un **único orquestador** (`src/compo
   - Código de vestimenta (*Dress Code*) con indicación de colores sugeridos o reservados.
   - Mesa de regalos (enlaces a tiendas departamentales como Liverpool/Amazon) y Lluvia de sobres (datos bancarios/CLABE con botón para copiar).
 - **💎 DIAMANTE — $749 MXN** *(Control VIP de invitados)*
-  - Todo lo de Gold, más:
+  - Todo lo de Oro, más:
   - Galería extendida (**hasta 12 fotos**).
   - Confirmación inteligente: botón directo a un **Google Form personalizado** (`target="_blank"`) conectado a Google Sheets en vivo (cero formularios HTML propios ni backend).
   - Pase de boletos digital (*Ticket Pass*): muestra lugares asignados leyendo `?pases=X` de la URL con fallback al valor por defecto del cliente.
   - Botón "Agendar en Calendario" (Google Calendar / archivo `.ics` para Apple Calendar).
   - Sección de hospedaje / hoteles sugeridos con ubicación (para invitados foráneos).
   - Álbum compartido de la fiesta (botón y/o código QR hacia Google Drive / Google Photos).
-- **Extras sueltos (Add-ons):** Cualquier módulo de un nivel superior puede encenderse individualmente en un plan inferior mediante `modulosOverride` (ej. un cliente Gold que agrega `rsvpGoogleForm: true`).
+- **Extras sueltos (Add-ons):** Cualquier módulo de un nivel superior puede encenderse individualmente en un plan inferior mediante `modulosOverride` (ej. un cliente Oro que agrega `rsvpGoogleForm: true`).
 
 ## 4. Identidad Visual y Dirección de Arte (Anti-Genérico)
 ### A. Marca Casa Signato (Landing Page `/` y Panel `/admin`)
@@ -52,7 +52,7 @@ Todas las invitaciones se renderizan desde un **único orquestador** (`src/compo
   - **REGLA ABSOLUTA:** PROHIBIDO usar negro puro (`#000000`) en textos, bordes o fondos.
 - **Uso controlado de Liquid Glass + UI Espacial:**
   - Aplicar *UI Espacial* mediante aire generoso, ritmo visual limpio y elevación sutil.
-  - Aplicar *Liquid Glass* (`backdrop-blur`, fondos translúcidos claros sobre `#F7F6F2`, bordes finos `border-white/50`) **con moderación** en la barra de navegación sticky, tarjeta destacada del paquete Gold y tarjetas clave de la Landing. Nunca caer en glassmorphism oscuro, neones ni sombras pesadas.
+  - Aplicar *Liquid Glass* (`backdrop-blur`, fondos translúcidos claros sobre `#F7F6F2`, bordes finos `border-white/50`) **con moderación** en la barra de navegación sticky, tarjeta destacada del paquete Oro y tarjetas clave de la Landing. Nunca caer en glassmorphism oscuro, neones ni sombras pesadas.
 
 ### B. Invitaciones de Clientes (`/[categoria]/[slug]`)
 - **Experiencia 100% Mobile-First:** Más del 95% de los invitados abrirá el enlace desde WhatsApp en celular. Cero desbordamiento horizontal, botones cómodos para el pulgar y sensación de app editorial.

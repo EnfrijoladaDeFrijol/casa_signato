@@ -71,7 +71,7 @@ export const clientes: ClienteInvitacion[] = [
     slug: 'karen-y-luis',
     categoria: 'bodas',
     tema: 'clasico',
-    plan: 'gold',
+    plan: 'oro',
     modulosOverride: {
       rsvpGoogleForm: true,
     },

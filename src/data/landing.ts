@@ -49,12 +49,12 @@ export const PREGUNTAS_FRECUENTES: PreguntaFrecuente[] = [
   {
     pregunta: '¿Puedo agregar una función de otro paquete sin cambiar de nivel?',
     respuesta:
-      'Sí. Puedes contratar el paquete Plata o Gold y sumar módulos individuales —como pase digital de boletos, música o confirmación en formulario— con un ajuste accesible.',
+      'Sí. Puedes contratar el paquete Plata u Oro y sumar módulos individuales —como pase digital de boletos, música o confirmación en formulario— con un ajuste accesible.',
   },
   {
     pregunta: '¿Cómo confirman asistencia mis invitados?',
     respuesta:
-      'En Plata y Gold confirman con un toque por WhatsApp mediante un mensaje ya redactado. En Diamante (o como extra) incluimos confirmación en línea conectada a tu hoja de control en vivo.',
+      'En Plata y Oro confirman con un toque por WhatsApp mediante un mensaje ya redactado. En Diamante (o como extra) incluimos confirmación en línea conectada a tu hoja de control en vivo.',
   },
   {
     pregunta: '¿Qué pasa si cambia un horario o dirección después de enviarla?',

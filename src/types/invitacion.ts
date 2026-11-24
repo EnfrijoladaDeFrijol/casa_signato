@@ -1,4 +1,4 @@
-export type PlanTipo = 'plata' | 'gold' | 'diamante';
+export type PlanTipo = 'plata' | 'oro' | 'diamante';
 
 export type CategoriaEvento = 'xv-anos' | 'bodas' | 'bautizos' | 'cumpleanos';
 
@@ -60,6 +60,8 @@ export interface UbicacionItem {
   googleMapsUrl: string;
   wazeUrl?: string;
   referencia?: string;
+  foto?: string;
+  fotoAlt?: string;
 }
 
 export interface MusicaData {

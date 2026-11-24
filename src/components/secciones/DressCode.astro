@@ -8,11 +8,14 @@ interface Props {
 }
 
 const { dressCode } = Astro.props;
+const sugeridos = dressCode.coloresSugeridos ?? [];
+const reservados = dressCode.coloresReservados ?? [];
+const tieneColores = sugeridos.length > 0 || reservados.length > 0;
 ---
 
 <section aria-labelledby="titulo-dresscode" class="inv-papel">
-  <div class="inv-card-editorial mx-auto mt-10 max-w-md px-6 pb-12 pt-0 text-center">
-    <div class="inv-medallon -mt-10 mx-auto mb-8 h-14 w-14" data-reveal>
+  <div class="mx-auto max-w-lg text-center">
+    <div class="inv-medallon mx-auto mb-7 h-16 w-16" data-reveal>
       <InvitacionIcono nombre="vestimenta" class="inv-icon-draw h-7 w-7" />
     </div>
 
@@ -24,48 +27,60 @@ const { dressCode } = Astro.props;
     />
 
     {
-      dressCode.coloresSugeridos && dressCode.coloresSugeridos.length > 0 && (
-        <div class="mt-12" data-reveal style="--rv: 1">
-          <p class="inv-label">Paleta sugerida</p>
-          <ul class="mt-6 flex flex-wrap items-start justify-center gap-x-7 gap-y-5">
-            {dressCode.coloresSugeridos.map((color) => (
-              <li class="flex w-16 flex-col items-center gap-2.5">
-                <span
-                  class="inv-bolita h-14 w-14 rounded-full"
-                  style={`background-color: ${color.hex};`}
-                  aria-hidden="true"
-                />
-                <span class="text-xs leading-tight text-[var(--ink-muted)]">{color.nombre}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )
-    }
+      tieneColores && (
+        <div
+          class="inv-capsula mx-auto mt-10 max-w-md rounded-[1.75rem] px-6 py-8 text-center"
+          data-reveal="tarjeta"
+          style="--rv: 1"
+        >
+          {sugeridos.length > 0 && (
+            <div>
+              <p class="inv-label">Paleta sugerida</p>
+              <ul class="mt-6 flex flex-wrap items-start justify-center gap-x-7 gap-y-5">
+                {sugeridos.map((color, idx) => (
+                  <li
+                    class="inv-bolita-item flex w-16 flex-col items-center gap-2.5"
+                    style={`--bi: ${idx}`}
+                  >
+                    <span
+                      class="inv-bolita h-14 w-14 rounded-full transition-transform duration-300 hover:scale-110"
+                      style={`background-color: ${color.hex};`}
+                      aria-hidden="true"
+                    />
+                    <span class="text-xs leading-tight text-[var(--ink-muted)]">{color.nombre}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-    {
-      dressCode.coloresReservados && dressCode.coloresReservados.length > 0 && (
-        <div class="mt-10 border-t border-[var(--border-soft)] pt-9" data-reveal style="--rv: 2">
-          <p class="inv-label">Tonos reservados</p>
-          <ul class="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-            {dressCode.coloresReservados.map((color) => (
-              <li class="flex items-center gap-2.5 text-xs text-[var(--ink-muted)]">
-                <span
-                  class="h-4 w-4 rounded-full border border-[var(--border-soft)]"
-                  style={`background-color: ${color.hex};`}
-                  aria-hidden="true"
-                />
-                <span>{color.nombre}</span>
-              </li>
-            ))}
-          </ul>
+          {reservados.length > 0 && (
+            <div class:list={[sugeridos.length > 0 && 'mt-8 border-t border-[var(--border-soft)] pt-7']}>
+              <p class="inv-label">Tonos reservados</p>
+              <ul class="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+                {reservados.map((color, idx) => (
+                  <li
+                    class="inv-bolita-item flex items-center gap-2.5 text-xs text-[var(--ink-muted)]"
+                    style={`--bi: ${sugeridos.length + idx}`}
+                  >
+                    <span
+                      class="h-4 w-4 shrink-0 rounded-full border border-[var(--border-soft)]"
+                      style={`background-color: ${color.hex};`}
+                      aria-hidden="true"
+                    />
+                    <span>{color.nombre}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )
     }
 
     {
       dressCode.nota && (
-        <p class="inv-quote mx-auto mt-8 max-w-sm text-center text-[1.1rem]" data-reveal style="--rv: 3">
+        <p class="inv-quote mx-auto mt-8 max-w-sm text-center text-[1.1rem]" data-reveal style="--rv: 2">
           {dressCode.nota}
         </p>
       )

@@ -11,6 +11,7 @@ const { mesaRegalos } = Astro.props;
 const tiendas = mesaRegalos.tiendas ?? [];
 const lluvia = mesaRegalos.lluviaSobres;
 const clabeAgrupada = lluvia ? lluvia.clabe.replace(/\s+/g, '').replace(/(\d{4})(?=\d)/g, '$1 ') : '';
+const variasTiendas = tiendas.length > 1;
 ---
 
 <section aria-labelledby="titulo-regalos" class="inv-papel">
@@ -24,43 +25,53 @@ const clabeAgrupada = lluvia ? lluvia.clabe.replace(/\s+/g, '').replace(/(\d{4})
 
     {
       tiendas.length > 0 && (
-        <div class="inv-card-editorial mt-16 px-6 pb-4 pt-0">
-          <div class="inv-medallon -mt-10 mx-auto h-14 w-14" data-reveal>
+        <div class="mt-12">
+          <div class="inv-medallon mx-auto mb-7 h-16 w-16" data-reveal>
             <InvitacionIcono nombre="regalo" class="inv-icon-draw h-7 w-7" />
           </div>
-          <ul class="mt-4 divide-y divide-[var(--border-soft)]">
-          {tiendas.map((tienda, i) => (
-            <li class="py-8 text-center" data-reveal style={`--rv: ${i}`}>
-              <h3 class="font-display text-[1.9rem] font-medium italic leading-tight text-[var(--ink)]">
-                {tienda.nombre}
-              </h3>
-              {tienda.numeroEvento && (
-                <p class="inv-label mt-2 !text-[var(--accent)]">{tienda.numeroEvento}</p>
-              )}
-              {tienda.descripcion && (
-                <p class="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-[var(--ink-muted)]">
-                  {tienda.descripcion}
-                </p>
-              )}
-              <a
-                href={tienda.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-abrir-mapa
-                class="inv-link mt-4"
+
+          <ul
+            class:list={[
+              'mx-auto grid gap-5',
+              variasTiendas ? 'sm:grid-cols-2' : 'max-w-md',
+            ]}
+          >
+            {tiendas.map((tienda, i) => (
+              <li
+                class="inv-capsula inv-capsula--interactiva flex flex-col items-center rounded-[1.75rem] px-6 py-8 text-center"
+                data-reveal="tarjeta"
+                style={`--rv: ${i}`}
               >
-                <span class="inv-swap">
-                  <span data-swap-a>
-                    Ver mesa de regalos
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M5 12h14M13 6l6 6-6 6" />
-                    </svg>
+                <h3 class="font-display text-[1.85rem] font-medium italic leading-tight text-[var(--ink)]">
+                  {tienda.nombre}
+                </h3>
+                {tienda.numeroEvento && (
+                  <p class="inv-label mt-2 !text-[var(--accent)]">{tienda.numeroEvento}</p>
+                )}
+                {tienda.descripcion && (
+                  <p class="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-[var(--ink-muted)]">
+                    {tienda.descripcion}
+                  </p>
+                )}
+                <a
+                  href={tienda.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-abrir-mapa
+                  class="inv-link mt-auto pt-5"
+                >
+                  <span class="inv-swap">
+                    <span data-swap-a>
+                      Ver mesa de regalos
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 12h14M13 6l6 6-6 6" />
+                      </svg>
+                    </span>
+                    <span data-swap-b>Abriendo…</span>
                   </span>
-                  <span data-swap-b>Abriendo…</span>
-                </span>
-              </a>
-            </li>
-          ))}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       )
@@ -68,8 +79,12 @@ const clabeAgrupada = lluvia ? lluvia.clabe.replace(/\s+/g, '').replace(/(\d{4})
 
     {
       lluvia && (
-        <div class="inv-card-editorial mx-auto mt-16 max-w-md px-6 pb-10 pt-0 text-center" data-reveal style="--rv: 1">
-          <div class="inv-medallon -mt-10 mx-auto h-14 w-14">
+        <div
+          class="inv-capsula inv-capsula--interactiva mx-auto mt-16 max-w-md rounded-[1.75rem] px-6 pb-10 pt-0 text-center"
+          data-reveal="tarjeta"
+          style="--rv: 1"
+        >
+          <div class="inv-medallon relative z-10 -mt-8 mx-auto h-16 w-16">
             <InvitacionIcono nombre="sobre" class="inv-icon-draw h-7 w-7" />
           </div>
           <p class="inv-eyebrow mt-5">Lluvia de sobres</p>
@@ -78,7 +93,7 @@ const clabeAgrupada = lluvia ? lluvia.clabe.replace(/\s+/g, '').replace(/(\d{4})
           </p>
           <p class="mt-1 text-sm text-[var(--ink-muted)]">{lluvia.banco}</p>
 
-          <p class="mt-7 text-[1.0625rem] font-medium tracking-[0.12em] text-[var(--ink)] [font-variant-numeric:tabular-nums]">
+          <p class="mt-7 break-words text-[1.0625rem] font-medium tracking-[0.12em] text-[var(--ink)] [font-variant-numeric:tabular-nums]">
             {clabeAgrupada}
           </p>
           <p class="inv-label mt-1">CLABE interbancaria</p>
@@ -86,7 +101,7 @@ const clabeAgrupada = lluvia ? lluvia.clabe.replace(/\s+/g, '').replace(/(\d{4})
           <button
             type="button"
             data-copiar-texto={lluvia.clabe}
-            class="inv-btn inv-btn--solid mt-7 w-full active:scale-[0.98] sm:w-auto"
+            class="inv-btn inv-btn--solid mt-7 w-full rounded-full active:scale-[0.98] sm:w-auto"
           >
             <span class="inv-swap">
               <span data-swap-a>Copiar CLABE</span>

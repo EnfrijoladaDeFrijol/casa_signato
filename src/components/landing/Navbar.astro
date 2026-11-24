@@ -1,5 +1,16 @@
 ---
+import { clientes } from '../../data/clientes';
+import { PASOS_PROCESO, PREGUNTAS_FRECUENTES } from '../../data/landing';
 import { MARCA, esWhatsappActivo, obtenerEnlaceCotizacion } from '../../data/marca';
+import type { CategoriaEvento, ModulosInvitacion } from '../../types/invitacion';
+import type { ItemIndiceBusqueda } from '../../scripts/navbarBuscador';
+import { obtenerEtiquetaCategoria } from '../../utils/categorias';
+import {
+  PLANES_INFO,
+  PLANES_MODULOS_BASE,
+  PLANES_ORDEN,
+  resolverModulos,
+} from '../../utils/planes';
 
 const enlaceCotizar = obtenerEnlaceCotizacion();
 const usaWhatsapp = esWhatsappActivo();
@@ -10,16 +21,151 @@ const enlaces = [
   { href: '#paquetes', etiqueta: 'Paquetes' },
   { href: '#preguntas', etiqueta: 'Preguntas' },
 ];
+
+const ALIAS_CATEGORIA: Record<CategoriaEvento, string> = {
+  bodas: 'boda bodas matrimonio casamiento novios pareja',
+  'xv-anos': 'xv quince quinceanera mis xv 15 anos',
+  bautizos: 'bautizo bautizos sacramento bebe iglesia',
+  cumpleanos: 'cumpleanos cumple fiesta celebracion',
+};
+
+function palabrasDeModulos(modulos: ModulosInvitacion): string {
+  const lista: string[] = [];
+  if (modulos.musica) lista.push('musica cancion audio reproductor');
+  if (modulos.galeria) lista.push('galeria fotos sesiones');
+  if (modulos.itinerario) lista.push('itinerario horarios cronograma');
+  if (modulos.dressCode) lista.push('dress code vestimenta colores etiqueta');
+  if (modulos.mesaRegalos) lista.push('mesa de regalos lluvia de sobres liverpool amazon');
+  if (modulos.rsvpWhatsapp) lista.push('whatsapp confirmacion rsvp');
+  if (modulos.rsvpGoogleForm) lista.push('rsvp formulario confirmacion google form');
+  if (modulos.paseBoletos) lista.push('pase pases boletos lugares invitados ticket');
+  if (modulos.calendario) lista.push('calendario agendar google apple');
+  if (modulos.hoteles) lista.push('hoteles hospedaje foraneos');
+  if (modulos.albumQr) lista.push('album qr fotos compartidas drive');
+  return lista.join(' ');
+}
+
+// Privacidad estricta: únicamente demos públicas (esDemo === true); jamás clientes reales ni /admin
+const muestrasIndexadas: ItemIndiceBusqueda[] = clientes
+  .filter((cliente) => cliente.esDemo === true)
+  .map((demo) => {
+    const modulos = resolverModulos(demo);
+    const categoriaLabel = obtenerEtiquetaCategoria(demo.categoria);
+    const planInfo = PLANES_INFO[demo.plan];
+    const rutaBase = `/${demo.categoria}/${demo.slug}`;
+    const href = modulos.paseBoletos ? `${rutaBase}?pases=4` : rutaBase;
+
+    return {
+      id: `muestra-${demo.categoria}-${demo.slug}`,
+      tipo: 'muestra',
+      etiquetaTipo: 'Muestra en vivo',
+      titulo: demo.protagonistas,
+      subtitulo: `${categoriaLabel} · Paquete ${planInfo.nombre} · ${demo.ciudad}`,
+      href,
+      imagen: demo.fotoPortada,
+      imagenAlt: demo.fotoPortadaAlt || demo.titulo,
+      imagenPosicion: demo.fotoPosicion,
+      palabrasClave: [
+        demo.titulo,
+        demo.protagonistas,
+        demo.subtitulo,
+        demo.ciudad,
+        demo.tema,
+        demo.categoria,
+        categoriaLabel,
+        ALIAS_CATEGORIA[demo.categoria],
+        planInfo.nombre,
+        'muestra muestras demo ejemplo invitacion invitaciones clasico editorial',
+        palabrasDeModulos(modulos),
+      ].join(' '),
+    };
+  });
+
+const paquetesIndexados: ItemIndiceBusqueda[] = PLANES_ORDEN.map((planId) => {
+  const plan = PLANES_INFO[planId];
+  const modulosBase = PLANES_MODULOS_BASE[planId];
+  const precioTexto = `$${plan.precioMXN} MXN`;
+
+  return {
+    id: `paquete-${plan.id}`,
+    tipo: 'paquete',
+    etiquetaTipo: 'Paquete',
+    meta: precioTexto,
+    titulo: `Paquete ${plan.nombre}`,
+    subtitulo: plan.descripcion,
+    href: '#paquetes',
+    palabrasClave: [
+      plan.nombre,
+      plan.etiqueta,
+      plan.descripcion,
+      plan.beneficios.join(' '),
+      String(plan.precioMXN),
+      precioTexto,
+      'precio precios costo costos paquete paquetes plan planes cotizar pago unico mxn',
+      palabrasDeModulos(modulosBase),
+    ].join(' '),
+  };
+});
+
+const preguntasIndexadas: ItemIndiceBusqueda[] = PREGUNTAS_FRECUENTES.map((faq, idx) => ({
+  id: `pregunta-${idx + 1}`,
+  tipo: 'pregunta',
+  etiquetaTipo: 'Pregunta',
+  titulo: faq.pregunta,
+  subtitulo: faq.respuesta,
+  href: '#preguntas',
+  palabrasClave: [
+    faq.pregunta,
+    faq.respuesta,
+    'pregunta preguntas duda dudas faq',
+    idx === 0 ? 'envios ilimitados invitados whatsapp' : '',
+    idx === 1 ? 'entrega tiempo 24 72 horas' : '',
+    idx === 2 ? 'extras modulos boletos musica formulario' : '',
+    idx === 3 ? 'confirmacion rsvp whatsapp formulario' : '',
+    idx === 4 ? 'cambios editar modificar actualizar horario direccion' : '',
+    idx === 5 ? 'vigencia duracion activa pago transferencia precio costo' : '',
+  ]
+    .filter(Boolean)
+    .join(' '),
+}));
+
+const pasosIndexados: ItemIndiceBusqueda[] = PASOS_PROCESO.map((paso) => ({
+  id: `paso-${paso.numero}`,
+  tipo: 'proceso',
+  etiquetaTipo: 'Cómo funciona',
+  meta: `Paso ${paso.numero}`,
+  titulo: paso.titulo,
+  subtitulo: paso.descripcion,
+  href: '#como-funciona',
+  palabrasClave: [
+    paso.titulo,
+    paso.descripcion,
+    'como funciona proceso pasos entrega 24 72 whatsapp envio datos estilo',
+  ].join(' '),
+}));
+
+const indiceBusquedaJson = JSON.stringify([
+  ...muestrasIndexadas,
+  ...paquetesIndexados,
+  ...preguntasIndexadas,
+  ...pasosIndexados,
+]).replace(/</g, '\\u003c');
 ---
 
-<header id="site-navbar" data-scrolled="false" data-hidden="false" class="nav-header">
+<header
+  id="site-navbar"
+  data-scrolled="false"
+  data-hidden="false"
+  data-search-open="false"
+  class="nav-header"
+>
   <div class="nav-shell">
     <div class="nav-bar">
-      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-3 py-2 sm:px-6 sm:py-2.5">
+      <div class="nav-bar-inner mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-3 py-2 sm:px-6 sm:py-2.5">
         <a
           href="#inicio"
           data-nav-enlace
-          class="nav-brand inline-flex min-h-[44px] items-center gap-2.5 pr-2 hover:opacity-85"
+          class="nav-brand inline-flex min-h-[44px] shrink-0 items-center gap-2.5 pr-2 hover:opacity-85"
         >
           <span class="nav-logo-stack relative inline-flex h-9 w-12 shrink-0 items-center justify-center">
             <img
@@ -41,12 +187,12 @@ const enlaces = [
               class="nav-logo-color absolute inset-0 h-9 w-12 object-contain object-center"
             />
           </span>
-          <span class="font-display text-xl font-semibold leading-none tracking-wide sm:text-2xl">
+          <span class="nav-brand-text font-display text-xl font-semibold leading-none tracking-wide sm:text-2xl">
             {MARCA.nombre}
           </span>
         </a>
 
-        <nav class="hidden items-center gap-7 md:flex" aria-label="Secciones principales">
+        <nav class="nav-desktop-links hidden items-center gap-7 md:flex" aria-label="Secciones principales">
           {enlaces.map((item) => (
             <a href={item.href} data-nav-seccion class="nav-link text-sm font-medium">
               {item.etiqueta}
@@ -54,14 +200,74 @@ const enlaces = [
           ))}
         </nav>
 
-        <div class="flex items-center gap-2">
-          <a
-            href="#muestras"
-            data-nav-seccion
-            class="nav-cta inline-flex min-h-[38px] items-center justify-center rounded-full px-4 py-1.5 text-[13px] font-medium tracking-[0.01em] active:scale-[0.98] md:hidden"
+        <div
+          id="nav-search-inline"
+          class="nav-search-inline flex min-w-0 flex-1 items-center gap-1 sm:gap-2"
+          role="search"
+        >
+          <svg
+            class="nav-search-lead hidden h-4 w-4 shrink-0 sm:block"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true"
           >
-            Muestras
-          </a>
+            <circle cx="11" cy="11" r="6.5" />
+            <path d="M16 16l4.5 4.5" stroke-linecap="round" />
+          </svg>
+          <label for="nav-search-input" class="sr-only">
+            Buscar muestras, paquetes o preguntas frecuentes
+          </label>
+          <input
+            type="search"
+            id="nav-search-input"
+            autocomplete="off"
+            spellcheck="false"
+            enterkeyhint="search"
+            placeholder="Buscar diseños, precios..."
+            class="nav-search-input h-10 w-full min-w-0 flex-1 bg-transparent text-base leading-normal focus:outline-none"
+          />
+          <button
+            type="button"
+            id="nav-search-clear"
+            aria-label="Cerrar búsqueda"
+            class="nav-search-clear -mr-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full active:scale-95 sm:mr-0"
+          >
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path d="M6 6l12 12M18 6l-12 12" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex shrink-0 items-center gap-1 sm:gap-2">
+          <button
+            type="button"
+            id="nav-search-toggle"
+            aria-expanded="false"
+            aria-controls="nav-search-panel"
+            aria-label="Buscar muestras, paquetes o dudas"
+            class="nav-toggle nav-search-toggle inline-flex h-10 w-10 items-center justify-center rounded-full active:scale-95"
+          >
+            <svg
+              class="h-[18px] w-[18px]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="M16 16l4.5 4.5" stroke-linecap="round" />
+            </svg>
+          </button>
 
           <a
             href={enlaceCotizar}
@@ -78,7 +284,7 @@ const enlaces = [
             aria-expanded="false"
             aria-controls="nav-movil-menu"
             aria-label="Abrir menú de navegación"
-            class="nav-toggle inline-flex h-10 w-10 items-center justify-center rounded-full active:scale-[0.96] md:hidden"
+            class="nav-toggle inline-flex h-10 w-10 items-center justify-center rounded-full active:scale-95 md:hidden"
           >
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <path data-icono-abrir d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
@@ -86,6 +292,17 @@ const enlaces = [
             </svg>
           </button>
         </div>
+      </div>
+    </div>
+
+    <div
+      id="nav-search-panel"
+      aria-hidden="true"
+      data-cotizar-href={enlaceCotizar}
+      data-cotizar-externo={usaWhatsapp ? 'true' : 'false'}
+      class="nav-search-panel mt-2 hidden rounded-3xl p-2.5 sm:p-3"
+    >
+      <div id="nav-search-results" class="max-h-[min(68vh,28rem)] overflow-y-auto overscroll-contain">
       </div>
     </div>
 
@@ -124,7 +341,11 @@ const enlaces = [
   </div>
 </header>
 
+<script type="application/json" id="nav-search-index" set:html={indiceBusquedaJson} />
+
 <script>
+  import { inicializarBuscadorNavbar } from '../../scripts/navbarBuscador';
+
   const header = document.getElementById('site-navbar');
   const boton = document.getElementById('nav-toggle');
   const menu = document.getElementById('nav-movil-menu');
@@ -132,9 +353,14 @@ const enlaces = [
   const iconoCerrar = boton?.querySelector('[data-icono-cerrar]');
 
   let menuAbierto = false;
+  let cerrarBusqueda: ((opciones?: { devolverFoco?: boolean }) => void) | null = null;
+  let iniciarNavegacionSeccionRef: (() => void) | null = null;
 
   const alternar = (abrir: boolean) => {
     if (!boton || !menu || menuAbierto === abrir) return;
+    if (abrir) {
+      cerrarBusqueda?.({ devolverFoco: false });
+    }
     menuAbierto = abrir;
     boton.setAttribute('aria-expanded', abrir ? 'true' : 'false');
     boton.setAttribute('aria-label', abrir ? 'Cerrar menú' : 'Abrir menú de navegación');
@@ -144,9 +370,21 @@ const enlaces = [
     iconoCerrar?.classList.toggle('hidden', !abrir);
   };
 
+  if (header) {
+    const buscador = inicializarBuscadorNavbar({
+      header,
+      onAbrir: () => alternar(false),
+      onNavegarSeccion: () => iniciarNavegacionSeccionRef?.(),
+    });
+    cerrarBusqueda = buscador.cerrar;
+  }
+
   boton?.addEventListener('click', () => alternar(!menuAbierto));
   header?.querySelectorAll('[data-nav-enlace]').forEach((el) =>
-    el.addEventListener('click', () => alternar(false)),
+    el.addEventListener('click', () => {
+      alternar(false);
+      cerrarBusqueda?.({ devolverFoco: false });
+    }),
   );
 
   document.addEventListener('keydown', (evento) => {
@@ -193,7 +431,9 @@ const enlaces = [
       window.clearTimeout(timerFinNavegacion);
       if (!navegandoSeccion) return;
       window.clearTimeout(timerOcultarClick);
-      establecerEstado('hidden', true);
+      if (header.dataset.searchOpen !== 'true') {
+        establecerEstado('hidden', true);
+      }
       navegandoSeccion = false;
       ultimoY = Math.max(0, window.scrollY);
       bajadaAcumulada = 0;
@@ -205,13 +445,18 @@ const enlaces = [
       bajadaAcumulada = 0;
       subidaAcumulada = 0;
       alternar(false);
+      cerrarBusqueda?.({ devolverFoco: false });
       window.clearTimeout(timerOcultarClick);
       timerOcultarClick = window.setTimeout(() => {
-        establecerEstado('hidden', true);
+        if (header.dataset.searchOpen !== 'true') {
+          establecerEstado('hidden', true);
+        }
       }, RETARDO_OCULTAR_CLICK_MS);
       window.clearTimeout(timerFinNavegacion);
       timerFinNavegacion = window.setTimeout(finalizarNavegacionSeccion, 850);
     };
+
+    iniciarNavegacionSeccionRef = iniciarNavegacionSeccion;
 
     header.querySelectorAll<HTMLAnchorElement>('[data-nav-seccion]').forEach((enlace) => {
       enlace.addEventListener('click', iniciarNavegacionSeccion);
@@ -229,6 +474,14 @@ const enlaces = [
       const yActual = Math.max(0, window.scrollY);
 
       establecerEstado('scrolled', yActual > UMBRAL_ESTILO);
+
+      if (header.dataset.searchOpen === 'true') {
+        establecerEstado('hidden', false);
+        ultimoY = yActual;
+        bajadaAcumulada = 0;
+        subidaAcumulada = 0;
+        return;
+      }
 
       if (navegandoSeccion) {
         ultimoY = yActual;

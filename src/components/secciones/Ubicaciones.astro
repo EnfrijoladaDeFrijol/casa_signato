@@ -28,82 +28,104 @@ function partirHora(hora: string): { numero: string; sufijo: string } {
 
     <div
       class:list={[
-        'mx-auto mt-16 grid max-w-md gap-y-16',
+        'mx-auto mt-14 grid max-w-md gap-y-14',
         varias && 'md:max-w-none md:grid-cols-2 md:gap-x-8',
       ]}
     >
       {
         ubicaciones.map((lugar, i) => {
           const hora = partirHora(lugar.hora);
+          const tieneFoto = Boolean(lugar.foto);
           return (
             <article
-              class="inv-card-editorial px-6 pb-10 pt-0 text-center"
+              class="inv-card-editorial flex flex-col rounded-[2rem] text-center"
               data-reveal
               style={`--rv: ${i}`}
             >
-              <div class="inv-medallon -mt-10 mx-auto h-14 w-14">
-                <InvitacionIcono nombre={iconoDe(lugar.tipo)} class="inv-icon-draw h-7 w-7" />
-              </div>
-              <p class="inv-eyebrow mt-5">{lugar.tipo}</p>
-              <p class="inv-num mt-4 flex items-center justify-center gap-2 text-[3.25rem] leading-none">
-                <InvitacionIcono nombre="reloj" class="inv-icon-draw h-5 w-5 shrink-0 text-[var(--accent)]" />
-                <span>
-                  {hora.numero}
-                  {hora.sufijo && (
-                    <span class="ml-2 align-baseline font-body text-[0.6875rem] font-semibold uppercase tracking-[0.22em] text-[var(--ink-muted)]">
-                      {hora.sufijo}
-                    </span>
-                  )}
-                </span>
-              </p>
-
-              <h3 class="mt-5 font-display text-[1.7rem] font-medium italic leading-tight text-[var(--ink)]">
-                {lugar.nombre}
-              </h3>
-              <p class="mx-auto mt-2.5 flex max-w-xs items-start justify-center gap-2 text-sm leading-relaxed text-[var(--ink-muted)]">
-                <InvitacionIcono nombre="pin" class="inv-icon-draw mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
-                <span>{lugar.direccion}</span>
-              </p>
-              {lugar.referencia && (
-                <p class="mx-auto mt-2.5 max-w-xs font-display text-base italic text-[var(--ink-muted)]">
-                  {lugar.referencia}
-                </p>
+              {tieneFoto && (
+                <div
+                  class="relative aspect-[16/10] w-full overflow-hidden rounded-t-[2rem] rounded-b-[1.25rem] bg-[var(--accent-soft)]"
+                  data-reveal="foto-lugar"
+                  style={`--rv: ${i}`}
+                >
+                  <img
+                    src={lugar.foto}
+                    alt={lugar.fotoAlt ?? `${lugar.tipo}: ${lugar.nombre}`}
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover"
+                  />
+                  <div
+                    class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2"
+                    style="background: linear-gradient(to top, color-mix(in srgb, var(--ink) 42%, transparent) 0%, color-mix(in srgb, var(--ink) 12%, transparent) 55%, transparent 100%);"
+                    aria-hidden="true"
+                  />
+                </div>
               )}
 
-              <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <a
-                  href={lugar.googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-abrir-mapa
-                  class="inv-btn inv-btn--solid active:scale-[0.98]"
-                >
-                  <span class="inv-swap">
-                    <span data-swap-a>
-                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 1 1 13 0C18.5 15.4 12 21 12 21z" />
-                        <circle cx="12" cy="10.5" r="2.2" />
-                      </svg>
-                      Google Maps
-                    </span>
-                    <span data-swap-b>Abriendo mapa…</span>
-                  </span>
-                </a>
+              <div class="inv-medallon relative z-10 -mt-8 mx-auto h-16 w-16">
+                <InvitacionIcono nombre={iconoDe(lugar.tipo)} class="inv-icon-draw h-7 w-7" />
+              </div>
 
-                {lugar.wazeUrl && (
+              <div class="flex flex-1 flex-col px-6 pb-10 pt-5">
+                <p class="inv-eyebrow">{lugar.tipo}</p>
+                <p class="inv-num mt-4 flex items-center justify-center gap-2 text-[3.15rem] leading-none">
+                  <InvitacionIcono nombre="reloj" class="h-5 w-5 shrink-0 text-[var(--accent)]" />
+                  <span>
+                    {hora.numero}
+                    {hora.sufijo && (
+                      <span class="ml-2 align-baseline font-body text-[0.6875rem] font-semibold uppercase tracking-[0.22em] text-[var(--ink-muted)]">
+                        {hora.sufijo}
+                      </span>
+                    )}
+                  </span>
+                </p>
+
+                <h3 class="mt-5 font-display text-[1.7rem] font-medium italic leading-tight text-[var(--ink)]">
+                  {lugar.nombre}
+                </h3>
+                <p class="mx-auto mt-2.5 flex max-w-xs items-start justify-center gap-2 text-sm leading-relaxed text-[var(--ink-muted)]">
+                  <InvitacionIcono nombre="pin" class="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
+                  <span>{lugar.direccion}</span>
+                </p>
+                {lugar.referencia && (
+                  <p class="mx-auto mt-2.5 max-w-xs font-display text-base italic text-[var(--ink-muted)]">
+                    {lugar.referencia}
+                  </p>
+                )}
+
+                <div class="mt-auto flex flex-col gap-3 pt-7 sm:flex-row sm:justify-center">
                   <a
-                    href={lugar.wazeUrl}
+                    href={lugar.googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     data-abrir-mapa
-                    class="inv-btn inv-btn--line active:scale-[0.98]"
+                    class="inv-btn inv-btn--solid rounded-full active:scale-[0.98]"
                   >
                     <span class="inv-swap">
-                      <span data-swap-a>Waze</span>
-                      <span data-swap-b>Abriendo…</span>
+                      <span data-swap-a>
+                        <InvitacionIcono nombre="pin" class="h-4 w-4 shrink-0" />
+                        Google Maps
+                      </span>
+                      <span data-swap-b>Abriendo mapa…</span>
                     </span>
                   </a>
-                )}
+
+                  {lugar.wazeUrl && (
+                    <a
+                      href={lugar.wazeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-abrir-mapa
+                      class="inv-btn inv-btn--line rounded-full active:scale-[0.98]"
+                    >
+                      <span class="inv-swap">
+                        <span data-swap-a>Waze</span>
+                        <span data-swap-b>Abriendo…</span>
+                      </span>
+                    </a>
+                  )}
+                </div>
               </div>
             </article>
           );

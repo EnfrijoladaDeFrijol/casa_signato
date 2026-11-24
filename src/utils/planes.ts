@@ -16,7 +16,7 @@ export interface PlanInfo {
   beneficios: string[];
 }
 
-export const PLANES_ORDEN: PlanTipo[] = ['plata', 'gold', 'diamante'];
+export const PLANES_ORDEN: PlanTipo[] = ['plata', 'oro', 'diamante'];
 
 export const PLANES_INFO: Record<PlanTipo, PlanInfo> = {
   plata: {
@@ -37,9 +37,9 @@ export const PLANES_INFO: Record<PlanTipo, PlanInfo> = {
       'Confirmación rápida por WhatsApp',
     ],
   },
-  gold: {
-    id: 'gold',
-    nombre: 'Gold',
+  oro: {
+    id: 'oro',
+    nombre: 'Oro',
     precioMXN: 449,
     etiqueta: 'Más vendido',
     destacado: true,
@@ -65,7 +65,7 @@ export const PLANES_INFO: Record<PlanTipo, PlanInfo> = {
     descripcion:
       'Pensado para celebraciones con control de pases, logística para invitados foráneos y registro organizado.',
     beneficios: [
-      'Todo lo incluido en el paquete Gold',
+      'Todo lo incluido en el paquete Oro',
       'Galería fotográfica extendida (hasta 12 fotos)',
       'Pase digital personalizado con los lugares por familia',
       'Confirmación en línea conectada a tu lista en vivo',
@@ -92,7 +92,7 @@ export const PLANES_MODULOS_BASE: Record<PlanTipo, ModulosInvitacion> = {
     hoteles: false,
     albumQr: false,
   },
-  gold: {
+  oro: {
     padresPadrinos: true,
     contador: true,
     ubicaciones: true,
