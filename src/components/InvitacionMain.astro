@@ -42,14 +42,14 @@ const fotosReales = galeriaActiva
       .slice(0, obtenerLimiteGaleria(cliente.plan))
   : [];
 const hayFotos = fotosReales.length > 0;
+const fotoInterludio = fotosReales.length >= 2 ? fotosReales[0] : undefined;
 const fotoCierre = hayFotos ? fotosReales[fotosReales.length - 1] : undefined;
-const fotoInterludio = fotosReales.length > 4 ? fotosReales[0] : undefined;
 
 const fotosGaleria = hayFotos
-  ? fotosReales.length > 4
+  ? fotosReales.length >= 4
     ? fotosReales.slice(1, -1)
-    : fotosReales.length >= 2
-      ? fotosReales.slice(0, -1)
+    : fotosReales.length === 3
+      ? fotosReales.slice(1)
       : fotosReales
   : (cliente.galeria ?? []);
 ---
@@ -76,6 +76,16 @@ const fotosGaleria = hayFotos
   }
 
   {
+    fotoInterludio && (
+      <InterludioFoto
+        variante="arco"
+        foto={fotoInterludio}
+        compactoSuperior={cliente.tema === 'clasico'}
+      />
+    )
+  }
+
+  {
     modulos.padresPadrinos && cliente.padresPadrinos && (
       <PadresPadrinos
         datos={cliente.padresPadrinos}
@@ -83,12 +93,6 @@ const fotosGaleria = hayFotos
         fechaISO={cliente.fechaISO}
         categoria={cliente.categoria}
       />
-    )
-  }
-
-  {
-    fotoInterludio && (
-      <InterludioFoto variante="arco" foto={fotoInterludio} />
     )
   }
 

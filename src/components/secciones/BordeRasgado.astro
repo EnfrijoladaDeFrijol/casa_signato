@@ -39,10 +39,11 @@ const desplazamientoSombra =
 <svg
   class:list={[
     'borde-rasgado pointer-events-none absolute inset-x-0 z-[5] block h-6 w-full sm:h-8',
-    posicion === 'superior' ? '-top-px' : '-bottom-px',
+    posicion === 'superior' ? 'top-0' : 'bottom-0',
     clase,
   ]}
   data-sombra={sombra}
+  data-pos={posicion}
   viewBox={`0 0 ${ANCHO} ${ALTO}`}
   preserveAspectRatio="none"
   aria-hidden="true"
@@ -53,6 +54,20 @@ const desplazamientoSombra =
 </svg>
 
 <style>
+  /* Gana a `.inv-papel > *` (position: relative) para que el SVG quede pegado al borde sin ocupar flujo */
+  .borde-rasgado {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .borde-rasgado[data-pos='superior'] {
+    top: 0;
+  }
+  .borde-rasgado[data-pos='inferior'] {
+    bottom: 0;
+  }
   .borde-rasgado__papel {
     fill: var(--bg);
   }

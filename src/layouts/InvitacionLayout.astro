@@ -358,6 +358,8 @@ const estiloVariables = [
     --border-soft: color-mix(in srgb, var(--ink) 16%, var(--bg));
     --tinta-muted: color-mix(in srgb, var(--bg) 74%, var(--ink));
     --tinta-linea: color-mix(in srgb, var(--bg) 24%, var(--ink));
+    background-color: var(--bg);
+    color: var(--ink);
     transition:
       --bg 0.6s var(--ease),
       --surface 0.6s var(--ease),
@@ -376,6 +378,9 @@ const estiloVariables = [
   }
   .inv-flow > section[data-compacta] {
     padding-block: clamp(3.25rem, 11vw, 5rem);
+  }
+  .inv-flow > section[data-apertura] {
+    padding-block: clamp(2.25rem, 7vw, 3.25rem);
   }
   .inv-flow > section[data-tono='tinta'] {
     background-color: var(--ink);
@@ -699,18 +704,18 @@ const estiloVariables = [
     background-image:
       repeating-linear-gradient(
         0deg,
-        color-mix(in srgb, var(--ink) 9%, transparent) 0 1px,
+        color-mix(in srgb, var(--ink) 4%, transparent) 0 1px,
         transparent 1px 3px
       ),
       repeating-linear-gradient(
         90deg,
-        color-mix(in srgb, var(--bg) 7%, transparent) 0 1px,
-        transparent 1px 3px
+        color-mix(in srgb, var(--bg) 3%, transparent) 0 1px,
+        transparent 1px 4px
       ),
       radial-gradient(
         ellipse at 50% 45%,
-        transparent 52%,
-        color-mix(in srgb, var(--ink) 30%, transparent) 100%
+        transparent 60%,
+        color-mix(in srgb, var(--ink) 14%, transparent) 100%
       );
   }
   .inv-card-editorial {
@@ -747,16 +752,12 @@ const estiloVariables = [
   }
   .inv-medallon-num {
     border-radius: 999px;
-    border: 1.5px solid color-mix(in srgb, var(--bg) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--bg) 35%, transparent);
     color: var(--bg);
-    background: radial-gradient(
-      circle at 30% 22%,
-      color-mix(in srgb, var(--accent) 70%, var(--ink)) 0%,
-      color-mix(in srgb, var(--accent) 38%, var(--ink)) 100%
-    );
+    background-color: color-mix(in srgb, var(--bg) 9%, transparent);
     box-shadow:
-      inset 0 2px 3px color-mix(in srgb, var(--bg) 22%, transparent),
-      0 10px 16px -6px color-mix(in srgb, var(--ink) 55%, transparent);
+      inset 0 0 0 4px color-mix(in srgb, var(--bg) 6%, transparent),
+      0 8px 14px -8px color-mix(in srgb, var(--ink) 35%, transparent);
   }
   .inv-bolita {
     box-shadow:

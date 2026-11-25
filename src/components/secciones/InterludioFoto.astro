@@ -1,23 +1,55 @@
 ---
+import BordeRasgado from './BordeRasgado.astro';
+
 interface Props {
   foto: { url: string; alt: string };
   variante?: 'arco' | 'banda';
   posicion?: string;
+  compactoSuperior?: boolean;
 }
 
-const { foto, variante = 'arco', posicion } = Astro.props;
+const {
+  foto,
+  variante = 'arco',
+  posicion,
+  compactoSuperior = false,
+} = Astro.props;
 const estiloImg = posicion ? `object-position: ${posicion}` : undefined;
 ---
 
 {
   variante === 'arco' ? (
-    <div class="inv-papel bg-[var(--bg)] px-6 py-16 sm:py-20">
-      <figure class="relative mx-auto aspect-[4/5] w-full max-w-[290px]" data-reveal>
+    <div
+      class:list={[
+        'inv-papel bg-[var(--bg)] px-6',
+        compactoSuperior ? 'pb-7 pt-1 sm:pb-9 sm:pt-2' : 'py-8 sm:py-10',
+      ]}
+    >
+      <figure class="relative mx-auto aspect-[4/5] w-full max-w-[316px] sm:max-w-[356px]" data-reveal>
         <span
-          class="pointer-events-none absolute inset-0 translate-x-3 translate-y-3 rounded-t-full border border-[var(--accent)]"
+          class="interludio-arco-marco pointer-events-none absolute -inset-1.5 rounded-t-full border sm:-inset-2"
           aria-hidden="true"
         />
-        <div class="interludio-arco relative h-full w-full overflow-hidden rounded-t-full border border-[var(--border-soft)]">
+        <div class="interludio-arco relative h-full w-full overflow-hidden rounded-t-full border border-[var(--border-soft)] bg-[var(--accent-soft)]">
+          <img
+            src={foto.url}
+            alt={foto.alt}
+            style={estiloImg}
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
+          />
+          <span
+            class="interludio-arco-filete pointer-events-none absolute inset-2.5 rounded-t-full border"
+            aria-hidden="true"
+          />
+        </div>
+      </figure>
+    </div>
+  ) : (
+    <div class="relative bg-[var(--bg)]">
+      <figure class="relative h-72 w-full overflow-hidden bg-[var(--accent-soft)] sm:h-96">
+        <div class="absolute inset-x-0 -top-[12%] h-[124%]" data-parallax data-parallax-max="30">
           <img
             src={foto.url}
             alt={foto.alt}
@@ -27,36 +59,31 @@ const estiloImg = posicion ? `object-position: ${posicion}` : undefined;
             class="h-full w-full object-cover"
           />
         </div>
+        <span class="interludio-velo-sup pointer-events-none absolute inset-x-0 top-0 h-1/4" aria-hidden="true" />
+        <span class="interludio-velo-inf pointer-events-none absolute inset-x-0 bottom-0 h-1/4" aria-hidden="true" />
+        <BordeRasgado posicion="superior" sombra="foto" class="h-6 sm:h-8" />
+        <BordeRasgado posicion="inferior" sombra="foto" class="h-6 sm:h-8" />
       </figure>
     </div>
-  ) : (
-    <figure class="relative h-64 w-full overflow-hidden sm:h-80" data-reveal>
-      <div class="absolute inset-x-0 -top-[12%] h-[124%]" data-parallax data-parallax-max="30">
-        <img
-          src={foto.url}
-          alt={foto.alt}
-          style={estiloImg}
-          loading="lazy"
-          decoding="async"
-          class="h-full w-full object-cover"
-        />
-      </div>
-      <span class="interludio-velo-sup pointer-events-none absolute inset-x-0 top-0 h-1/3" aria-hidden="true" />
-      <span class="interludio-velo-inf pointer-events-none absolute inset-x-0 bottom-0 h-1/3" aria-hidden="true" />
-    </figure>
   )
 }
 
 <style>
   .interludio-arco {
     box-shadow:
-      0 18px 32px -14px color-mix(in srgb, var(--ink) 38%, transparent),
-      0 3px 8px color-mix(in srgb, var(--ink) 16%, transparent);
+      0 18px 32px -14px color-mix(in srgb, var(--ink) 36%, transparent),
+      0 3px 8px color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .interludio-arco-marco {
+    border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  }
+  .interludio-arco-filete {
+    border-color: color-mix(in srgb, var(--bg) 42%, transparent);
   }
   .interludio-velo-sup {
-    background: linear-gradient(to bottom, color-mix(in srgb, var(--ink) 28%, transparent), transparent);
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--ink) 24%, transparent), transparent);
   }
   .interludio-velo-inf {
-    background: linear-gradient(to top, color-mix(in srgb, var(--ink) 28%, transparent), transparent);
+    background: linear-gradient(to top, color-mix(in srgb, var(--ink) 24%, transparent), transparent);
   }
 </style>
