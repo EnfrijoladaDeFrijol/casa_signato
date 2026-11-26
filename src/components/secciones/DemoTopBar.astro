@@ -1,5 +1,5 @@
 ---
-import { obtenerEnlaceCotizacion } from '../../data/marca';
+import { esWhatsappActivo, obtenerEnlaceCotizacion } from '../../data/marca';
 
 interface Props {
   tema: string;
@@ -29,8 +29,8 @@ const enlace = obtenerEnlaceCotizacion();
     <p class="demo-topbar__tema text-[10px] font-semibold uppercase tracking-[0.3em]">{etiqueta}</p>
     <a
       href={enlace}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={esWhatsappActivo() ? '_blank' : undefined}
+      rel={esWhatsappActivo() ? 'noopener noreferrer' : undefined}
       class="demo-topbar__cta inline-flex h-8 items-center px-3.5 text-[10px] font-semibold uppercase tracking-[0.14em]"
     >
       Quiero una así

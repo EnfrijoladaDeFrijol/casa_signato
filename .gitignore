@@ -25,3 +25,4 @@ pnpm-debug.log*
 
 # Other
 .taste-skill/
+.tmp-referencias/

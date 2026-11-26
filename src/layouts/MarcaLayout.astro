@@ -4,12 +4,17 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  noindex?: boolean;
 }
 
 const {
   title,
   description = 'Casa Signato — Invitaciones digitales boutique hechas en México para XV Años, Bodas, Bautizos y Cumpleaños.',
+  noindex = false,
 } = Astro.props;
+
+const ogUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogImagen = new URL('/marca/logo-color.png', Astro.site).href;
 ---
 
 <!doctype html>
@@ -20,18 +25,21 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#F7F6F2" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <link rel="icon" type="image/png" href="/marca/logo-color.png" />
     <link rel="apple-touch-icon" href="/marca/logo-color.png" />
 
     <meta property="og:locale" content="es_MX" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={ogUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/marca/logo-color.png" />
+    <meta property="og:image" content={ogImagen} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImagen} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

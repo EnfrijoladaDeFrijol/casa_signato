@@ -15,7 +15,8 @@ const fechaTexto = formatearFechaLarga(cliente.fechaISO);
 const ogDescripcion =
   cliente.frase?.trim() ||
   `Te invitamos a celebrar ${cliente.titulo} el ${fechaTexto} en ${cliente.ciudad}.`;
-const ogImagen = cliente.ogImage || cliente.fotoPortada;
+const ogUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogImagen = new URL(cliente.ogImage || cliente.fotoPortada, Astro.site).href;
 
 // Solo viajan valores completos; `--accent-soft`, `--ink-muted` y `--border-soft`
 // se derivan en CSS (`.inv-root`) con color-mix sobre las variables base.
@@ -38,10 +39,12 @@ const estiloVariables = [
     <title>{cliente.titulo} | Casa Signato</title>
     <meta name="description" content={ogDescripcion} />
     <meta name="theme-color" content={temaColores.bg} data-theme-color />
+    {!cliente.esDemo && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <meta property="og:locale" content="es_MX" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={ogUrl} />
     <meta property="og:title" content={cliente.titulo} />
     <meta property="og:description" content={ogDescripcion} />
     <meta property="og:image" content={ogImagen} />
