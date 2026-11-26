@@ -24,7 +24,9 @@ const ogImagen = new URL('/marca/logo-color.png', Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#F7F6F2" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
+    <meta name="theme-color" content="#363E35" />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <link rel="icon" type="image/png" href="/marca/logo-color.png" />

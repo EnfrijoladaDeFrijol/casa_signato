@@ -32,12 +32,18 @@ const estiloVariables = [
 ---
 
 <!doctype html>
-<html lang="es-MX">
+<html
+  lang="es-MX"
+  data-invitacion
+  style={`--bg: ${temaColores.bg}; --ink: ${temaColores.ink};`}
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{cliente.titulo} | Casa Signato</title>
     <meta name="description" content={ogDescripcion} />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
     <meta name="theme-color" content={temaColores.bg} data-theme-color />
     {!cliente.esDemo && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -351,6 +357,17 @@ const estiloVariables = [
     syntax: '<color>';
     inherits: true;
     initial-value: #363e35;
+  }
+
+  :root,
+  html {
+    color-scheme: only light;
+  }
+
+  html[data-invitacion],
+  body.inv-root {
+    background-color: var(--bg);
+    color: var(--ink);
   }
 
   .inv-root {

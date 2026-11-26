@@ -11,6 +11,7 @@
 }
 
 :root {
+  color-scheme: only light;
   --bg: #F7F6F2;
   --surface: #FFFFFF;
   --accent: #8BA888;
@@ -24,6 +25,9 @@
 }
 
 html {
+  color-scheme: only light;
+  background-color: #F7F6F2;
+  color: #363E35;
   scroll-behavior: smooth;
 }
 
@@ -35,8 +39,8 @@ html {
 
 body {
   font-family: var(--font-body);
-  background-color: var(--bg);
-  color: var(--ink);
+  background-color: #F7F6F2;
+  color: #363E35;
   -webkit-font-smoothing: antialiased;
 }
 
