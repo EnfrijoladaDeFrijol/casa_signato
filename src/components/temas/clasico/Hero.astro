@@ -105,7 +105,7 @@ const subtituloMonograma =
         {
           inicialDer && (
             <>
-              <span class="hero-clasico__monograma-linea h-14 w-px bg-[var(--accent)]/60" aria-hidden="true"></span>
+              <span class="hero-clasico__monograma-linea h-14 w-px shrink-0" aria-hidden="true"></span>
               <span class="hero-clasico__monograma-letra font-display text-[clamp(3.6rem,15vw,5rem)] font-normal leading-none tracking-[0.06em] text-[var(--ink)]">
                 {inicialDer}
               </span>
@@ -135,23 +135,23 @@ const subtituloMonograma =
   .hero-clasico__velo-inf {
     background: linear-gradient(
       to top,
-      color-mix(in srgb, var(--ink) 80%, transparent) 0%,
-      color-mix(in srgb, var(--ink) 72%, transparent) 34%,
-      color-mix(in srgb, var(--ink) 44%, transparent) 68%,
-      color-mix(in srgb, var(--ink) 14%, transparent) 88%,
+      color-mix(in srgb, var(--ink) 68%, transparent) 0%,
+      color-mix(in srgb, var(--ink) 58%, transparent) 34%,
+      color-mix(in srgb, var(--ink) 32%, transparent) 68%,
+      color-mix(in srgb, var(--ink) 10%, transparent) 88%,
       transparent 100%
     );
   }
   .hero-clasico__titulo {
     color: var(--bg);
     text-shadow:
-      0 2px 26px color-mix(in srgb, var(--ink) 62%, transparent),
+      0 2px 18px color-mix(in srgb, var(--ink) 65%, transparent),
       0 1px 6px color-mix(in srgb, var(--ink) 44%, transparent);
     text-wrap: balance;
   }
   .hero-clasico__meta {
     color: color-mix(in srgb, var(--bg) 94%, var(--surface));
-    text-shadow: 0 1px 14px color-mix(in srgb, var(--ink) 52%, transparent);
+    text-shadow: 0 2px 18px color-mix(in srgb, var(--ink) 65%, transparent);
   }
   .hero-clasico__sutil {
     color: color-mix(in srgb, var(--bg) 86%, transparent);
@@ -161,7 +161,7 @@ const subtituloMonograma =
     font-family: 'Cormorant Garamond', var(--font-display), Georgia, serif;
   }
   .hero-clasico__monograma-linea {
-    background-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    background-color: color-mix(in srgb, var(--ink) 45%, transparent);
   }
   .hero-clasico__linea {
     background-color: color-mix(in srgb, var(--bg) 52%, transparent);

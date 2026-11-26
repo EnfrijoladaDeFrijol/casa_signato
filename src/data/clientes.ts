@@ -305,52 +305,14 @@ export const clientes: ClienteInvitacion[] = [
       audioUrl: '/demos/musica/Christina%20Perri%20-%20A%20Thousand%20Years.m4a',
       modoDemo: false,
     },
+    modoFotos: 'dispersas',
     galeria: [
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Sesión editorial de Sofía en estudio con luz natural',
-        caption: 'Sesión previa',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Retrato de Sofía en los jardines de Guadalajara',
-        caption: 'Jardín botánico',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Detalle del vestido palo de rosa y ramo floral',
-        caption: 'Detalles',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Sofía sonriendo junto a sus padres',
-        caption: 'En familia',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Retrato vertical con arquitectura colonial de fondo',
-        caption: 'Centro histórico',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Atardecer dorado durante la sesión de XV años',
-        caption: 'Luz dorada',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Fotografía artística en blanco y tono cálido',
-        caption: 'Editorial',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Ensayo del vals con chambelanes',
-        caption: 'Preparativos',
-      },
-      {
-        url: '/demos/galeria-muestra.svg',
-        alt: 'Retrato final de la sesión de quince años',
-        caption: 'Rumbo a mis XV',
-      },
+      { url: '/demos/xv-foto4.webp', alt: 'Retrato editorial de Sofía con vestido de gala', caption: 'Sesión previa' },
+      { url: '/demos/xv-foto2.webp', alt: 'Sofía posando de pie durante su sesión de XV años', caption: 'Retrato' },
+      { url: '/demos/xv-foto1.webp', alt: 'Sofía en un retrato vertical con luz natural', caption: 'Luz natural' },
+      { url: '/demos/xv-foto5.webp', alt: 'Sofía sonriendo durante la sesión de quince años', caption: 'Sonrisa' },
+      { url: '/demos/xv-foto3.webp', alt: 'Retrato de Sofía con ramo de flores', caption: 'Detalles' },
+      { url: '/demos/xv-foto6.webp', alt: 'Retrato final de Sofía rumbo a sus XV años', caption: 'Rumbo a mis XV' },
     ],
     itinerario: [
       {

@@ -50,9 +50,17 @@ const fotoInterludio = dispersas
     : undefined;
 const fotoCierre = dispersas ? undefined : hayFotos ? fotosReales[fotosReales.length - 1] : undefined;
 // Modo dispersas: banda (1), impresa (2) y cierre (3 o la última disponible)
-const fotoBanda = dispersas ? fotosReales[1] : undefined;
-const fotoImpresa = dispersas ? fotosReales[2] : undefined;
-const fotoCierreDispersa = dispersas && fotosReales.length >= 4 ? fotosReales[3] : undefined;
+// Modo revista (5 o 6 fotos): reparte todas las fotos sin galería apilada
+const revista = dispersas && fotosReales.length >= 5;
+const fotoBanda = dispersas && !revista ? fotosReales[1] : undefined;
+const fotoImpresa = dispersas && !revista ? fotosReales[2] : undefined;
+const fotoCierreDispersa =
+  dispersas && !revista && fotosReales.length >= 4 ? fotosReales[3] : undefined;
+const fotoRevistaUbicaciones = revista ? fotosReales[1] : undefined;
+const fotoDiptico = revista ? fotosReales[2] : undefined;
+const fotoDipticoSec = revista ? fotosReales[3] : undefined;
+const fotoRevistaRsvp = revista ? fotosReales[4] : undefined;
+const fotoRevistaCierre = revista ? fotosReales[5] : undefined;
 
 const fotosGaleria = hayFotos
   ? fotosReales.length >= 4
@@ -117,6 +125,7 @@ const fotosGaleria = hayFotos
   }
 
   {fotoBanda && <InterludioFoto variante="banda" foto={fotoBanda} />}
+  {fotoRevistaUbicaciones && <InterludioFoto variante="impresa" foto={fotoRevistaUbicaciones} />}
 
   {
     modulos.itinerario && cliente.itinerario && (
@@ -137,6 +146,16 @@ const fotosGaleria = hayFotos
   }
 
   {fotoImpresa && <InterludioFoto variante="impresa" foto={fotoImpresa} />}
+  {
+    fotoDiptico && (
+      <InterludioFoto
+        variante="diptico"
+        foto={fotoDiptico}
+        fotoSecundaria={fotoDipticoSec?.url}
+        altSecundario={fotoDipticoSec?.alt}
+      />
+    )
+  }
 
   {
     modulos.mesaRegalos && cliente.mesaRegalos && (
@@ -152,6 +171,8 @@ const fotosGaleria = hayFotos
       />
     )
   }
+
+  {fotoRevistaRsvp && <InterludioFoto variante="impresa" foto={fotoRevistaRsvp} />}
 
   {
     mostrarRsvp && (
@@ -188,6 +209,11 @@ const fotosGaleria = hayFotos
   }
 
   {fotoCierreDispersa && <InterludioFoto variante="cierre" foto={fotoCierreDispersa} />}
+  {
+    fotoRevistaCierre && (
+      <InterludioFoto variante="cierre" foto={fotoRevistaCierre} posicion="center 20%" />
+    )
+  }
 
   {
     fotoCierre && (

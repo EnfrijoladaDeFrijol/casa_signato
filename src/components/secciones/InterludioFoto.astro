@@ -3,10 +3,13 @@ import BordeRasgado from './BordeRasgado.astro';
 
 interface Props {
   foto: { url: string; alt: string };
-  variante?: 'arco' | 'banda' | 'impresa' | 'cierre';
+  variante?: 'arco' | 'banda' | 'impresa' | 'cierre' | 'diptico';
   posicion?: string;
+  /** Segundo retrato para la variante "diptico". */
+  fotoSecundaria?: string;
+  altSecundario?: string;
   compactoSuperior?: boolean;
-  /** Pie editorial discreto (impresa) o frase de despedida (cierre). */
+  /** Pie editorial discreto debajo de la foto (solo en variante "impresa"). */
   pie?: string;
 }
 
@@ -14,11 +17,12 @@ const {
   foto,
   variante = 'arco',
   posicion,
+  fotoSecundaria,
+  altSecundario,
   compactoSuperior = false,
   pie,
 } = Astro.props;
 const estiloImg = posicion ? `object-position: ${posicion}` : undefined;
-const fraseCierre = pie ?? 'Esperamos compartir este día contigo';
 ---
 
 {
@@ -73,22 +77,52 @@ const fraseCierre = pie ?? 'Esperamos compartir este día contigo';
         )}
       </figure>
     </div>
+  ) : variante === 'diptico' ? (
+    <div class="inv-papel bg-[var(--bg)] px-6 py-10 sm:py-14">
+      <div class="mx-auto grid max-w-md grid-cols-2 gap-3 sm:gap-5">
+        <figure
+          class="interludio-diptico relative aspect-[3/4] w-full overflow-hidden rounded-[1rem] border border-[var(--border-soft)] bg-[var(--accent-soft)]"
+          data-reveal
+        >
+          <img
+            src={foto.url}
+            alt={foto.alt}
+            style={estiloImg ?? 'object-position: center 20%'}
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
+          />
+        </figure>
+        {fotoSecundaria && (
+          <figure
+            class="interludio-diptico relative mt-6 aspect-[3/4] w-full overflow-hidden rounded-[1rem] border border-[var(--border-soft)] bg-[var(--accent-soft)]"
+            data-reveal
+            style="--rv: 1"
+          >
+            <img
+              src={fotoSecundaria}
+              alt={altSecundario ?? foto.alt}
+              style={estiloImg ?? 'object-position: center 20%'}
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover"
+            />
+          </figure>
+        )}
+      </div>
+    </div>
   ) : variante === 'cierre' ? (
     <div class="relative bg-[var(--bg)]">
       <figure class="interludio-cierre relative aspect-[4/3] w-full overflow-hidden bg-[var(--accent-soft)] sm:aspect-[16/10]">
         <img
           src={foto.url}
           alt={foto.alt}
-          style={estiloImg ?? 'object-position: center 30%'}
+          style={estiloImg ?? 'object-position: center 20%'}
           loading="lazy"
           decoding="async"
           class="interludio-cierre-img h-full w-full object-cover"
         />
-        <span class="interludio-velo-cierre pointer-events-none absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true" />
         <BordeRasgado posicion="superior" sombra="suave" class="h-6 sm:h-8" />
-        <figcaption class="absolute inset-x-0 bottom-0 px-8 pb-8 text-center font-display text-xl italic leading-snug text-[var(--bg)] sm:pb-12 sm:text-3xl">
-          {fraseCierre}
-        </figcaption>
       </figure>
     </div>
   ) : (
@@ -98,10 +132,10 @@ const fraseCierre = pie ?? 'Esperamos compartir este día contigo';
           <img
             src={foto.url}
             alt={foto.alt}
-            style={estiloImg}
+            style={estiloImg ?? 'object-position: center 20%'}
             loading="lazy"
             decoding="async"
-            class="h-full w-full object-cover object-[center_20%]"
+            class="h-full w-full object-cover"
           />
         </div>
         <span class="interludio-velo-sup pointer-events-none absolute inset-x-0 top-0 h-1/4" aria-hidden="true" />
@@ -131,8 +165,8 @@ const fraseCierre = pie ?? 'Esperamos compartir este día contigo';
   .interludio-velo-inf {
     background: linear-gradient(to top, color-mix(in srgb, var(--ink) 24%, transparent), transparent);
   }
-  .interludio-velo-cierre {
-    background: linear-gradient(to top, color-mix(in srgb, var(--ink) 62%, transparent), transparent);
+  .interludio-diptico {
+    box-shadow: 0 14px 26px -16px color-mix(in srgb, var(--ink) 30%, transparent);
   }
   .interludio-impresa {
     box-shadow:

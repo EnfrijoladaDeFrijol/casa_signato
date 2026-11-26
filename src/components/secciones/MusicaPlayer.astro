@@ -10,7 +10,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
 ---
 
 <aside
-  class="fixed bottom-4 right-4 z-40 flex flex-col items-end"
+  class="pointer-events-none fixed bottom-4 right-4 z-40 flex flex-col items-center gap-2"
   aria-label="Reproductor de música de fondo"
   data-musica-widget
   data-modo-demo={esModoDemo ? 'true' : 'false'}
@@ -18,25 +18,25 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
 >
   {!esModoDemo && <audio data-musica-audio preload="metadata" loop src={musica.audioUrl} />}
 
-  <!-- Etiqueta breve en móvil al activar o pausar -->
+  <!-- Etiqueta breve en móvil a la izquierda del botón Play/Pausa -->
   <div
     data-musica-toast
     aria-hidden="true"
-    class="musica-toast pointer-events-none absolute bottom-[3.35rem] right-0 max-w-[14.5rem] rounded-full border border-[var(--border-soft)] px-3.5 py-2 text-right backdrop-blur-md sm:hidden"
+    class="musica-toast pointer-events-none absolute bottom-0 right-[calc(100%+0.5rem)] z-10 flex h-11 w-max max-w-[min(56vw,210px)] flex-col justify-center rounded-full border border-[var(--border-soft)] px-3.5 text-right backdrop-blur-md sm:hidden"
   >
-    <span class="block truncate text-[11px] font-semibold leading-tight text-[var(--ink)]">
+    <span class="block max-w-full truncate text-[11px] font-semibold leading-tight text-[var(--ink)]">
       {musica.titulo}
     </span>
-    <span data-musica-toast-estado class="block truncate text-[10px] leading-tight text-[var(--ink-muted)]">
+    <span data-musica-toast-estado class="block max-w-full truncate text-[10px] leading-tight text-[var(--ink-muted)]">
       {musica.artista || 'Música del evento'}
     </span>
   </div>
 
   <!-- Volumen discreto: oculto en iOS y mientras no suena -->
-  <div class="mb-2 flex flex-col items-center gap-1.5" data-volumen-grupo hidden>
+  <div class="pointer-events-none relative z-20 flex flex-col items-center gap-2" data-volumen-grupo hidden>
     <div
       data-volumen-panel
-      class="musica-vol-panel flex h-28 w-9 items-center justify-center rounded-full border border-[var(--border-soft)] backdrop-blur-md"
+      class="musica-vol-panel z-30 flex h-28 w-9 items-center justify-center rounded-full border border-[var(--border-soft)] backdrop-blur-md"
       aria-hidden="true"
     >
       <input
@@ -56,7 +56,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
       data-volumen-disparador
       aria-expanded="false"
       aria-label="Ajustar volumen"
-      class="musica-vol-disparador flex h-7 w-7 items-center justify-center rounded-full border border-[var(--border-soft)] p-0 text-[var(--ink)] backdrop-blur-md"
+      class="musica-vol-disparador pointer-events-auto relative z-20 flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-soft)] p-0 text-[var(--ink)] backdrop-blur-md"
     >
       <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z" />
@@ -70,7 +70,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
     data-musica-boton
     aria-pressed="false"
     aria-label={`Reproducir música: ${musica.titulo}`}
-    class="musica-boton flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-soft)] p-0 text-left text-xs font-medium text-[var(--ink)] backdrop-blur-md transition-[scale,border-color] duration-200 active:scale-[0.98] sm:h-12 sm:w-auto sm:gap-3 sm:py-1.5 sm:pl-1.5 sm:pr-5"
+    class="musica-boton pointer-events-auto relative z-20 flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-soft)] p-0 text-left text-xs font-medium text-[var(--ink)] backdrop-blur-md transition-[scale,border-color] duration-200 active:scale-[0.98] sm:h-12 sm:w-auto sm:gap-3 sm:py-1.5 sm:pl-1.5 sm:pr-5"
   >
     <span class="relative flex h-full w-full shrink-0 items-center justify-center rounded-full text-[var(--accent)] sm:h-9 sm:w-9 sm:bg-[var(--accent)] sm:text-[var(--surface)]">
       <span class="musica-halo" aria-hidden="true"></span>
@@ -109,7 +109,12 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
     outline-offset: 2px;
   }
 
+  [data-volumen-grupo][hidden] {
+    display: none;
+  }
+
   .musica-vol-panel {
+    pointer-events: none;
     opacity: 0;
     visibility: hidden;
     transform: translate3d(0, 6px, 0);
@@ -120,6 +125,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
   }
 
   .musica-vol-panel[data-abierto='true'] {
+    pointer-events: auto;
     opacity: 1;
     visibility: visible;
     transform: none;
@@ -185,7 +191,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
   .musica-toast {
     opacity: 0;
     visibility: hidden;
-    transform: translate3d(0, 6px, 0);
+    transform: translate3d(6px, 0, 0);
     transition:
       opacity 0.28s var(--ease),
       transform 0.28s var(--ease),
@@ -314,6 +320,12 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
       rafFade = requestAnimationFrame(paso);
     };
 
+    const ocultarToastMovil = () => {
+      window.clearTimeout(temporizadorToast);
+      if (!toast) return;
+      delete toast.dataset.visible;
+    };
+
     if (volumenEditable && audio && grupoVol && panelVol && sliderVol && disparadorVol) {
       audio.volume = 0;
       disparadorVol.addEventListener('click', () => {
@@ -322,12 +334,14 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
           cerrarVolumen();
           return;
         }
+        ocultarToastMovil();
         panelVol.dataset.abierto = 'true';
         panelVol.setAttribute('aria-hidden', 'false');
         disparadorVol.setAttribute('aria-expanded', 'true');
         sliderVol.removeAttribute('tabindex');
         programarCierreVolumen();
       });
+      panelVol.addEventListener('pointerdown', programarCierreVolumen);
       sliderVol.addEventListener('input', () => {
         cancelAnimationFrame(rafFade);
         volumenObjetivo = Number(sliderVol.value) / 100;
@@ -341,6 +355,7 @@ const esModoDemo = Boolean(musica.modoDemo) || !musica.audioUrl.trim();
 
     const mostrarToastMovil = (textoEstado?: string) => {
       if (!toast) return;
+      cerrarVolumen();
       if (toastEstado && textoEstado) {
         toastEstado.textContent = textoEstado;
       }

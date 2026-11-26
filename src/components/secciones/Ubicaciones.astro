@@ -32,7 +32,9 @@ function iconoDe(tipo: string): 'iglesia' | 'copas' {
             <article
               class:list={[
                 'flex flex-col items-center text-center',
-                i > 0 && 'mt-12 border-t border-[var(--border-soft)] pt-12 md:mt-0 md:border-t-0 md:border-l md:pl-12 md:pt-0',
+                i > 0 &&
+                  (tieneFoto ? 'mt-12 pt-12' : 'mt-9 pt-9') +
+                    ' border-t border-[var(--border-soft)] md:mt-0 md:border-t-0 md:border-l md:pl-12 md:pt-0',
               ]}
               data-reveal
               style={`--rv: ${i}`}
@@ -62,7 +64,7 @@ function iconoDe(tipo: string): 'iglesia' | 'copas' {
               ) : (
                 <InvitacionIcono
                   nombre={iconoDe(lugar.tipo)}
-                  class="inv-icon-draw mb-5 h-10 w-10 text-[var(--ink)] opacity-85"
+                  class="inv-icon-draw mb-4 h-10 w-10 text-[var(--ink)] opacity-85"
                 />
               )}
 
@@ -87,13 +89,13 @@ function iconoDe(tipo: string): 'iglesia' | 'copas' {
                 </p>
               )}
 
-              <div class="mt-auto flex w-full flex-col items-center justify-center gap-3 pt-7 sm:flex-row sm:flex-wrap">
+              <div class:list={['mt-auto flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap', tieneFoto ? 'pt-7' : 'pt-5']}>
                 <a
                   href={lugar.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-abrir-mapa
-                  class="inv-btn inline-flex min-h-[44px] min-w-[210px] items-center justify-center rounded-full border border-[var(--ink)]/55 bg-[var(--surface)]/75 px-7 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] transition-colors duration-300 hover:bg-[var(--ink)] hover:text-[var(--bg)] active:scale-[0.98]"
+                  class="inv-btn inline-flex min-h-[44px] min-w-[210px] items-center justify-center rounded-full border border-[var(--ink)]/70 bg-[var(--surface)]/75 px-7 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] transition-colors duration-300 hover:bg-[var(--ink)] hover:text-[var(--bg)] active:scale-[0.98]"
                 >
                   <span class="inv-swap">
                     <span data-swap-a>Ver ubicación</span>
@@ -107,7 +109,7 @@ function iconoDe(tipo: string): 'iglesia' | 'copas' {
                     target="_blank"
                     rel="noopener noreferrer"
                     data-abrir-mapa
-                    class="inv-btn inline-flex min-h-[44px] min-w-[210px] items-center justify-center rounded-full border border-[var(--ink)]/55 bg-[var(--surface)]/75 px-7 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] transition-colors duration-300 hover:bg-[var(--ink)] hover:text-[var(--bg)] active:scale-[0.98]"
+                    class="inv-btn inline-flex min-h-[44px] min-w-[210px] items-center justify-center rounded-full border border-[var(--ink)]/70 bg-[var(--surface)]/75 px-7 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] transition-colors duration-300 hover:bg-[var(--ink)] hover:text-[var(--bg)] active:scale-[0.98]"
                   >
                     <span class="inv-swap">
                       <span data-swap-a>Waze</span>
