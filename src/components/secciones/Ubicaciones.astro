@@ -48,10 +48,14 @@ function iconoDe(tipo: string): 'iglesia' | 'copas' {
                     alt={lugar.fotoAlt ?? `${lugar.tipo}: ${lugar.nombre}`}
                     loading="lazy"
                     decoding="async"
-                    class="h-full w-full object-cover sepia-[.12] saturate-[.86] contrast-[.97] transition-transform duration-700 ease-out hover:scale-[1.03]"
+                    class="h-full w-full object-cover sepia-[.16] saturate-[.74] contrast-[.96] transition-transform duration-700 ease-out hover:scale-[1.03]"
                   />
                   <span
                     class="pointer-events-none absolute inset-0 bg-[color-mix(in_srgb,var(--accent)_10%,transparent)] mix-blend-soft-light"
+                    aria-hidden="true"
+                  ></span>
+                  <span
+                    class="pointer-events-none absolute inset-0 bg-[color-mix(in_srgb,var(--surface)_14%,transparent)] mix-blend-multiply"
                     aria-hidden="true"
                   ></span>
                 </div>
@@ -89,7 +93,7 @@ function iconoDe(tipo: string): 'iglesia' | 'copas' {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-abrir-mapa
-                  class="inv-btn inv-btn--tinta inline-flex min-h-[44px] min-w-[210px] items-center justify-center rounded-full border border-[var(--ink)] px-7 text-[11px] uppercase tracking-[0.2em] shadow-[0_6px_14px_-8px_var(--ink)] active:scale-[0.98]"
+                  class="inv-btn inline-flex min-h-[44px] min-w-[210px] items-center justify-center rounded-full border border-[var(--ink)]/55 bg-[var(--surface)]/75 px-7 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] transition-colors duration-300 hover:bg-[var(--ink)] hover:text-[var(--bg)] active:scale-[0.98]"
                 >
                   <span class="inv-swap">
                     <span data-swap-a>Ver ubicación</span>
@@ -103,7 +107,7 @@ function iconoDe(tipo: string): 'iglesia' | 'copas' {
                     target="_blank"
                     rel="noopener noreferrer"
                     data-abrir-mapa
-                    class="inv-btn inline-flex min-h-[44px] min-w-[210px] items-center justify-center rounded-full border border-[color-mix(in_srgb,var(--ink)_40%,transparent)] px-7 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] hover:border-[var(--ink)] active:scale-[0.98]"
+                    class="inv-btn inline-flex min-h-[44px] min-w-[210px] items-center justify-center rounded-full border border-[var(--ink)]/55 bg-[var(--surface)]/75 px-7 text-[11px] uppercase tracking-[0.2em] text-[var(--ink)] transition-colors duration-300 hover:bg-[var(--ink)] hover:text-[var(--bg)] active:scale-[0.98]"
                   >
                     <span class="inv-swap">
                       <span data-swap-a>Waze</span>

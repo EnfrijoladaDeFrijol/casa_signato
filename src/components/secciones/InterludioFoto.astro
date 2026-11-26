@@ -3,9 +3,11 @@ import BordeRasgado from './BordeRasgado.astro';
 
 interface Props {
   foto: { url: string; alt: string };
-  variante?: 'arco' | 'banda';
+  variante?: 'arco' | 'banda' | 'impresa' | 'cierre';
   posicion?: string;
   compactoSuperior?: boolean;
+  /** Pie editorial discreto (impresa) o frase de despedida (cierre). */
+  pie?: string;
 }
 
 const {
@@ -13,8 +15,10 @@ const {
   variante = 'arco',
   posicion,
   compactoSuperior = false,
+  pie,
 } = Astro.props;
 const estiloImg = posicion ? `object-position: ${posicion}` : undefined;
+const fraseCierre = pie ?? 'Esperamos compartir este día contigo';
 ---
 
 {
@@ -46,9 +50,50 @@ const estiloImg = posicion ? `object-position: ${posicion}` : undefined;
         </div>
       </figure>
     </div>
+  ) : variante === 'impresa' ? (
+    <div class="inv-papel bg-[var(--bg)] px-6 py-10 sm:py-14">
+      <figure
+        class="interludio-impresa mx-auto w-full max-w-[300px] rounded-[1.25rem] border border-[var(--border-soft)] bg-[var(--surface)] p-3 pb-5 sm:max-w-[340px] sm:p-4 sm:pb-6"
+        data-reveal
+      >
+        <div class="interludio-impresa-foto relative aspect-[4/5] w-full overflow-hidden rounded-[0.75rem] bg-[var(--accent-soft)]">
+          <img
+            src={foto.url}
+            alt={foto.alt}
+            style={estiloImg ?? 'object-position: center 25%'}
+            loading="lazy"
+            decoding="async"
+            class="interludio-impresa-img h-full w-full object-cover"
+          />
+        </div>
+        {pie && (
+          <figcaption class="mt-3 text-center font-display text-[0.8125rem] italic tracking-[0.04em] text-[var(--ink-muted)] sm:mt-4">
+            {pie}
+          </figcaption>
+        )}
+      </figure>
+    </div>
+  ) : variante === 'cierre' ? (
+    <div class="relative bg-[var(--bg)]">
+      <figure class="interludio-cierre relative aspect-[4/3] w-full overflow-hidden bg-[var(--accent-soft)] sm:aspect-[16/10]">
+        <img
+          src={foto.url}
+          alt={foto.alt}
+          style={estiloImg ?? 'object-position: center 30%'}
+          loading="lazy"
+          decoding="async"
+          class="interludio-cierre-img h-full w-full object-cover"
+        />
+        <span class="interludio-velo-cierre pointer-events-none absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true" />
+        <BordeRasgado posicion="superior" sombra="suave" class="h-6 sm:h-8" />
+        <figcaption class="absolute inset-x-0 bottom-0 px-8 pb-8 text-center font-display text-xl italic leading-snug text-[var(--bg)] sm:pb-12 sm:text-3xl">
+          {fraseCierre}
+        </figcaption>
+      </figure>
+    </div>
   ) : (
     <div class="relative bg-[var(--bg)]">
-      <figure class="relative h-72 w-full overflow-hidden bg-[var(--accent-soft)] sm:h-96">
+      <figure class="relative aspect-[4/3] w-full overflow-hidden bg-[var(--accent-soft)] sm:aspect-[21/10]">
         <div class="absolute inset-x-0 -top-[12%] h-[124%]" data-parallax data-parallax-max="30">
           <img
             src={foto.url}
@@ -56,7 +101,7 @@ const estiloImg = posicion ? `object-position: ${posicion}` : undefined;
             style={estiloImg}
             loading="lazy"
             decoding="async"
-            class="h-full w-full object-cover"
+            class="h-full w-full object-cover object-[center_20%]"
           />
         </div>
         <span class="interludio-velo-sup pointer-events-none absolute inset-x-0 top-0 h-1/4" aria-hidden="true" />
@@ -85,5 +130,49 @@ const estiloImg = posicion ? `object-position: ${posicion}` : undefined;
   }
   .interludio-velo-inf {
     background: linear-gradient(to top, color-mix(in srgb, var(--ink) 24%, transparent), transparent);
+  }
+  .interludio-velo-cierre {
+    background: linear-gradient(to top, color-mix(in srgb, var(--ink) 62%, transparent), transparent);
+  }
+  .interludio-impresa {
+    box-shadow:
+      0 24px 40px -18px color-mix(in srgb, var(--ink) 30%, transparent),
+      0 4px 12px color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+
+  @keyframes interludio-revelar {
+    from {
+      clip-path: inset(8% 6% 8% 6% round 0.75rem);
+      transform: scale(1.05);
+      opacity: 0.4;
+    }
+    to {
+      clip-path: inset(0 0 0 0 round 0.75rem);
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes interludio-escala {
+    from {
+      transform: scale(1.05);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .interludio-impresa-img {
+        animation: interludio-revelar linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 35%;
+      }
+      .interludio-cierre-img {
+        animation: interludio-escala linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 50%;
+      }
+    }
   }
 </style>

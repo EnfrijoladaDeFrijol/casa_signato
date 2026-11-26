@@ -138,11 +138,12 @@ export const clientes: ClienteInvitacion[] = [
       },
     ],
     musica: {
-      titulo: 'La Vie En Rose (Versión Acústica)',
-      artista: 'Cuarteto de Cuerdas',
-      audioUrl: '',
-      modoDemo: true,
+      titulo: 'La Vie En Rose',
+      artista: 'Brooklyn Duo',
+      audioUrl: '/demos/musica/la-vie-en-rose.m4a',
+      modoDemo: false,
     },
+    modoFotos: 'dispersas',
     galeria: [
       {
         url: '/demos/bodaboda-foto1.webp',

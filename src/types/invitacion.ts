@@ -190,6 +190,8 @@ export interface ClienteInvitacion {
   ubicaciones?: UbicacionItem[];
   musica?: MusicaData;
   galeria?: FotoGaleria[];
+  /** 'dispersas' reparte las fotos por toda la invitación; por defecto 'galeria'. */
+  modoFotos?: 'dispersas' | 'galeria';
   itinerario?: ItinerarioItem[];
   dressCode?: DressCodeData;
   mesaRegalos?: MesaRegalosData;

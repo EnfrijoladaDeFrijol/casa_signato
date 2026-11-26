@@ -42,8 +42,17 @@ const fotosReales = galeriaActiva
       .slice(0, obtenerLimiteGaleria(cliente.plan))
   : [];
 const hayFotos = fotosReales.length > 0;
-const fotoInterludio = fotosReales.length >= 2 ? fotosReales[0] : undefined;
-const fotoCierre = hayFotos ? fotosReales[fotosReales.length - 1] : undefined;
+const dispersas = cliente.modoFotos === 'dispersas' && hayFotos;
+const fotoInterludio = dispersas
+  ? fotosReales[0]
+  : fotosReales.length >= 2
+    ? fotosReales[0]
+    : undefined;
+const fotoCierre = dispersas ? undefined : hayFotos ? fotosReales[fotosReales.length - 1] : undefined;
+// Modo dispersas: banda (1), impresa (2) y cierre (3 o la última disponible)
+const fotoBanda = dispersas ? fotosReales[1] : undefined;
+const fotoImpresa = dispersas ? fotosReales[2] : undefined;
+const fotoCierreDispersa = dispersas && fotosReales.length >= 4 ? fotosReales[3] : undefined;
 
 const fotosGaleria = hayFotos
   ? fotosReales.length >= 4
@@ -61,8 +70,7 @@ const fotosGaleria = hayFotos
       <SelloBienvenida
         protagonistas={cliente.protagonistas}
         subtitulo={cliente.subtitulo}
-        tieneMusica={tieneMusica}
-      />
+        tieneMusica={tieneMusica}  fotoPortada={cliente.fotoPortada}/>
     )
   }
   {
@@ -108,6 +116,8 @@ const fotosGaleria = hayFotos
     )
   }
 
+  {fotoBanda && <InterludioFoto variante="banda" foto={fotoBanda} />}
+
   {
     modulos.itinerario && cliente.itinerario && (
       <Itinerario itinerario={cliente.itinerario} />
@@ -115,7 +125,7 @@ const fotosGaleria = hayFotos
   }
 
   {
-    modulos.galeria && cliente.galeria && (
+    modulos.galeria && cliente.galeria && !dispersas && (
       <Galeria fotos={fotosGaleria} plan={cliente.plan} />
     )
   }
@@ -125,6 +135,8 @@ const fotosGaleria = hayFotos
       <DressCode dressCode={cliente.dressCode} />
     )
   }
+
+  {fotoImpresa && <InterludioFoto variante="impresa" foto={fotoImpresa} />}
 
   {
     modulos.mesaRegalos && cliente.mesaRegalos && (
@@ -174,6 +186,8 @@ const fotosGaleria = hayFotos
       <AlbumQR album={cliente.albumQr} />
     )
   }
+
+  {fotoCierreDispersa && <InterludioFoto variante="cierre" foto={fotoCierreDispersa} />}
 
   {
     fotoCierre && (
