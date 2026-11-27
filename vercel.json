@@ -35,7 +35,7 @@
       ]
     },
     {
-      "source": "/admin(.*)",
+      "source": "/casa_secreta__cs_1705_lugar_seguro_xd_viva_las_enfrijoladas(.*)",
       "headers": [
         {
           "key": "X-Robots-Tag",

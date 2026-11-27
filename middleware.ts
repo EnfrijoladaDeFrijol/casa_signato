@@ -5,7 +5,10 @@ declare const process: {
 };
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*'],
+  matcher: [
+    '/casa_secreta__cs_1705_lugar_seguro_xd_viva_las_enfrijoladas',
+    '/casa_secreta__cs_1705_lugar_seguro_xd_viva_las_enfrijoladas/:path*',
+  ],
 };
 
 const CABECERAS_SEGURIDAD_ADMIN = {
